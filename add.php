@@ -1,30 +1,30 @@
 <?php
 require('mysqli_connect.php');
 //if (!empty($_POST)) {
-if (empty($_POST)){
+if (empty($_POST)) {
     print ('post is empty!');
-} else if (!isset($_POST)){
+} else if (!isset($_POST)) {
     print('nothing is even getting passed in man!');
 }
 
-    $name = $_POST['name'];
-    $course = $_POST['course'];
-    $grade = $_POST['grade'];
-    $_POST['error'] = '';
-    print($_POST['name']);
-    //method is for sanitation before you through it into the query.
-    $check_all = [
-        $name => ['regex' => '/^[a-zA-Z0-9, ]++$/', 'method' => 'sanitized_string', 'key' => 'name'],
-        $grade => ['regex' => '/^[a-zA-Z0-9, ]++$/', 'method' => 'sanitized_string', 'key' => 'course'],
-        $course => ['regex' => '/^[0-9]{1,3}$/', 'method' => 'sanitized_int', 'key' => 'grade']
-    ];
+$name = $_POST['name'];
+$course = $_POST['course'];
+$grade = $_POST['grade'];
+$_POST['error'] = '';
+print($_POST['name']);
+//method is for sanitation before you through it into the query.
+$check_all = [
+    $name => ['regex' => '/^[a-zA-Z0-9, ]++$/', 'method' => 'sanitized_string', 'key' => 'name'],
+    $grade => ['regex' => '/^[a-zA-Z0-9, ]++$/', 'method' => 'sanitized_string', 'key' => 'course'],
+    $course => ['regex' => '/^[0-9]{1,3}$/', 'method' => 'sanitized_int', 'key' => 'grade']
+];
 
-    $infoadd = ['success' => true, 'data' => $_POST, 'error' => 'something went wrong'];
-    print(json_encode($_POST));
+$infoadd = ['success' => true, 'data' => $_POST, 'error' => 'something went wrong'];
+print(json_encode($_POST));
 //}
 
 //regex and validation here.
-function regex_checker($regex,$check)
+function regex_checker($regex, $check)
 {
     return preg_match($regex, $check);
 }
@@ -55,7 +55,7 @@ function fix_stuff($value, $method)
 }
 
 foreach ($check_all as $key => $value) {
-    if (regex_checker($value['regex'],$key)) {
+    if (regex_checker($value['regex'], $key)) {
         $_POST[$key['key']] = fix_stuff($key, $value['method']);
     } else {
         $_POST['error'] = 'not valid regex';

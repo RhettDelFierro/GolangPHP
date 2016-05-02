@@ -66,7 +66,7 @@ function addStudentAjax(student) {
                     //    alert(errors[i]);
                     //}
                     //starting some oop.
-                } else{
+                } else {
                     console.log(result.error);
                 }
             }
@@ -192,7 +192,7 @@ function deleteStudent(student) {
         url: 'delete.php',
         success: function (result) {
             console.log('success', result);
-            if (result.success){
+            if (result.success) {
                 console.log('everything is fine');
             } else {
                 console.log(result.error);

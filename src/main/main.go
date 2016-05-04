@@ -32,8 +32,6 @@ func inject(w http.ResponseWriter, req *http.Request){
 }
 
 func main() {
-	mux := http.NewServeMux()
-	fs := http.FileServer(http.Dir("../../templates"))
-	mux.Handle("/", fs)
-	http.ListenAndServe(":8080", mux)
+	http.HandleFunc("/", inject)
+	http.ListenAndServe(":8080", nil)
 }

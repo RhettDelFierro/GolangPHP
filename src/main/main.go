@@ -5,7 +5,8 @@ import (
 	"html/template"
 	"log"
 	//"fmt"
-	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
+	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
+	"github.com/RhettDelFierro/GolangPHP/src/controllers"
 )
 
 type Students struct{
@@ -23,11 +24,11 @@ var tmpl *template.Template
 //parse the html template files
 func init() {
 	var err error
-	tmpl, err = template.ParseFiles("../../templates/index.html")
+	tmpl, err = template.ParseFiles("templates/index.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	tmpl, err = tmpl.ParseFiles("../../templates/_tablerows.html")
+	tmpl, err = tmpl.ParseFiles("templates/_tablerows.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -35,15 +36,11 @@ func init() {
 
 }
 
-//HandlerFunc
-func inject(w http.ResponseWriter, req *http.Request){
-	var data interface{}
-	data = viewmodels.GetGrades()
-	//Execute goes here.
-	tmpl.ExecuteTemplate(w, "index.html", data)
-}
+//the HandlerFunc inject() was defined here.
+
 
 func main() {
-	http.HandleFunc("/", inject)
+	//http.HandleFunc("/", inject)
+	controllers.Inject(tmpl)
 	http.ListenAndServe(":8080", nil)
 }

@@ -249,6 +249,7 @@ function reset() {
  * Listen for the document to load and reset the data to the initial state
  */
 $(document).ready(function () {
+    console.log("running!");
     clearAddStudentForm();
     reset();
     $('th:nth-child(3)').on('click', function () {

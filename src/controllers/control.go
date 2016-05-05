@@ -3,22 +3,27 @@ package controllers
 import (
 	"net/http"
 	//"os"
-	"html/template"
+	"text/template"
 	//"bufio"
-	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
+	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"os"
 	"bufio"
-	"fmt"
+	//"fmt"
 )
 
 func Inject(tmpl *template.Template) {
-	http.HandleFunc("/",
-		func(w http.ResponseWriter, req *http.Request) {
-		var data interface{}
-		data = viewmodels.GetGrades()
-		//Execute goes here.
-		tmpl.ExecuteTemplate(w, "index.html", data)
-	})
+	//http.HandleFunc("/",
+	//	func(w http.ResponseWriter, req *http.Request) {
+	//	var data interface{}
+	//	data = viewmodels.GetGrades()
+	//	//Execute goes here.
+	//	tmpl.ExecuteTemplate(w, "index.html", data)
+	//})
+
+	hc := new(homeController)
+	hc.template = tmpl.Lookup("index.html") //may need to use the full path
+	http.HandleFunc("/index", hc.get)
+
 	http.HandleFunc("/scripts/", javascript)
 
 	http.ListenAndServe(":8080", nil)

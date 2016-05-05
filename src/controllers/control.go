@@ -19,19 +19,19 @@ func Inject(tmpl *template.Template) {
 		//Execute goes here.
 		tmpl.ExecuteTemplate(w, "index.html", data)
 	})
-	http.HandleFunc("/public/", javascript)
+	http.HandleFunc("/scripts/", javascript)
 
 	http.ListenAndServe(":8080", nil)
 }
 
 func javascript(w http.ResponseWriter, req *http.Request){
-	path := req.URL.Path
-	fmt.Println(path)
+	path := "public" + req.URL.Path
 
 	f, err := os.Open(path)
 
 	if err == nil {
 		defer f.Close()
+
 		w.Header().Add("Content Type", "text/javascript")
 		br := bufio.NewReader(f)
 		br.WriteTo(w)

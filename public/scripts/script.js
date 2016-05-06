@@ -54,7 +54,8 @@ function addStudentAjax(student) {
                 //maybe take this info throw it into a loop into an array and post that.
             },
             method: 'POST',
-            url: 'add.php',
+            //url: 'add.php',
+            url: '/api/grades', //*****************Golang should be index.html or _tablerows.html?
             success: function (result) {
                 console.log('success!!', result);
                 if (result.success) {

@@ -6,39 +6,46 @@ import(
 	"text/template"
 	"strconv"
 	//"log"
-	"fmt"
+	//"fmt"
 	"github.com/gorilla/mux"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
+	"github.com/RhettDelFierro/GolangPHP/src/models"
+	"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
 )
 
 type gradesController struct {
 	template *template.Template
 }
 
-func (this *gradesController) get(w http.ResponseWriter, req *http.Request){
-	//id, err := strconv.Atoi(req.URL.Path[1:])
-	//fmt.Println(id)
-	//if err != nil{
-	//	log.Fatalln(err)
-	//}
+func (this *gradesController) ajaxMethods(w http.ResponseWriter, req *http.Request){
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
 
-	//gorillamux is being used here
-		//we need to get the parameter container that gorilla mux stores for each request.
-	vars := mux.Vars(req) //returns a map of the parameters caught by the current request
-	idRaw := vars["id"] //be aware mux provides the values as a string, but for viewmodels.GetGrades() we need an integer for the argument.
-	id, err := strconv.Atoi(idRaw)
-	fmt.Println(id)
+	vars := mux.Vars(req)
+	idRaw := vars["id"]
+	id, err := strconv.Atoi(idRaw) //id is mainly for delete.
+
 	if err !=nil {
 		w.WriteHeader(404)
 		panic(err)
 	}
 
-	vm := viewmodels.GetGrades(id)
-	w.Header().Add("Content Type", "text/html")
-	//fmt.Println(vm)
 
-	//this.template.Execute(w, vm)
-	responseWriter := util.GetResponseWriter(w, req)
-	defer responseWriter.Close()
+
+
+
+	students := models.GetStudents() //slide of Student (not empty)
+	studentsVM := []viewmodels.Students{} //slice
+
+	for _, student := range students {
+		studentsVM = append(studentsVM, converters.StudentsToViewModel(student)) //have an array of hard coded Students
+	}
+
+	vm := viewmodels.GetStudents()
+	vm.Students = studentsVM //now we have a view model Struct with field Students that is an array of viewmodel.Students Schools.Students. Ready to execute/inject the view with these, as seen below. May now have to work the HTML injecting to use range.
+
+	responseWriter.Header().Add("Content Type", "text/html")
+
+	//Create
 	this.template.Execute(responseWriter, vm)
 }

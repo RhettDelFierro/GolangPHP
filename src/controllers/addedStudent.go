@@ -48,14 +48,14 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	convertedData := converters.StudentsToViewModel(*data)
 
-	err := json.NewEncoder(w).Encode(convertedData)
+	//err := json.NewEncoder(w).Encode(convertedData)
 
 	models.School1.AddStudents(*data) //we don't have to convert anything, just have to store it. Future videos.
 
 	responseWriter.Header().Add("Content-Type", "application/json")
-	//responseData, err := json.Marshal(convertedData)
+	responseData, err := json.Marshal(convertedData)
 	//fmt.Println(responseData)
-	//this.template.Execute(responseWriter, as)
+	this.template.Execute(responseWriter, responseData)
 	if err != nil {
 		responseWriter.WriteHeader(404)
 	}

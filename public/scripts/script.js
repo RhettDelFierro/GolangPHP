@@ -47,43 +47,24 @@ function addStudentAjax(student) {
     $.ajax({
             dataType: 'json',
             data: {
-                //api_key: "midlWD1sMl",
                 name: student.student_name,
                 course: student.course,
-                grade: student.student_grade
-                //maybe take this info throw it into a loop into an array and post that.
+                grade: student.student_grade,
+                id: 1 //******************************Need to not include id. Once DB sets up take this and the Golang code out.
             },
             method: 'POST',
             //url: 'add.php',
-            url: '/api/grades', //*****************Golang should be index.html or _tablerows.html?
+            url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
             success: function (result) {
                 console.log('success!!', result);
                 if (result.success) {
-                    student.id = result.data.ID;
+                    student.id = result.data.id;
                     console.log('it worked man!');
-                    //var errors = [];
-                    //errors.push(result.errors);
-                    //for (i = 0; i < errors.length; i++) {
-                    //    alert(errors[i]);
-                    //}
-                    //starting some oop.
                 } else {
                     console.log(result.error);
                 }
             }
-            //error: function (server, timeout, request) {
-            //    var different_errors = [];
-            //    if (timeout) {
-            //        different_errors.push(timeout);
-            //    }
-            //    if (server) {
-            //        different_errors.push(server);
-            //    }
-            //    if (request) {
-            //        different_errors.push(request);
-            //    }
-            //    alert(different_errors);
-            //}
+
         }
     )
 }

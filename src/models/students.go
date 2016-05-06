@@ -62,5 +62,5 @@ func GetStudents() []Student {
 }
 
 func (this *School) AddStudents(student Student) {
-	this.Students = append(student)
+	this.Students = append(this.Students, student)
 }

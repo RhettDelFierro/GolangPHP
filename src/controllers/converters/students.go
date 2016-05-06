@@ -15,4 +15,3 @@ func StudentsToViewModel(category models.Student) viewmodels.Student {
 
 	return result
 }
-

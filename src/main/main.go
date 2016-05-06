@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"text/template"
+	"html/template"
 	"log"
 	//"fmt"
 	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"

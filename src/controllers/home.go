@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
-	"text/template"
+	"html/template"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 )
 

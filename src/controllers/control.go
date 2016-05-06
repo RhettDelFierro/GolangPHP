@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	//"os"
-	"text/template"
+	"html/template"
 	//"bufio"
 	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"os"
@@ -24,9 +24,9 @@ func Inject(tmpl *template.Template) {
 	router.HandleFunc("/index", hc.get)
 
 	//on click go to this page (but right now don't have a link to it in html files)
-	//gc := new(addedController) //gradesController is package level so you're good.
-	//gc.template = tmpl.Lookup("index.html") //index.html here because it is set to include the data injected.
-	router.HandleFunc("/api/add", addedController.post) //anything that goes to /grades will be handled by ajaxMethods.
+	ac := new(addedController) //gradesController is package level so you're good.
+	ac.template = tmpl.Lookup("index.html") //index.html here because it is set to include the data injected.
+	router.HandleFunc("/api/add", ac.post) //anything that goes to /grades will be handled by ajaxMethods.
 
 	//now we have to set the net/http package to set the gorilla mux router (variable "router") to listen for requests.
 	http.Handle("/", router) //the controllers we have for home.go and table.go have no idea we've used gorilla mux instead of the DefaultServerMux. The home controller doesn't need to take advantage of parameterized routes, we don't have to modify them. But the table controller does.

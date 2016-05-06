@@ -2,17 +2,18 @@ package viewmodels
 
 import ()
 
-type Students struct {
-	Name   string
-	Course string
-	Grade  int
-	Id     int
-}
-			//remember, we don't want templating, just send back the info.
-type School struct {
-	All []Students
-}
+//type Students struct {
+//	Name   string
+//	Course string
+//	Grade  int
+//	Id     int
+//}
+//			//remember, we don't want templating, just send back the info.
+//type School struct {
+//	All []Students
+//}
 
+/*
 func GetGrades(id int) Students {
 	var student Students
 
@@ -31,3 +32,4 @@ func GetGrades(id int) Students {
 	return student
 
 }
+*/

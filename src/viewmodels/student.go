@@ -19,9 +19,10 @@ func GetStudents() School {
 	result := School{}
 	return result
 }
-
+/*
 func AddStudent() Student {
 	result := Student{}
 
 	return result
 }
+*/

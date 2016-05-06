@@ -3,11 +3,11 @@ package controllers
 import(
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
-	"text/template"
-	"strconv"
+	"html/template"
+	//"strconv"
 	//"log"
 	//"fmt"
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
@@ -21,21 +21,21 @@ func (this *gradesController) ajaxMethods(w http.ResponseWriter, req *http.Reque
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
-	vars := mux.Vars(req)
-	idRaw := vars["id"]
-	id, err := strconv.Atoi(idRaw) //id is mainly for delete.
+	//vars := mux.Vars(req)
+	//idRaw := vars["id"]
+	//id, err := strconv.Atoi(idRaw) //id is mainly for delete.
 
-	if err !=nil {
-		w.WriteHeader(404)
-		panic(err)
-	}
-
-
+	//if err !=nil {
+	//	w.WriteHeader(404)
+	//	panic(err)
+	//}
 
 
 
-	students := models.GetStudents() //slide of Student (not empty)
-	studentsVM := []viewmodels.Students{} //slice
+
+
+	students := models.GetStudents() //slice of Student (not empty)
+	studentsVM := []viewmodels.Student{} //slice
 
 	for _, student := range students {
 		studentsVM = append(studentsVM, converters.StudentsToViewModel(student)) //have an array of hard coded Students

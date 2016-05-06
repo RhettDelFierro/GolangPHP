@@ -8,6 +8,7 @@ import(
 	//"log"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 )
 
 type gradesController struct {
@@ -36,5 +37,8 @@ func (this *gradesController) get(w http.ResponseWriter, req *http.Request){
 	w.Header().Add("Content Type", "text/html")
 	//fmt.Println(vm)
 
-	this.template.Execute(w, vm)
+	//this.template.Execute(w, vm)
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+	this.template.Execute(responseWriter, vm)
 }

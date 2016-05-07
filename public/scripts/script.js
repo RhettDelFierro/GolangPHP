@@ -50,7 +50,7 @@ function addStudentAjax(student) {
                 name: student.student_name,
                 course: student.course,
                 grade: student.student_grade,
-                id: 1 //******************************Need to not include id. Once DB sets up take this and the Golang code out.
+                //******************************Need to not include id. Once DB sets up take this and the Golang code out.
             },
             method: 'POST',
             //url: 'add.php',
@@ -190,10 +190,12 @@ function populate() {
             //data: {
             //    api_key: "midlWD1sMl"
             //},
-            method: 'GET',
-            url: 'populate.php',
+            method: 'POST',
+            url: '/api/grades',
             success: function (result) {
                 console.log('success', result);
+
+                console.log(result);
                 var global_result = result;
                 if (global_result.success) {
                     for (i = 0; i < global_result.data.length; i++) {

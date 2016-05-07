@@ -1,14 +1,14 @@
 package viewmodels
 
 import (
-
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Student struct {
 	Name   string
 	Course string
 	Grade  int
-	Id     int
+	Id     bson.ObjectId
 }
 
 type School struct {

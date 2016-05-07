@@ -21,10 +21,6 @@ type gradesController struct {
 	template *template.Template
 }
 
-type ResponseJSON struct {
-	body []byte
-}
-
 func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request){
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
@@ -59,7 +55,6 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(vm.Students)
-	objectJSON := ResponseJSON{body: responseData}
 
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)
@@ -68,7 +63,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	}
 
 	//we add the students to our database above and also send it back so the front end/javascript knows we got he request.
-	responseWriter.Write(objectJSON.body)
+	responseWriter.Write(responseData)
 }
 
 //just have to look for the id.
@@ -83,11 +78,10 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(success)
-	objectJSON := ResponseJSON{body: responseData}
 	if err != nil {
 		responseWriter.WriteHeader(404)
 	} else {
-		responseWriter.Write(objectJSON.body)
+		responseWriter.Write(responseData)
 	}
 
 

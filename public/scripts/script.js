@@ -1,16 +1,15 @@
 /**
  * Define all global variables here
  */
-var student_name = '';
-var student_course = '';
-var student_grade = null;
 var average = null;
 var student;
 /**
  * student_array - global array to hold student objects
  * @type {Array}
  */
-var student_array = [];
+var student_array = {
+    array: []
+};
 
 /**
  * inputIds - id's of the elements that are used to add students
@@ -26,48 +25,81 @@ var find_student_grade = $('#studentGrade');
 /**
  * addClicked - Event Handler when user clicks the add button
  */
+//***************************PT 2.
+//function addClicked() {
+//    console.log("this works");
+//    student_name = document.getElementById("studentName").value;
+//    student_course = document.getElementById("course").value;
+//    student_grade = document.getElementById("studentGrade").value;
+//    //student = new addStudent(student_name, student_course, student_grade);
+//    var student = new addStudent(student_name, student_course, student_grade);
+//    student_array.push(student);
+//    addStudentAjax(student);
+//    addStudentToDom(student);
+//    console.log(student_array, student);
+//    updateData();
+//    clearAddStudentForm();
+//    cancelClicked();
+//}
 
 function addClicked() {
     console.log("this works");
-    student_name = document.getElementById("studentName").value;
-    student_course = document.getElementById("course").value;
-    student_grade = document.getElementById("studentGrade").value;
+
     //student = new addStudent(student_name, student_course, student_grade);
     var student = new addStudent(student_name, student_course, student_grade);
-    student_array.push(student);
-    addStudentAjax(student);
+    // student_array.push(student);
+    // addStudentAjax(student);
+    student.ajax();
+    //addStudentToDom(student);
+    //student_array.push(student);
     addStudentToDom(student);
+
     console.log(student_array, student);
     updateData();
     clearAddStudentForm();
     cancelClicked();
 }
 
-function addStudentAjax(student) {
-    $.ajax({
-            dataType: 'json',
-            data: {
-                name: student.student_name,
-                course: student.course,
-                grade: student.student_grade,
-                //******************************Need to not include id. Once DB sets up take this and the Golang code out.
-            },
-            method: 'POST',
-            //url: 'add.php',
-            url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
-            success: function (result) {
-                console.log('success!!', result);
-                if (result.success) {
-                    student.id = result.data.id;
-                    console.log('it worked man!');
-                } else {
-                    console.log(result.error);
-                }
-            }
+var formObject = {
+    student_name: "",
+    student_course: "",
+    student_grade: nil,
+    add: function() {
+        student_name = $('#studentName').val();
+        student_course = $('#course').val();
+        student_grade = $('#studentGrade').val()
+    },
+    ajax: function() {
+        var student = new addStudent(student_name, student_course, student_grade);
+    }
 
-        }
-    )
-}
+};
+
+//function addStudentAjax(student) {
+//    $.ajax({
+//            dataType: 'json',
+//            data: {
+//                name: student.student_name,
+//                course: student.course,
+//                grade: student.student_grade,
+//                //******************************Need to not include id. Once DB sets up take this and the Golang code out.
+//            },
+//            method: 'POST',
+//            url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
+//            success: function (result) {
+//                console.log('success!!', result);
+//                if (result.success) {
+//                    student.id(result.data.id);
+//                    console.log('it worked man!');
+//                    student_array.push(student);
+//                    addStudentToDom(student);
+//                } else {
+//                    console.log(result.error);
+//                }
+//            }
+//        }
+//    )
+//}
 
 /**
  * cancelClicked - Event Handler when user clicks the cancel button, should clear out student form
@@ -81,16 +113,57 @@ function cancelClicked() {
  *
  * @return undefined
  */
-function addStudent(name, course, grade, id) {
+function addStudent(name, course, grade) {
     var self = this;
     self.student_name = name,
         self.course = course,
         self.student_grade = grade,
-        self.id = id,
-        self.row = null;
+        self.id;
+    self.row = null;
     self.delete = function () {
         student_array.splice(student_array.indexOf(this), 1);
     };
+    self.id = function (id) {
+        self.id = id
+    };
+    self.ajax = function () {
+        $.ajax({
+                dataType: 'json',
+                data: {
+                    name: self.student_name,
+                    course: self.course,
+                    grade: self.student_grade
+                },
+                method: 'POST',
+                url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
+                success: function (result) {
+                    console.log('success!!', result);
+                    if (result.success) {
+                        self.id(result.data.id);
+
+                        console.log('it worked man!');
+                    } else {
+                        console.log(result.error);
+                    }
+                }
+
+            }
+        )
+    };
+    self.arrayFunc = function (doing) {
+        switch (doing) {
+            case "add":
+                student_array.push(self);
+                break;
+            case "delete":
+                for (i = 0; i < student_array.length; i++) {
+                    if (self.id === student_array[i]["id"]) {
+                        student_array[i].slice(i,1)
+                    }
+                }
+                break;
+        }
+    }
 }
 
 /**

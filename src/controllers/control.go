@@ -29,19 +29,20 @@ func Inject(tmpl *template.Template) {
 	router.HandleFunc("/api/add", ac.post) //anything that goes to /grades will be handled by ajaxMethods.
 
 	//now we have to set the net/http package to set the gorilla mux router (variable "router") to listen for requests.
-	http.Handle("/", router) //the controllers we have for home.go and getgrades.go have no idea we've used gorilla mux instead of the DefaultServerMux. The home controller doesn't need to take advantage of parameterized routes, we don't have to modify them. But the table controller does.
+	http.Handle("/", router) //the controllers we have for home.go and getgrades.go have no idea we've used gorilla mux instead of the DefaultServerMux. The home controller doesn't need to take advantage of parameterized routes, we don't have to modify them. But the grades controller does.
 
 	//creating a grades controller and register it with the router
-	gradesController := new(gradesController)
+	//gradesController := new(gradesController) //to make this really Go, you can make an interface with the DoStuff() method.
 	//gradesController.template = tmpl.Lookup("index.html")
 	//fmt.Println(gradesController.template)
 	//use this for teachers that want to get single grades:
+	gradesController := new(gradesController)
 	//router.HandleFunc("/grades/{id}", gradesController.ajaxMethods) //the {id} curly braces is how we indicate to gorilla mux that we want to grab this part of the route path and map it to the "id" key in the route map.
-	router.HandleFunc("/api/grades", gradesController.ajaxMethods) //going to populate full student list.
+	router.HandleFunc("/api/grades", gradesController.getGrades) //going to populate full student list.
+	router.HandleFunc("/api/grades/{id}", gradesController.deleteGrade)
 
 
 	http.HandleFunc("/scripts/", javascript)
-
 	http.ListenAndServe(":8080", nil)
 }
 

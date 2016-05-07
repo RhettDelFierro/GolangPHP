@@ -21,6 +21,13 @@ type Student struct {
 	id     bson.ObjectId `bson:"_id,omitempty"`
 }
 
+type DBStudent struct {
+	Name   string	`bson:"name,omitempty"`
+	Course string	`bson:"course,omitempty"`
+	Grade  int	`bson:"grade,omitempty"`
+	Id     bson.ObjectId `bson:"_id,omitempty"`
+}
+
 //type School struct {
 //	Students []Student
 //}
@@ -81,14 +88,15 @@ func GetStudents() ([]Student, error) {
 	c := session.DB("taskdb").C("categories")
 	school := []Student{}
 	iter := c.Find(nil).Iter()
-		result := Student{}
+		result := DBStudent{}
 			for iter.Next(&result) {
-				fmt.Printf(result.name)
-				//result.SetName(result.name)
-				//result.SetCourse(result.course)
-				//result.SetGrade(result.grade)
-				//result.SetId(result.id)
-				school = append(school, result)
+				var student Student
+				fmt.Printf(result.Name)
+				student.SetName(result.Name)
+				student.SetCourse(result.Course)
+				student.SetGrade(result.Grade)
+				student.SetId(result.Id)
+				school = append(school, student)
 			}
 	if err = iter.Close(); err != nil {
 		panic(err)
@@ -103,6 +111,8 @@ func GetStudents() ([]Student, error) {
 
 
 func AddStudents(student *Student) {
+	dbStudent := DBStudent{student.Name(), student.Course(), student.Grade(), student.Id(),}
+
 	session, err := getDBConnection()
 
 	if err != nil {
@@ -119,7 +129,8 @@ func AddStudents(student *Student) {
 
 	//student1 := Student1{"blah", "blah blah", 1, bson.NewObjectId()}
 
-	err = c.Insert(student)
+
+	err = c.Insert(&dbStudent)
 	if err != nil {
 		fmt.Println("error in inserting")
 		panic(err)

@@ -13,7 +13,7 @@ import(
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
 	"encoding/json"
 	"fmt"
-	"strconv"
+	//"strconv"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -22,7 +22,7 @@ type gradesController struct {
 }
 
 type ResponseJSON struct {
-	body string
+	body []byte
 }
 
 func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request){
@@ -68,7 +68,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	}
 
 	//we add the students to our database above and also send it back so the front end/javascript knows we got he request.
-	responseWriter.Write(objectJSON)
+	responseWriter.Write(objectJSON.body)
 }
 
 //just have to look for the id.
@@ -87,7 +87,7 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	if err != nil {
 		responseWriter.WriteHeader(404)
 	} else {
-		responseWriter.Write(objectJSON)
+		responseWriter.Write(objectJSON.body)
 	}
 
 

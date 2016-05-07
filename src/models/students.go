@@ -94,7 +94,7 @@ func DeleteStudents(id bson.ObjectId) bool {
 
 	c := session.DB("taskdb").C("categories")
 
-	if err = c.Remove(bson.M{"_id": id}); err {
+	if err := c.Remove(bson.M{"_id": id}); err != nil {
 		return false
 	} else {
 		return true

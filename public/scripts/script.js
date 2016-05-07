@@ -1,14 +1,27 @@
 /**
  * Define all global variables here
  */
-var average = null;
-var student;
+//var average = null;
+//var student;
 /**
  * student_array - global array to hold student objects
  * @type {Array}
  */
 var student_array = {
-    array: []
+    array: [],
+    updateAverage: function() {
+        calculateAverage(this.array);
+    },
+    calculateAverage: function() {
+        var average = 0;
+        var total_grades = 0;
+        for (var i = 0; i < this.array.length; i++) {
+            total_grades += parseInt(student_array[i].student_grade);
+            average = Math.round(((total_grades) / (i + 1)));
+        }
+        console.log("average = ", average);
+        $('.avgGrade').text(average);
+    }
 };
 
 /**
@@ -21,7 +34,7 @@ var student_array = {
 var find_student_name = $('#studentName');
 var find_student_course = $('#course');
 var find_student_grade = $('#studentGrade');
-//var find_form_inputs = $('.form-control:input');
+var find_form_inputs = $('.form-control:input');
 /**
  * addClicked - Event Handler when user clicks the add button
  */
@@ -52,7 +65,7 @@ function addClicked() {
     student.ajax();
     //addStudentToDom(student);
     //student_array.push(student);
-    addStudentToDom(student);
+    addStudentToDom(student); //*****************GOLANG. Do not add to dom from array here, add from the response to avoid injection attack.
 
     console.log(student_array, student);
     updateData();
@@ -63,14 +76,19 @@ function addClicked() {
 var formObject = {
     student_name: "",
     student_course: "",
-    student_grade: nil,
+    student_grade: 0,
     add: function() {
-        student_name = $('#studentName').val();
-        student_course = $('#course').val();
-        student_grade = $('#studentGrade').val()
+        this.student_name = $('#studentName').val();
+        this.student_course = $('#course').val();
+        this.student_grade = $('#studentGrade').val();
+        cancelClicked();
+        this.ajax()
     },
     ajax: function() {
-        var student = new addStudent(student_name, student_course, student_grade);
+        var student = new AddStudent(this.student_name, this.student_course, this.student_grade);
+        student.ajax();
+        cancelClicked();
+        console.log("may be a problem here:     ", student)
     }
 
 };
@@ -113,34 +131,55 @@ function cancelClicked() {
  *
  * @return undefined
  */
-function addStudent(name, course, grade) {
+function AddStudent(name, course, grade) {
     var self = this;
+
     self.student_name = name,
-        self.course = course,
+        self.student_course = course,
         self.student_grade = grade,
-        self.id;
-    self.row = null;
-    self.delete = function () {
-        student_array.splice(student_array.indexOf(this), 1);
+        self.student_id,
+    //self.delete = function () {
+    //    student_array.splice(student_array.indexOf(this), 1);
+    //};
+    self.setName = function(name){
+        self.student_name = name;
     };
-    self.id = function (id) {
-        self.id = id
+    self.setCourse = function (course) {
+        self.course = course
+    };
+    self.setGrade = function (grade) {
+        self.student_grade = grade;
+    };
+    self.setID = function (id) {
+        self.id = id;
+    };
+    self.name = function(){
+        return self.student_name;
+    };
+    self.course = function () {
+        return self.student_course;
+    };
+    self.grade = function () {
+        return self.student_grade;
+    };
+    self.id = function () {
+        return self.student_id;
     };
     self.ajax = function () {
         $.ajax({
                 dataType: 'json',
                 data: {
                     name: self.student_name,
-                    course: self.course,
+                    course: self.student_course,
                     grade: self.student_grade
                 },
                 method: 'POST',
                 url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
                 success: function (result) {
                     console.log('success!!', result);
-                    if (result.success) {
-                        self.id(result.data.id);
-
+                    if (result) {
+                        self.setID(result.id);
+                        self.arrayFunc("add");
                         console.log('it worked man!');
                     } else {
                         console.log(result.error);
@@ -154,15 +193,57 @@ function addStudent(name, course, grade) {
         switch (doing) {
             case "add":
                 student_array.push(self);
+                self.addToDom();
                 break;
             case "delete":
+                self.ajaxDelete();
                 for (i = 0; i < student_array.length; i++) {
-                    if (self.id === student_array[i]["id"]) {
-                        student_array[i].slice(i,1)
+                    if (self.student_id === student_array[i]["student_id"]) {
+                        student_array[i].splice(i,1)
                     }
                 }
                 break;
         }
+    };
+    self.addToDom = function() {
+        console.log("addToDom");
+        var trow = $('<tr>');
+        var name = $('<td>').text(self.student_name);
+        var course = $('<td>').text(self.student_course);
+        var grade = $('<td>').text(self.student_grade);
+        var button = $('<button>').addClass("btn btn-danger").on('click', function () {
+            //clearAddStudentForm();
+            student_array.updateData();
+            $(this).parent().remove();
+            self.arrayFunc("delete");
+            //need the ajax call also.
+            //student.delete(); //this.delete maybe. -> NO!
+        }).text('Delete');
+        student.row = trow;
+        //.on('click',clearAddStudentForm)
+        $(trow).append(name).append(course).append(grade).append(button);
+        $('tbody').append(trow);
+    };
+    self.ajaxDelete = function() {
+        $.ajax({
+            dataType: 'json',
+            data: {
+                //api_key: "midlWD1sMl",
+                id: self.student_id
+                //maybe take this info throw it into a loop into an array and post that.
+            },
+            method: 'POST',
+            url: "/api/grades/" + self.student_id,
+            success: function (result) {
+                console.log('success', result);
+                if (result.body) {
+                    console.log('everything is fine');
+                } else {
+                    console.log(result.error);
+                }
+
+            }
+        });
     }
 }
 
@@ -176,30 +257,6 @@ function clearAddStudentForm() {
     find_student_grade.val(null);
     console.log('all cleared');
     cancelClicked();
-}
-
-/**
- * calculateAverage - loop through the global student array and calculate average grade and return that value
- * @returns {number}
- */
-function calculateAverage(student_array) {
-    average = 0;
-    var total_grades = 0;
-    for (var i = 0; i < student_array.length; i++) {
-        total_grades += parseInt(student_array[i].student_grade);
-        average = Math.round(((total_grades) / (i + 1)));
-    }
-    console.log("average = ", average);
-    $('.avgGrade').text(average);
-    //to avoid NaN maybe add an if statement here.
-    //once object is deleted from array this will work.
-}
-
-/**
- * updateData - centralized function to update the average and call student list update
- */
-function updateData() {
-    calculateAverage(student_array);
 }
 
 function updateStudentList() {
@@ -227,7 +284,7 @@ function addStudentToDom(student) {
         //clearAddStudentForm();
         updateData();
         $(this).parent().remove();
-        deleteStudent(student);
+        self.deleteStudent(student);
     }).text('Delete');
     student.row = trow;
     //.on('click',clearAddStudentForm)

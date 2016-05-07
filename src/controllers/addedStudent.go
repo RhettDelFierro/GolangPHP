@@ -12,11 +12,17 @@ import (
 	//"fmt"
 	//"os"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
+	"fmt"
 )
 
 //don't think you need a template here, you're not going to be serving the template, the javascript will manipulate the dom.
 type addedController struct {
 	template *template.Template
+}
+
+type JSON struct {
+	Data viewmodels.Student `json:"data"`
 }
 
 //************you still have to serve the template. But I think this is more for Populate than Add. See the getgrades.go controller.
@@ -42,14 +48,15 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	//Expose the fields from data *models.Student otherwise it won't be seen
 	convertedData := converters.StudentsToViewModel(*data)
-
+	studentData := JSON{Data: convertedData}
 	//err := json.NewEncoder(w).Encode(convertedData)
+	fmt.Println("convertedData: ", convertedData)
 	models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(convertedData)
-
-
+	//responseData, err := json.Marshal(convertedData)
+	responseData, err := json.Marshal(studentData)
+	fmt.Println("here is the converted JSON data:", studentData)
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)
 	if err != nil {

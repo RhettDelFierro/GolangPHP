@@ -177,7 +177,7 @@ function AddStudent(name, course, grade) {
                 url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
                 success: function (result) {
                     console.log('success!!', result);
-                    if (result) {
+                    if (result.data) {
                         self.setID(result.id);
                         self.arrayFunc("add");
                         console.log('it worked man!');

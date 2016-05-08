@@ -21,14 +21,6 @@ type gradesController struct {
 	template *template.Template
 }
 
-type JSONDelete struct {
-	Data bool `json:"data"`
-}
-
-type JSONPopulate struct {
-	Data []viewmodels.Student `json:"data"`
-}
-
 func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request){
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
@@ -60,7 +52,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	//models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 	//fmt.Println(vm.Students)
-	school := JSONPopulate{Data: vm.Students}
+	school := JSON{Data: vm.Students}
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(school)
 
@@ -86,13 +78,14 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	//id := bson.ObjectId(idRaw) //id is mainly for delete.
 	deleted := models.DeleteStudents(idRaw)
 	fmt.Println(deleted)
-	deleteStudent := JSONDelete{Data: deleted}
+	deleteStudent := JSON{Data: deleted}
 	fmt.Println("deleteStudent: ", deleteStudent)
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(deleteStudent)
 	if err != nil {
 		fmt.Println("404 error", err)
 		responseWriter.WriteHeader(404)
+		responseWriter.Write(responseData) //will show result.error
 	} else {
 		responseWriter.Write(responseData)
 	}

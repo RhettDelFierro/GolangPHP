@@ -60,7 +60,7 @@ func GetStudents() ([]Student, error) {
 }
 
 
-func AddStudents(student *Student) {
+func AddStudents(student *Student) error {
 	dbStudent := DBStudent{student.Name(), student.Course(), student.Grade(), student.Id(),}
 
 	session, err := getDBConnection()
@@ -79,6 +79,7 @@ func AddStudents(student *Student) {
 	if err != nil {
 		fmt.Println("error in inserting")
 		panic(err)
+		return err
 	}
 
 }

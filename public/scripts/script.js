@@ -16,10 +16,6 @@
 /*
  make variables storing the IDs here
  */
-var find_student_name = $('#studentName');
-var find_student_course = $('#course');
-var find_student_grade = $('#studentGrade');
-var find_form_inputs = $('.form-control:input');
 
 var formObject = {
     student_name: "",
@@ -116,8 +112,8 @@ function AddStudent(name, course, grade) {
                 success: function (result) {
                     console.log('success!!', result);
                     if (result.data) {
-                        console.log("with data:", result.data.Id);
-                        self.setID(result.data.Id);
+                        console.log("with data:", result.data.id);
+                        self.setID(result.data.id);
                         //self.student_id = result.data.Id;
                         self.arrayFunc("add");
                         console.log("here's self name", self.student_name);

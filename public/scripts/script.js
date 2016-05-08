@@ -7,12 +7,11 @@ var formObject = {
         this.student_course = $('#course').val();
         this.student_grade = $('#studentGrade').val();
         cancelClicked();
-        var domElement = new Dom();
         this.ajaxAdd()
     },
     ajaxAdd: function () {
-        var student = new AddStudent(this.student_name, this.student_course, this.student_grade); //also make the DB do this.
-        student.ajax();
+        var student = new AddStudent(); //also make the DB do this.
+        student.ajax(this.student_name, this.student_course, this.student_grade);
         cancelClicked();
         console.log("may be a problem here:     ", student)
     }
@@ -33,15 +32,15 @@ function Dom(name, course, grade) {
         self.arrayFunc("delete");
     }).text('Delete'),
     //.on('click',clearAddStudentForm)
-    self.makeElement = function() { //should be for the table.
-        $(self.trow).append(self.name).append(self.course).append(self.grade).append(button);
-        $('tbody').append(self.trow);
+
+    self.sendToTable = function() {
+        table.makeElement(self);
     }
 }
 
 var table = {
     makeElement: function(domElement) { //should be for the table.
-    $(domElement.trow).append(domeElement.name).append(domeElement.course).append(domeElement.grade).append(domElement.button);
+    $(domElement.trow).append(domElement.name).append(domElement.course).append(domElement.grade).append(domElement.button);
     $('tbody').append(domElement.trow);
 }
 };
@@ -76,7 +75,7 @@ function cancelClicked() {
     $('input').val('');
 }
 
-function AddStudent(name, course, grade) {
+function AddStudent() {
     var self = this;
 
     self.student_name = name,
@@ -110,13 +109,13 @@ function AddStudent(name, course, grade) {
     self.id = function () {
         return self.student_id;
     };
-    self.ajax = function () {
+    self.ajax = function (name, grade, course) {
         $.ajax({
                 dataType: 'json',
                 data: {
-                    name: self.student_name,
-                    course: self.student_course,
-                    grade: self.student_grade
+                    name: name,
+                    course: grade,
+                    grade: course
                 },
                 method: 'POST',
                 url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
@@ -124,7 +123,10 @@ function AddStudent(name, course, grade) {
                     console.log('success!!', result);
                     if (result.data) {
                         console.log("with data:", result.data.Id);
-                        self.setID(result.data.Id);
+                        self.setName(result.data.name);
+                        self.setName(result.data.course);
+                        self.setName(result.data.grade);
+                        self.setID(result.data.id);
                         //self.student_id = result.data.Id;
                         self.arrayFunc("add");
                     } else {
@@ -150,23 +152,7 @@ function AddStudent(name, course, grade) {
 
     };
     self.addToDom = function () { //what if I made the DOM element an object itself?
-        console.log("addToDom");
-        var trow = $('<tr>');
-        var name = $('<td>').text(self.student_name);
-        var course = $('<td>').text(self.student_course);
-        var grade = $('<td>').text(self.student_grade);
-        var button = $('<button>').addClass("btn btn-danger").attr("id", self.id()).on('click', function () {
-            self.ajaxDelete();
-            $(this).parent().remove();
-            self.arrayFunc("delete");
-            // var deleteDOM = $(this).parent().remove(); //closure time?
-            //
-            //need the ajax call also.
-            //student.delete(); //this.delete maybe. -> NO!
-        }).text('Delete');
-        //.on('click',clearAddStudentForm)
-        $(trow).append(name).append(course).append(grade).append(button);
-        $('tbody').append(trow);
+        new Dom(self.name(), self.course(), self.grade(), self.id())
     };
 
     self.ajaxDelete = function () {

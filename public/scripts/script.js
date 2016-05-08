@@ -20,29 +20,35 @@ var formObject = {
 //maybe really have a table object instead of giving the populate() method all to the form.
 //make the student DOM have a method that tell the table object to do something to itself.
 
-function Dom(name, course, grade) {
+//dom element constructor.
+function Dom(name, course, grade, id) {
     var self = this;
     self.trow = $('<tr>');
     self.name = $('<td>').text(name);
     self.course = $('<td>').text(course);
     self.grade = $('<td>').text(grade);
-    self.button = $('<button>').addClass("btn btn-danger").attr("id", self.id()).on('click', function () {
+    self.button = $('<button>').addClass("btn btn-danger").attr("id", id).on('click', function () {
         self.ajaxDelete();
         $(this).parent().remove();
         self.arrayFunc("delete");
     }).text('Delete'),
-    //.on('click',clearAddStudentForm)
+        //.on('click',clearAddStudentForm)
 
-    self.sendToTable = function() {
-        table.makeElement(self);
-    }
+        self.sendToTable = function () {
+            table.makeElement(self);
+        };
 }
 
 var table = {
-    makeElement: function(domElement) { //should be for the table.
-    $(domElement.trow).append(domElement.name).append(domElement.course).append(domElement.grade).append(domElement.button);
-    $('tbody').append(domElement.trow);
-}
+    makeElement: function (domElement) { //should be for the table.
+        $(domElement.trow).append(domElement.name).append(domElement.course).append(domElement.grade).append(domElement.button);
+        $('tbody').append(domElement.trow);
+        //this.array.push(domElement)
+    },
+    deleteElement: function(id) {
+        $("#" + id).parent().remove();
+        //maybe will calll student to delete itself too?
+    }
 };
 
 var student_collection = {
@@ -63,6 +69,7 @@ var student_collection = {
     deleteSelf: function (id) {
         for (i = 0; i < this.array.length; i++) {
             if (id === this.array[i].id()) {
+                table.deleteElement(id);
                 this.array.splice(i, 1)
             }
 
@@ -78,16 +85,16 @@ function cancelClicked() {
 function AddStudent() {
     var self = this;
 
-    self.student_name = name,
-        self.student_course = course,
-        self.student_grade = grade,
-        self.student_id,
-        //self.delete = function () {
-        //    student_array.splice(student_array.indexOf(this), 1);
-        //};
-        self.setName = function (name) {
-            self.student_name = name;
-        };
+    self.student_name = "";
+    self.student_course = "";
+    self.student_grade = 0;
+    self.student_id = "";
+    //self.delete = function () {
+    //    student_array.splice(student_array.indexOf(this), 1);
+    //};
+    self.setName = function (name) {
+        self.student_name = name;
+    };
     self.setCourse = function (course) {
         self.course = course
     };
@@ -122,7 +129,6 @@ function AddStudent() {
                 success: function (result) {
                     console.log('success!!', result);
                     if (result.data) {
-                        console.log("with data:", result.data.Id);
                         self.setName(result.data.name);
                         self.setName(result.data.course);
                         self.setName(result.data.grade);
@@ -152,7 +158,8 @@ function AddStudent() {
 
     };
     self.addToDom = function () { //what if I made the DOM element an object itself?
-        new Dom(self.name(), self.course(), self.grade(), self.id())
+        var element = new Dom(self.name(), self.course(), self.grade(), self.id());
+        element.sendToTable();
     };
 
     self.ajaxDelete = function () {

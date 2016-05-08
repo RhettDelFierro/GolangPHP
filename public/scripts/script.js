@@ -10,19 +10,20 @@ var formObject = {
         this.ajaxAdd()
     },
     ajaxAdd: function () {
-        var student = new AddStudent(); //also make the DB do this.
-        var promise = new Promise(function(resolve, reject){
-            var check = student.ajax(this.student_name, this.student_course, this.student_grade);
-            if (check) {
-                resolve(check);
-            }
-            else {
-                reject();
-            }
+        var self = this;
+         //also make the DB do this.
+        var student = new AddStudent();
+        var promise = new Promise(function(resolve){
+                resolve(student.ajax(self.student_name, self.student_course, self.student_grade));
+
         });
-        promise.then(student.arrayFunc(check));
+        promise.then(function (result){
+            student.arrayFunc(result);
+        }, function (result){
+            console.log(result);
+        });
         cancelClicked();
-        console.log("may be a problem here:     ", student)
+        //console.log("may be a problem here:     ", student)
     }
 };
 
@@ -50,12 +51,12 @@ function Dom(name, course, grade, id) {
 
 var table = {
     makeElement: function (domElement) { //should be for the table.
+        console.log("have the table data");
         $(domElement.trow).append(domElement.name).append(domElement.course).append(domElement.grade).append(domElement.button);
         $('tbody').append(domElement.trow);
         //this.array.push(domElement)
     },
     deleteElement: function(id) {
-        var promise =
         $("#" + id).parent().remove();
         //maybe will call student to delete itself too?
     }
@@ -150,9 +151,10 @@ function AddStudent() {
                         self.setID(result.data.id);
                         //self.student_id = result.data.Id;
                         //self.arrayFunc("add");
-                        return "add"
+                        return "add";
                     } else {
                         console.log(result.error);
+                        return false;
                     }
                 }
 

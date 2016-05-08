@@ -11,10 +11,9 @@ var formObject = {
     },
     ajaxAdd: function () {
         var self = this;
-         //also make the DB do this.
+        //also make the DB do this.
         var student = new AddStudent();
         student.ajax(self.student_name, self.student_course, self.student_grade);
-
         cancelClicked();
         //console.log("may be a problem here:     ", student)
     }
@@ -31,15 +30,15 @@ function Dom(name, course, grade, id) {
     self.course = $('<td>').text(course);
     self.grade = $('<td>').text(grade);
     self.button = $('<button>').addClass("btn btn-danger").attr("id", id).on('click', function () {
-        student_collection.deleteSelf(this.attr("id"));
-       // $(this).parent().remove();
+        student_collection.deleteSelf($(this).attr("id"));
+        // $(this).parent().remove();
         //self.arrayFunc("delete");
     }).text('Delete');
-        //.on('click',clearAddStudentForm)
+    //.on('click',clearAddStudentForm)
 
-        self.sendToTable = function () {
-            table.makeElement(self);
-        };
+    self.sendToTable = function () {
+        table.makeElement(self);
+    };
 }
 
 var table = {
@@ -49,7 +48,7 @@ var table = {
         $('tbody').append(domElement.trow);
         //this.array.push(domElement)
     },
-    deleteElement: function(id) {
+    deleteElement: function (id) {
         $("#" + id).parent().remove();
         //maybe will call student to delete itself too?
     }
@@ -167,7 +166,6 @@ function AddStudent() {
 
     };
     self.addToDom = function () { //what if I made the DOM element an object itself?
-        console.log("self.course() isn't a funciton my ass:", self.course());
         var element = new Dom(self.name(), self.course(), self.grade(), self.id());
         element.sendToTable();
     };

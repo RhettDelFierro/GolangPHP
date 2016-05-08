@@ -13,15 +13,8 @@ var formObject = {
         var self = this;
          //also make the DB do this.
         var student = new AddStudent();
-        var promise = new Promise(function(resolve){
-                resolve(student.ajax(self.student_name, self.student_course, self.student_grade));
+        student.ajax(self.student_name, self.student_course, self.student_grade);
 
-        });
-        promise.then(function (result){
-            student.arrayFunc(result);
-        }, function (result){
-            console.log(result);
-        });
         cancelClicked();
         //console.log("may be a problem here:     ", student)
     }
@@ -41,7 +34,7 @@ function Dom(name, course, grade, id) {
         student_collection.deleteSelf(this.attr("id"));
        // $(this).parent().remove();
         //self.arrayFunc("delete");
-    }).text('Delete'),
+    }).text('Delete');
         //.on('click',clearAddStudentForm)
 
         self.sendToTable = function () {
@@ -81,10 +74,8 @@ var student_collection = {
         var self = this;
         for (i = 0; i < this.array.length; i++) {
             if (id === this.array[i].id()) {
-                var promise = new Promise(function(resolve, reject) {
-                    self.array[i].ajaxDelete();
-                });
-                promise.then(table.deleteElement(id));
+                self.array[i].ajaxDelete();
+                table.deleteElement(id);
                 this.array.splice(i, 1);
             }
 
@@ -112,7 +103,7 @@ function AddStudent() {
         self.student_name = name;
     };
     self.setCourse = function (course) {
-        self.course = course
+        self.student_course = course
     };
     self.setGrade = function (grade) {
         self.student_grade = grade;
@@ -132,13 +123,13 @@ function AddStudent() {
     self.id = function () {
         return self.student_id;
     };
-    self.ajax = function (name, grade, course) {
+    self.ajax = function (name, course, grade) {
         $.ajax({
                 dataType: 'json',
                 data: {
                     name: name,
-                    course: grade,
-                    grade: course
+                    course: course,
+                    grade: grade
                 },
                 method: 'POST',
                 url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
@@ -146,12 +137,12 @@ function AddStudent() {
                     console.log('success!!', result);
                     if (result.data) {
                         self.setName(result.data.name);
-                        self.setName(result.data.course);
-                        self.setName(result.data.grade);
+                        self.setCourse(result.data.course);
+                        self.setGrade(result.data.grade);
                         self.setID(result.data.id);
                         //self.student_id = result.data.Id;
-                        //self.arrayFunc("add");
-                        return "add";
+                        console.log("what is the student at this point:", self);
+                        self.arrayFunc("add");
                     } else {
                         console.log(result.error);
                         return false;
@@ -176,6 +167,7 @@ function AddStudent() {
 
     };
     self.addToDom = function () { //what if I made the DOM element an object itself?
+        console.log("self.course() isn't a funciton my ass:", self.course());
         var element = new Dom(self.name(), self.course(), self.grade(), self.id());
         element.sendToTable();
     };

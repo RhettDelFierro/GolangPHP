@@ -25,6 +25,10 @@ type JSONDelete struct {
 	Data bool `json:"data"`
 }
 
+type JSONPopulate struct {
+	Data []viewmodels.Student `json:"data"`
+}
+
 func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request){
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
@@ -56,9 +60,9 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	//models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 	//fmt.Println(vm.Students)
-
+	school := JSONPopulate{Data: vm.Students}
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(vm.Students)
+	responseData, err := json.Marshal(school)
 
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)

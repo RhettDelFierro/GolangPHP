@@ -13,16 +13,16 @@ var formObject = {
         var self = this;
         //also make the DB do this.
         var student = new AddStudent();
-        student.ajax(self.student_name, self.student_course, self.student_grade);
+        student.ajaxAdd(self.student_name, self.student_course, self.student_grade);
         cancelClicked();
         //console.log("may be a problem here:     ", student)
+    },
+    populate: function () {
+        populate();
     }
 };
 
-//maybe really have a table object instead of giving the populate() method all to the form.
-//make the student DOM have a method that tell the table object to do something to itself.
 
-//dom element constructor.
 function Dom(name, course, grade, id) {
     var self = this;
     self.trow = $('<tr>');
@@ -80,7 +80,7 @@ var student_collection = {
 
         }
         this.calculateAverage()
-    }
+    },
 
 };
 
@@ -122,7 +122,7 @@ function AddStudent() {
     self.id = function () {
         return self.student_id;
     };
-    self.ajax = function (name, course, grade) {
+    self.ajaxAdd = function (name, course, grade) {
         $.ajax({
                 dataType: 'json',
                 data: {
@@ -156,7 +156,7 @@ function AddStudent() {
             case "add":
                 student_collection.handleArray(self);
                 self.addToDom();
-                console.log("student_colleciton:", student_collection.array);
+                //console.log("student_colleciton:", student_collection.array);
                 break;
             case "delete":
                 console.log("ajaxDelete() checked out, onto student_collection");
@@ -203,32 +203,25 @@ function populate() {
             url: '/api/grades',
             success: function (result) {
                 console.log('success', result);
-
                 console.log(result);
-                var global_result = result;
-                if (global_result.success) {
-                    for (i = 0; i < global_result.data.length; i++) {
-                        var course = global_result.data[i].course;
-                        var grade = global_result.data[i].grade;
-                        var name = global_result.data[i].name;
-                        var id = global_result.data[i].ID;
-                        var student = new addStudent(name, course, grade, id);
-                        addStudentToDom(student);
-                        student_array.push(student);
+                if (result.data) {
+                    for (i = 0; i < result.data.length; i++) {
+                        var student = new AddStudent();
+                        student.setName(result.data[i].name);
+                        student.setCourse(result.data[i].course);
+                        student.setGrade(result.data[i].grade);
+                        student.setID(result.data[i].id);
+                        student.arrayFunc("add");
                     }
-                    console.log('student array before updateData(): ', student_array);
-                    student_array.calculateAverage()
+                    student_collection.calculateAverage()
                 } else {
-                    console.log(global_result.error);
+                    console.log(result.error);
                 }
             }
         }
     )
 }
 
-/**
- * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
- */
 function reset() {
     student_array = [];
     student = {};
@@ -250,6 +243,3 @@ $(document).ready(function () {
         sortByGrade();
     });
 });
-/**
- * Created by Rhett on 11/9/2015.
- */

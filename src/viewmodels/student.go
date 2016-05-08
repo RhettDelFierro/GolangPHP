@@ -5,10 +5,10 @@ import (
 )
 
 type Student struct {
-	Name   string
-	Course string
-	Grade  int
-	Id     bson.ObjectId
+	Name   string	`json:"name"`
+	Course string	`json:"course"`
+	Grade  int	`json:"grade"`
+	Id     bson.ObjectId `json:"id"`
 }
 
 type School struct {

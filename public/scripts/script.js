@@ -1,26 +1,3 @@
-/**
- * Define all global variables here
- */
-//var average = null;
-//var student;
-/**
- * student_array - global array to hold student objects
- * @type {Array}
- */
-
-
-/**
- * inputIds - id's of the elements that are used to add students
- * @type {string[]}
- */
-/*
- make variables storing the IDs here
- */
-var find_student_name = $('#studentName');
-var find_student_course = $('#course');
-var find_student_grade = $('#studentGrade');
-var find_form_inputs = $('.form-control:input');
-
 var formObject = {
     student_name: "",
     student_course: "",
@@ -30,15 +7,40 @@ var formObject = {
         this.student_course = $('#course').val();
         this.student_grade = $('#studentGrade').val();
         cancelClicked();
-        this.ajax()
+        var domElement = new Dom();
+        this.ajaxAdd()
     },
-    ajax: function () {
-        var student = new AddStudent(this.student_name, this.student_course, this.student_grade);
+    ajaxAdd: function () {
+        var student = new AddStudent(this.student_name, this.student_course, this.student_grade); //also make the DB do this.
         student.ajax();
         cancelClicked();
         console.log("may be a problem here:     ", student)
     }
 };
+
+//maybe really have a table object instead of giving the populate() method all to the form.
+//make the student DOM have a method that tell the table object to do something to itself.
+
+function Dom(name, course, grade) {
+    var trow = $('<tr>');
+    var name = $('<td>').text(name);
+    var course = $('<td>').text(course);
+    var grade = $('<td>').text(grade);
+    var button = $('<button>').addClass("btn btn-danger").attr("id", self.id()).on('click', function () {
+        self.ajaxDelete();
+        $(this).parent().remove();
+        self.arrayFunc("delete");
+        // var deleteDOM = $(this).parent().remove(); //closure time?
+        //
+        //need the ajax call also.
+        //student.delete(); //this.delete maybe. -> NO!
+    }).text('Delete');
+    //.on('click',clearAddStudentForm)
+    $(trow).append(name).append(course).append(grade).append(button);
+    $('tbody').append(trow);
+}
+
+
 
 var student_collection = {
     array: [],
@@ -57,11 +59,12 @@ var student_collection = {
     },
     deleteSelf: function (id) {
         for (i = 0; i < this.array.length; i++) {
-            if (id === student_array[i].id()) {
-                this.student_array[i].splice(i, 1)
+            if (id === this.array[i].id()) {
+                this.array.splice(i, 1)
             }
 
         }
+        this.calculateAverage()
     }
 };
 
@@ -120,9 +123,6 @@ function AddStudent(name, course, grade) {
                         self.setID(result.data.Id);
                         //self.student_id = result.data.Id;
                         self.arrayFunc("add");
-                        console.log("here's self name", self.student_name);
-                        console.log("here's self.student_id:", self.student_id);
-                        console.log('it worked man!');
                     } else {
                         console.log(result.error);
                     }
@@ -131,42 +131,32 @@ function AddStudent(name, course, grade) {
             }
         )
     };
-    self.arrayFunc = function (doing, dom) {
+    self.arrayFunc = function (doing) {
         switch (doing) {
             case "add":
                 student_collection.handleArray(self);
                 self.addToDom();
+                console.log("student_colleciton:", student_collection.array);
                 break;
             case "delete":
-                console.log("arrayFunc check", dom);
-                //var deleteDOM = this;
-                $(dom).parent().remove();
-
                 console.log("ajaxDelete() checked out, onto student_collection");
                 student_collection.deleteSelf(self.id());
                 break;
         }
 
     };
-    self.addToDom = function () {
+    self.addToDom = function () { //what if I made the DOM element an object itself?
         console.log("addToDom");
         var trow = $('<tr>');
         var name = $('<td>').text(self.student_name);
         var course = $('<td>').text(self.student_course);
         var grade = $('<td>').text(self.student_grade);
-        var button = $('<button>').addClass("btn btn-danger").on('click', function () {
-            //clearAddStudentForm();
-            var deleteDOM = this;
-            console.log("here is the translated DOM", deleteDOM);
-            if (self.ajaxDelete()) {
-                self.arrayFunc("delete", deleteDOM)
-            }
+        var button = $('<button>').addClass("btn btn-danger").attr("id", self.id()).on('click', function () {
+            self.ajaxDelete();
+            $(this).parent().remove();
+            self.arrayFunc("delete");
             // var deleteDOM = $(this).parent().remove(); //closure time?
-            if (self.arrayFunc("delete")) {
-                console.log("got true for arrayFunc");
-                student_collection.calculateAverage()
-            } //***************Golang. I don't want to delete the DOM unless I know the database delete succeeded.
-
+            //
             //need the ajax call also.
             //student.delete(); //this.delete maybe. -> NO!
         }).text('Delete');
@@ -174,6 +164,7 @@ function AddStudent(name, course, grade) {
         $(trow).append(name).append(course).append(grade).append(button);
         $('tbody').append(trow);
     };
+
     self.ajaxDelete = function () {
         $.ajax({
             dataType: 'json',
@@ -197,29 +188,6 @@ function AddStudent(name, course, grade) {
             }
         });
     };
-}
-
-
-function deleteStudent(student) {
-    $.ajax({
-        dataType: 'json',
-        data: {
-            //api_key: "midlWD1sMl",
-            student_id: student.id
-            //maybe take this info throw it into a loop into an array and post that.
-        },
-        method: 'POST',
-        url: 'delete.php',
-        success: function (result) {
-            console.log('success', result);
-            if (result.success) {
-                console.log('everything is fine');
-            } else {
-                console.log(result.error);
-            }
-
-        }
-    });
 }
 
 function populate() {

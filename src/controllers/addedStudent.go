@@ -32,6 +32,8 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
+	studentData := JSON{Success: false}
+
 	//go to the students model.
 	data := new(models.Student)
 	//POST
@@ -50,25 +52,35 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	//Expose the fields from data *models.Student otherwise it won't be seen
 	convertedData := converters.StudentsToViewModel(*data)
-	studentData := JSON{Data: convertedData}
+	//if (convertedData) {
+	//	studentData.Success = true
+	//	studentData.Data = convertedData
+	//} else {
+	//	studentData.Error = append(studentData.Error, "database error")
+	//}
 	//err := json.NewEncoder(w).Encode(convertedData)
 	fmt.Println("convertedData: ", convertedData)
 	err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
-	if err != nil {
-		studentData.Error = append(studentData.Error, err)
+	if (!err) {
+		studentData.Success = false
+		studentData.Error = append(studentData.Error, err) //maybe just append to error array "student not added"
+		//responseWriter.Write
+	} else {
+		studentData.Success = true
 	}
+
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(studentData)
 	fmt.Println("here is the converted JSON data:", studentData)
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)
 	if err != nil {
-		responseWriter.WriteHeader(404)
-		responseWriter.Write(responseData) //write the result.error on front end.
+		responseWriter.WriteHeader(404) //result.error on the front end.
+		responseWriter.Write(err) //write the result.error on front end.
 	}
 
 	//we add the students to our database above and also send it back so the front end/javascript knows we got he request.
-	responseWriter.Write(responseData)
+	responseWriter.Write(responseData) //"result" on the front end. Write the errors also, do something with them on the front end. The
 
 }
 

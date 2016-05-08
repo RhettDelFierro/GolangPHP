@@ -73,15 +73,13 @@ func AddStudents(student *Student) error {
 
 	c := session.DB("taskdb").C("categories")
 
-	fmt.Println("before student is added:", student)
-
 	err = c.Insert(&dbStudent)
 	if err != nil {
 		fmt.Println("error in inserting")
 		panic(err)
-		return err
 	}
 
+	return err
 }
 
 func DeleteStudents(id string) bool {

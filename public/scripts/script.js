@@ -11,7 +11,16 @@ var formObject = {
     },
     ajaxAdd: function () {
         var student = new AddStudent(); //also make the DB do this.
-        student.ajax(this.student_name, this.student_course, this.student_grade);
+        var promise = new Promise(function(resolve, reject){
+            var check = student.ajax(this.student_name, this.student_course, this.student_grade);
+            if (check) {
+                resolve(check);
+            }
+            else {
+                reject();
+            }
+        });
+        promise.then(student.arrayFunc(check));
         cancelClicked();
         console.log("may be a problem here:     ", student)
     }
@@ -28,9 +37,9 @@ function Dom(name, course, grade, id) {
     self.course = $('<td>').text(course);
     self.grade = $('<td>').text(grade);
     self.button = $('<button>').addClass("btn btn-danger").attr("id", id).on('click', function () {
-        self.ajaxDelete();
-        $(this).parent().remove();
-        self.arrayFunc("delete");
+        student_collection.deleteSelf(this.attr("id"));
+       // $(this).parent().remove();
+        //self.arrayFunc("delete");
     }).text('Delete'),
         //.on('click',clearAddStudentForm)
 
@@ -46,8 +55,9 @@ var table = {
         //this.array.push(domElement)
     },
     deleteElement: function(id) {
+        var promise =
         $("#" + id).parent().remove();
-        //maybe will calll student to delete itself too?
+        //maybe will call student to delete itself too?
     }
 };
 
@@ -67,15 +77,20 @@ var student_collection = {
         this.array.push(added);
     },
     deleteSelf: function (id) {
+        var self = this;
         for (i = 0; i < this.array.length; i++) {
             if (id === this.array[i].id()) {
-                table.deleteElement(id);
-                this.array.splice(i, 1)
+                var promise = new Promise(function(resolve, reject) {
+                    self.array[i].ajaxDelete();
+                });
+                promise.then(table.deleteElement(id));
+                this.array.splice(i, 1);
             }
 
         }
         this.calculateAverage()
     }
+
 };
 
 function cancelClicked() {
@@ -134,7 +149,8 @@ function AddStudent() {
                         self.setName(result.data.grade);
                         self.setID(result.data.id);
                         //self.student_id = result.data.Id;
-                        self.arrayFunc("add");
+                        //self.arrayFunc("add");
+                        return "add"
                     } else {
                         console.log(result.error);
                     }
@@ -176,10 +192,8 @@ function AddStudent() {
                 console.log('success', result);
                 if (result.data) {
                     console.log('everything is fine');
-                    return result.data;
                 } else {
                     console.log(result.error);
-                    return false
                 }
 
             }

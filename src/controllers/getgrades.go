@@ -14,11 +14,15 @@ import(
 	"encoding/json"
 	"fmt"
 	//"strconv"
-	"gopkg.in/mgo.v2/bson"
+	//"gopkg.in/mgo.v2/bson"
 )
 
 type gradesController struct {
 	template *template.Template
+}
+
+type JSONDelete struct {
+	Data bool `json:"data"`
 }
 
 func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request){
@@ -70,15 +74,20 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
+	fmt.Println("we got to delete")
 
 	vars := mux.Vars(req)
 	idRaw := vars["id"]
-	id := bson.ObjectId(idRaw) //id is mainly for delete.
-	success := models.DeleteStudents(id)
-
+	fmt.Println("here's idRaw:", idRaw)
+	//id := bson.ObjectId(idRaw) //id is mainly for delete.
+	deleted := models.DeleteStudents(idRaw)
+	fmt.Println(deleted)
+	deleteStudent := JSONDelete{Data: deleted}
+	fmt.Println("deleteStudent: ", deleteStudent)
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(success)
+	responseData, err := json.Marshal(deleteStudent)
 	if err != nil {
+		fmt.Println("404 error", err)
 		responseWriter.WriteHeader(404)
 	} else {
 		responseWriter.Write(responseData)

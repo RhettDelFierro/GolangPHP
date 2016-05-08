@@ -21,7 +21,7 @@ type addedController struct {
 	template *template.Template
 }
 
-type JSON struct {
+type JSONAdd struct {
 	Data viewmodels.Student `json:"data"`
 }
 
@@ -48,7 +48,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	//Expose the fields from data *models.Student otherwise it won't be seen
 	convertedData := converters.StudentsToViewModel(*data)
-	studentData := JSON{Data: convertedData}
+	studentData := JSONAdd{Data: convertedData}
 	//err := json.NewEncoder(w).Encode(convertedData)
 	fmt.Println("convertedData: ", convertedData)
 	models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.

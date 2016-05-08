@@ -39,7 +39,7 @@ func Inject(tmpl *template.Template) {
 	gradesController := new(gradesController)
 	//router.HandleFunc("/grades/{id}", gradesController.ajaxMethods) //the {id} curly braces is how we indicate to gorilla mux that we want to grab this part of the route path and map it to the "id" key in the route map.
 	router.HandleFunc("/api/grades", gradesController.getGrades) //going to populate full student list.
-	router.HandleFunc("/api/grades/{id}", gradesController.deleteGrade)
+	router.HandleFunc("/api/delete/{id}", gradesController.deleteGrade)
 
 
 	http.HandleFunc("/scripts/", javascript)

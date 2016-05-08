@@ -18,7 +18,7 @@ type DBStudent struct {
 	Name   string	`bson:"name,omitempty"`
 	Course string	`bson:"course,omitempty"`
 	Grade  int	`bson:"grade,omitempty"`
-	Id     bson.ObjectId `bson:"_id,omitempty"`
+	Id     bson.ObjectId `bson:"_id,omitempty" json:"id"`
 }
 
 //getter
@@ -83,7 +83,7 @@ func AddStudents(student *Student) {
 
 }
 
-func DeleteStudents(id bson.ObjectId) bool {
+func DeleteStudents(id string) bool {
 	session, err := getDBConnection()
 
 	if err != nil {
@@ -94,7 +94,8 @@ func DeleteStudents(id bson.ObjectId) bool {
 
 	c := session.DB("taskdb").C("categories")
 
-	if err := c.Remove(bson.M{"_id": id}); err != nil {
+	if err := c.Remove(bson.M{"_id": bson.ObjectIdHex(id)}); err != nil {
+		fmt.Println(err);
 		return false
 	} else {
 		return true

@@ -22,25 +22,29 @@ var formObject = {
 //make the student DOM have a method that tell the table object to do something to itself.
 
 function Dom(name, course, grade) {
-    var trow = $('<tr>');
-    var name = $('<td>').text(name);
-    var course = $('<td>').text(course);
-    var grade = $('<td>').text(grade);
-    var button = $('<button>').addClass("btn btn-danger").attr("id", self.id()).on('click', function () {
+    var self = this;
+    self.trow = $('<tr>');
+    self.name = $('<td>').text(name);
+    self.course = $('<td>').text(course);
+    self.grade = $('<td>').text(grade);
+    self.button = $('<button>').addClass("btn btn-danger").attr("id", self.id()).on('click', function () {
         self.ajaxDelete();
         $(this).parent().remove();
         self.arrayFunc("delete");
-        // var deleteDOM = $(this).parent().remove(); //closure time?
-        //
-        //need the ajax call also.
-        //student.delete(); //this.delete maybe. -> NO!
-    }).text('Delete');
+    }).text('Delete'),
     //.on('click',clearAddStudentForm)
-    $(trow).append(name).append(course).append(grade).append(button);
-    $('tbody').append(trow);
+    self.makeElement = function() { //should be for the table.
+        $(self.trow).append(self.name).append(self.course).append(self.grade).append(button);
+        $('tbody').append(self.trow);
+    }
 }
 
-
+var table = {
+    makeElement: function(domElement) { //should be for the table.
+    $(domElement.trow).append(domeElement.name).append(domeElement.course).append(domeElement.grade).append(domElement.button);
+    $('tbody').append(domElement.trow);
+}
+};
 
 var student_collection = {
     array: [],

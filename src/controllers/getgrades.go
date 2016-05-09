@@ -4,17 +4,11 @@ import(
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"html/template"
-	//"strconv"
-	//"log"
-	//"fmt"
 	"github.com/gorilla/mux"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
-	//"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
 	"encoding/json"
 	"fmt"
-	//"strconv"
-	//"gopkg.in/mgo.v2/bson"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/helper"
 )
 
@@ -42,7 +36,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	studentsVM := []viewmodels.Student{} //slice
 
 	for _, student := range students {
-		studentsVM = append(studentsVM, helper.StudentsToViewModel(student)) //have an array of hard coded Students
+		studentsVM = append(studentsVM, helper.StudentsToViewModel(student))
 	}
 
 	sd.Success = true
@@ -50,15 +44,10 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(sd)
 
-	//not executing a template.
-	//this.template.Execute(responseWriter, responseData)
-
 	if err != nil {
 		responseWriter.WriteHeader(404)
 	}
 
-	//we add the students to our database above and
-	//also send it back so the front end/javascript knows we got he request.
 	responseWriter.Write(responseData)
 }
 
@@ -86,7 +75,7 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	if err != nil {
 		fmt.Println("404 error", err)
 		responseWriter.WriteHeader(404)
-		responseWriter.Write(responseData) //will show result.error
+		responseWriter.Write(responseData)
 	} else {
 		responseWriter.Write(responseData)
 	}

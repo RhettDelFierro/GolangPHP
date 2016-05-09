@@ -5,7 +5,7 @@ import (
 )
 
 type DataHandler interface {
-	Make(name string,course string, grade int)
+	ErrorMaker(name string,course string, grade int, auth_token string)
 }
 
 func StudentsToViewModel(category models.Student) viewmodels.Student {
@@ -22,4 +22,8 @@ func StudentsToViewModel(category models.Student) viewmodels.Student {
 //func DataInterfaceMapFunction(h DataHandler, name string, course string, grade int) bool {
 //	h.Make(name, course, grade) //is it returning a struct or handler?
 //	return true
+//}
+
+//func TakeCareOfPOST(){
+//
 //}

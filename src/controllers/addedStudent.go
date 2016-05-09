@@ -3,7 +3,6 @@ package controllers
 import (
 	"html/template"
 	"net/http"
-	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"encoding/json"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
@@ -26,15 +25,23 @@ type JSON struct {
 }
 
 
+//Post adds the student.
 //************you still have to serve the template. But I think this is more for Populate than Add. See the getgrades.go controller.
 func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
+	//*******************maybe you can start using Go routines for all here.***************
 
+	postMap := map[string]string{
+		"name": req.FormValue("name"),
+		"course": req.FormValue("course"),
+		"grade": req.FormValue("grade"),
+	}
 
 	newStudent := &helper.NewStudent{}
-	newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
+	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
+	newStudent.ErrorMaker(postMap)
 	fmt.Println(newStudent)
 
 	studentData := JSON{Success: false}

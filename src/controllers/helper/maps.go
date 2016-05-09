@@ -46,10 +46,15 @@ func (this *NewStudent) Make(name string,course string, grade string){ //pass in
 //	},
 //}
 
-func (this* NewStudent) ErrorMaker(name string,course string, grade string, auth_token string) {
+func (this* NewStudent) ErrorMaker(postData map[string]string) {
+
+	//safeEntry is now a struct. But no regex texts yet. Injection has been prevented.
+	var safeEntry = Convert(postData);
+	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
+	TestValidEntry()
 
 	this.Name = map[string]string{
-		"value": name,
+		"value": safeName.Name,
 		"invalid": "Invalid name, please use only letters and numbers",
 		"error": "There was an error adding student to database.",
 	}

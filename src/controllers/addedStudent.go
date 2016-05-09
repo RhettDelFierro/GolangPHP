@@ -14,6 +14,7 @@ import (
 	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"fmt"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/helper"
+	"github.com/shijuvar/go-web/taskmanager/data"
 )
 
 //don't think you need a template here, you're not going to be serving the template, the javascript will manipulate the dom.
@@ -34,6 +35,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	defer responseWriter.Close()
 
 	studentData := JSON{Success: false}
+	sd := &studentData
 
 	//go to the students model.
 	data := new(models.Student)
@@ -57,16 +59,16 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("convertedData: ", convertedData)
 	err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 	if err != nil {
-		studentData.Success = false
-		studentData.Error = append(studentData.Error, err.Error()) //maybe just append to error array "student not added"
+		sd.Success = false
+		sd.Error = append(sd.Error, err.Error()) //maybe just append to error array "student not added"
 		//responseWriter.Write
 	} else {
-		studentData.Success = true
-		studentData.Data = convertedData
+		sd.Success = true
+		sd.Data = convertedData
 	}
 
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(studentData)
+	responseData, err := json.Marshal(sd)
 	//fmt.Println("here is the converted JSON data:", studentData)
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)

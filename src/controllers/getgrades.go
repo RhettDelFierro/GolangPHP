@@ -30,11 +30,14 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 		Success: false,
 	}
 
+	sd := &studentData
+
 	//getting students from database.
-	students, err := models.GetStudents() //slice of Student (not empty)
+	//slice of Student (not empty)
+	students, err := models.GetStudents()
 	if err != nil {
 		//panic(err)
-		studentData.Error = append(studentData.Error, err.Error())
+		sd.Error = append(studentData.Error, err.Error())
 	}
 	studentsVM := []viewmodels.Student{} //slice
 
@@ -42,32 +45,20 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 		studentsVM = append(studentsVM, helper.StudentsToViewModel(student)) //have an array of hard coded Students
 	}
 
-	//vm := viewmodels.GetStudents()
-	//vm.Students = studentsVM //now we have a view model Struct with field Students that is an array of viewmodel.Students Schools.Students. Ready to execute/inject the view with these, as seen below. May now have to work the HTML injecting to use range.
-
-	//responseWriter.Header().Add("Content Type", "text/html")
-
-	//Create
-	//this.template.Execute(responseWriter, vm)
-
-	//Expose the fields from data *models.Student
-	//convertedData := converters.StudentsToViewModel(*data)
-
-	//err := json.NewEncoder(w).Encode(convertedData)
-
-	//models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
-	//fmt.Println(vm.Students)
-	studentData = JSON{Success: true, Data: studentsVM}
+	sd.Success = true
+	sd.Data = studentsVM
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(studentData)
+	responseData, err := json.Marshal(sd)
 
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)
+
 	if err != nil {
 		responseWriter.WriteHeader(404)
 	}
 
-	//we add the students to our database above and also send it back so the front end/javascript knows we got he request.
+	//we add the students to our database above and
+	//also send it back so the front end/javascript knows we got he request.
 	responseWriter.Write(responseData)
 }
 
@@ -77,16 +68,21 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	defer responseWriter.Close()
 	fmt.Println("we got to delete")
 
+	studentData := JSON{Success: false}
+	sd := &studentData
+
 	vars := mux.Vars(req)
 	idRaw := vars["id"]
-	fmt.Println("here's idRaw:", idRaw)
-	//id := bson.ObjectId(idRaw) //id is mainly for delete.
+
 	deleted := models.DeleteStudents(idRaw)
-	fmt.Println(deleted)
-	deleteStudent := JSON{Data: deleted}
-	fmt.Println("deleteStudent: ", deleteStudent)
+	if (deleted) {
+		sd.Success = true
+		sd.Data = deleted
+	} else {
+		sd.Error = append(sd.Error, "entry not deleted")
+	}
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(deleteStudent)
+	responseData, err := json.Marshal(sd)
 	if err != nil {
 		fmt.Println("404 error", err)
 		responseWriter.WriteHeader(404)
@@ -94,7 +90,5 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	} else {
 		responseWriter.Write(responseData)
 	}
-
-
 
 }

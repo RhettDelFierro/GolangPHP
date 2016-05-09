@@ -26,10 +26,15 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
+	studentData := JSON{
+		Success: false,
+	}
+
 	//getting students from database.
 	students, err := models.GetStudents() //slice of Student (not empty)
 	if err != nil {
-		panic(err)
+		//panic(err)
+		studentData.Error = append(studentData.Error, err.Error())
 	}
 	studentsVM := []viewmodels.Student{} //slice
 
@@ -37,8 +42,8 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 		studentsVM = append(studentsVM, helper.StudentsToViewModel(student)) //have an array of hard coded Students
 	}
 
-	vm := viewmodels.GetStudents()
-	vm.Students = studentsVM //now we have a view model Struct with field Students that is an array of viewmodel.Students Schools.Students. Ready to execute/inject the view with these, as seen below. May now have to work the HTML injecting to use range.
+	//vm := viewmodels.GetStudents()
+	//vm.Students = studentsVM //now we have a view model Struct with field Students that is an array of viewmodel.Students Schools.Students. Ready to execute/inject the view with these, as seen below. May now have to work the HTML injecting to use range.
 
 	//responseWriter.Header().Add("Content Type", "text/html")
 
@@ -52,9 +57,9 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	//models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 	//fmt.Println(vm.Students)
-	school := JSON{Data: vm.Students}
+	studentData = JSON{Success: true, Data: studentsVM}
 	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(school)
+	responseData, err := json.Marshal(studentData)
 
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)

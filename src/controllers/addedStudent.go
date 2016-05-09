@@ -53,13 +53,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	//Expose the fields from data *models.Student otherwise it won't be seen
 	convertedData := helper.StudentsToViewModel(*data)
-	//if (convertedData) {
-	//	studentData.Success = true
-	//	studentData.Data = convertedData
-	//} else {
-	//	studentData.Error = append(studentData.Error, "database error")
-	//}
-	//err := json.NewEncoder(w).Encode(convertedData)
+
 	fmt.Println("convertedData: ", convertedData)
 	err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 	if err != nil {
@@ -73,12 +67,12 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(studentData)
-	fmt.Println("here is the converted JSON data:", studentData)
+	//fmt.Println("here is the converted JSON data:", studentData)
 	//not executing a template.
 	//this.template.Execute(responseWriter, responseData)
 	if err != nil {
 		responseWriter.WriteHeader(404) //result.error on the front end.
-		//responseWriter.Write(err.Error()) //write the result.error on front end.
+		responseWriter.Write(responseData)
 	}
 
 	//we add the students to our database above and also send it back so the front end/javascript knows we got he request.

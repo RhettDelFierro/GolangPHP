@@ -61,12 +61,15 @@ func GetStudents() ([]Student, error) {
 
 
 func AddStudents(student *Student) error {
+
+	//converting the models.Student(fields not exposed) into DBStudent(exposed fields) The DB won't see the Student{} fields.
 	dbStudent := DBStudent{student.Name(), student.Course(), student.Grade(), student.Id(),}
 
 	session, err := getDBConnection()
 
 	if err != nil {
-		fmt.Println("Error in AddStudents function")
+		fmt.Println("Error in DB connection")
+		//errors = append(errors, err) //just append the string "Error in DB connection?"
 		panic(err)
 	}
 	defer session.Close()

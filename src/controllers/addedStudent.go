@@ -7,13 +7,13 @@ import (
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"encoding/json"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
-	"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
 	"strconv"
 	//"fmt"
 	//"os"
 	"gopkg.in/mgo.v2/bson"
 	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"fmt"
+	"github.com/RhettDelFierro/GolangPHP/src/controllers/helper"
 )
 
 //don't think you need a template here, you're not going to be serving the template, the javascript will manipulate the dom.
@@ -26,6 +26,7 @@ type JSON struct {
 	Data interface{} `json:"data"`
 	Error []string	`json:"error"`
 }
+
 
 //************you still have to serve the template. But I think this is more for Populate than Add. See the getgrades.go controller.
 func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
@@ -51,7 +52,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	}
 
 	//Expose the fields from data *models.Student otherwise it won't be seen
-	convertedData := converters.StudentsToViewModel(*data)
+	convertedData := helper.StudentsToViewModel(*data)
 	//if (convertedData) {
 	//	studentData.Success = true
 	//	studentData.Data = convertedData

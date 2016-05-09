@@ -10,11 +10,12 @@ import(
 	"github.com/gorilla/mux"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
-	"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
+	//"github.com/RhettDelFierro/GolangPHP/src/controllers/converters"
 	"encoding/json"
 	"fmt"
 	//"strconv"
 	//"gopkg.in/mgo.v2/bson"
+	"github.com/RhettDelFierro/GolangPHP/src/controllers/helper"
 )
 
 type gradesController struct {
@@ -25,8 +26,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
-	fmt.Println("ajaxMethods called")
-
+	//getting students from database.
 	students, err := models.GetStudents() //slice of Student (not empty)
 	if err != nil {
 		panic(err)
@@ -34,7 +34,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 	studentsVM := []viewmodels.Student{} //slice
 
 	for _, student := range students {
-		studentsVM = append(studentsVM, converters.StudentsToViewModel(student)) //have an array of hard coded Students
+		studentsVM = append(studentsVM, helper.StudentsToViewModel(student)) //have an array of hard coded Students
 	}
 
 	vm := viewmodels.GetStudents()

@@ -4,6 +4,10 @@ import (
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 )
 
+type DataHandler interface {
+	Make(name string,course string, grade int)
+}
+
 func StudentsToViewModel(category models.Student) viewmodels.Student {
 	result := viewmodels.Student{
 		Name: category.Name(),
@@ -14,3 +18,8 @@ func StudentsToViewModel(category models.Student) viewmodels.Student {
 
 	return result
 }
+
+//func DataInterfaceMapFunction(h DataHandler, name string, course string, grade int) bool {
+//	h.Make(name, course, grade) //is it returning a struct or handler?
+//	return true
+//}

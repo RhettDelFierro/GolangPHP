@@ -62,12 +62,13 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	//err := json.NewEncoder(w).Encode(convertedData)
 	fmt.Println("convertedData: ", convertedData)
 	err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
-	if (!err) {
+	if err != nil {
 		studentData.Success = false
-		studentData.Error = append(studentData.Error, err) //maybe just append to error array "student not added"
+		studentData.Error = append(studentData.Error, err.Error()) //maybe just append to error array "student not added"
 		//responseWriter.Write
 	} else {
 		studentData.Success = true
+		studentData.Data = convertedData
 	}
 
 	responseWriter.Header().Add("Content-Type", "application/json")
@@ -77,12 +78,12 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	//this.template.Execute(responseWriter, responseData)
 	if err != nil {
 		responseWriter.WriteHeader(404) //result.error on the front end.
-		responseWriter.Write(err) //write the result.error on front end.
+		//responseWriter.Write(err.Error()) //write the result.error on front end.
 	}
 
 	//we add the students to our database above and also send it back so the front end/javascript knows we got he request.
 	responseWriter.Write(responseData) //"result" on the front end. Write the errors also, do something with them on the front end. The
-
+	fmt.Println(helper.AddingStudent)
 }
 
 //controller method to response ot the route. This is serving the data. Serve the template above, insert the data here.

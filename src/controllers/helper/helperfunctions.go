@@ -8,8 +8,12 @@ type DataHandler interface {
 	ErrorMakerErrorMaker(postData map[string]string)
 }
 
-type Converter interface {
+type ConverterHandler interface {
 	Convert(map[string]string)
+}
+
+type RegexHandler interface {
+	TestValidEntry()
 }
 
 func StudentsToViewModel(category models.Student) viewmodels.Student {

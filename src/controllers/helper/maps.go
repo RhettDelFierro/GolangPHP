@@ -59,7 +59,7 @@ func (this *NewStudent) ErrorMaker(postData map[string]string) {
 	this.Grade = map[string]interface{}{
 		"value": safeEntry.Grade,
 		"description": "grade",
-		"invalid": "Only numbers please",
+		"invalid": "Only numbers 0-100",
 		"error": "There was an error adding student to database",
 	}
 	this.Duplicate = map[string]interface{}{

@@ -1,45 +1,34 @@
 package helper
 
 import (
-	"reflect"
+	//"reflect"
 	"regexp"
-	"fmt"
+	//"fmt"
+	//"github.com/fatih/structs"
+	//"github.com/RhettDelFierro/GolangPHP/src/controllers"
 )
 
-func TestValidEntry(entry interface{}) []string {
+func (this *NewStudent) TestValidEntry() map[string]string{
 
-	//reflect &NewStudent type to be a map
-	//then iterate over the reflection map.
-	//reflect &NewStudent type to be a map
-	//then iterate over the reflection map.
-	s := reflect.ValueOf(entry)
-	typ := reflect.TypeOf(entry)
-	if typ.Kind() == reflect.Ptr {
-		s = s.Elem()
-	}
-
-	//fmt.Println(typ)
-	//right now it's a struct being reflected.
-	//iterate through it:
 	regex_tests := make(map[string]string)
 	//32 alphanumeric characters. No spaces, but underscores allowed
 	regex_tests["name"] = "/^[A-Za-z0-9_]{1,32}$/"
 	regex_tests["course"] = "/^[A-Za-z0-9_]{1,32}$/"
 	//only numbers
 	regex_tests["grade"] = "/^100$|^[1-9]?[0-9]$/"
+	var regex_map = make(map[string]string)
 
-	var regex_array []string
 
-	for key, value := range regex_tests {
-		regex,_ := regexp.Compile(value)
-		for i := 0; i < s.NumField(); i++ {
-			f := s.Field(i)
-			if key == f["description"] {
-				if !regex.Match([]byte(f["value"])) {
-					regex_array = append(regex_array, f["invalid"])
-				}
-			}
-		}
+	//DRY, but try and find a better solution.
+	if boolean, _ := regexp.Match(regex_tests[this.Name["description"]], []byte(this.Name["value"])); boolean {
+		regex_map["regex_name_error"] = this.Name["invalid"]
 	}
-	return regex_array
+	if boolean, _ := regexp.Match(regex_tests[this.Grade["description"]], []byte(this.Name["value"])); boolean {
+		regex_map["regex_course_error"] = this.Name["invalid"]
+	}
+	if boolean, _ := regexp.Match(regex_tests[this.Course["description"]], []byte(this.Name["value"])); boolean {
+		regex_map["regex_grade_error"] = this.Name["invalid"]
+	}
+
+	return regex_map
 }

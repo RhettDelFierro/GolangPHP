@@ -21,7 +21,7 @@ type addedController struct {
 type JSON struct {
 	Success bool        `json:"success"`
 	Data    interface{} `json:"data"`
-	Error   []string        `json:"error"`
+	Error   map[string]interface{}        `json:"error"`
 }
 
 
@@ -46,22 +46,29 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	newStudent := &helper.NewStudent{}
 	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
 	newStudent.ErrorMaker(postMap)
-	catchRegexArray := helper.TestValidEntry(newStudent)
 
-	sd.Error = append(sd.Error, helper.TestValidEntry(newStudent))
+	regex_errors := newStudent.TestValidEntry()
+
+	if regex_errors != nil {
+		sd.Error["regex_errors"] = regex_errors
+	}
+
+
+	//catchRegexArray := helper.TestValidEntry(newStudent)
+
+	//sd.Error = append(sd.Error, helper.TestValidEntry(newStudent))
 
 	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
-	if (len(catchRegexArray) == 0){
+	if (len(regex_errors) == 0){
 		//do the code at the bottom:
 	} else {
 		//match the name of the element of the current array and return it with the "invalid" key/value.
 	}
 
-	fmt.Println(newStudent)
-
 	//*********************************code before regex testing************************//
 
 	//go to the students model.
+	//may not have to do this, just take it from the newStudent struct
 	data := new(models.Student)
 	//POST
 	if req.Method == "POST" {

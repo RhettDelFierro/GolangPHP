@@ -42,6 +42,16 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	newStudent := &helper.NewStudent{}
 	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
 	newStudent.ErrorMaker(postMap)
+
+	catchRegexArray := helper.TestValidEntry(*newStudent)
+
+	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
+	if (len(catchRegexArray) == 0){
+		//do the code at the bottom:
+	} else {
+		//match the name of the element of the current array and return it with the "invalid" key/value.
+	}
+
 	fmt.Println(newStudent)
 
 	studentData := JSON{Success: false}

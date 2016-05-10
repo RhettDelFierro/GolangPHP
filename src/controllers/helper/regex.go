@@ -14,7 +14,11 @@ func TestValidEntry(entry struct{}) []string {
 
 	var regex_array []string
 	for name,_ := range entry {
-		if(regexp.Match(regex_tests[name], name)){
+		boolean, err := regexp.Match(regex_tests[name]["description"], name["value"])
+		if err != nil{
+			panic(err)
+		}
+		if !boolean {
 			regex_array = append(regex_array, name)
 		}
 	}

@@ -5,15 +5,11 @@ import (
 )
 
 type DataHandler interface {
-	ErrorMakerErrorMaker(postData map[string]string)
+	ErrorMaker(postData map[string]string)
 }
 
 type ConverterHandler interface {
 	Convert(map[string]string)
-}
-
-type RegexHandler interface {
-	TestValidEntry()
 }
 
 func StudentsToViewModel(category models.Student) viewmodels.Student {

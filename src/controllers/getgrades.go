@@ -28,10 +28,16 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	//getting students from database.
 	//slice of Student (not empty)
+
 	students, err := models.GetStudents()
 	if err != nil {
 		//panic(err)
-		sd.Error = append(studentData.Error, err.Error())
+		//sd.Error = append(studentData.Error, err.Error())
+		dbError := map[string]string{
+			"db_error": err.Error(),
+			"plain": "could not retrieve all records from DB",
+		}
+		sd.Error["database_error"] = dbError //helper variable for error message
 	}
 	studentsVM := []viewmodels.Student{} //slice
 
@@ -68,7 +74,10 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 		sd.Success = true
 		sd.Data = deleted
 	} else {
-		sd.Error = append(sd.Error, "entry not deleted")
+		dbError := map[string]string{
+			"plain": "entry not deleted",
+		}
+		sd.Error["database_error"] = dbError //helper variable for error message
 	}
 	responseWriter.Header().Add("Content-Type", "application/json")
 	responseData, err := json.Marshal(sd)

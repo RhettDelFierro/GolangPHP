@@ -31,6 +31,10 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
+	//initialize the struct going to json.Marshal()
+	studentData := JSON{Success: false}
+	sd := &studentData
+
 	//*******************maybe you can start using Go routines for all here.***************
 
 	postMap := map[string]string{
@@ -42,8 +46,9 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	newStudent := &helper.NewStudent{}
 	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
 	newStudent.ErrorMaker(postMap)
+	catchRegexArray := helper.TestValidEntry(newStudent)
 
-	catchRegexArray := helper.TestValidEntry(*newStudent)
+	sd.Error = append(sd.Error, helper.TestValidEntry(newStudent))
 
 	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
 	if (len(catchRegexArray) == 0){
@@ -54,8 +59,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 	fmt.Println(newStudent)
 
-	studentData := JSON{Success: false}
-	sd := &studentData
+	//*********************************code before regex testing************************//
 
 	//go to the students model.
 	data := new(models.Student)

@@ -10,6 +10,7 @@ import (
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/helper"
 	"strconv"
 	"fmt"
+	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 )
 
 //don't think you need a template here, you're not going to be serving the template, the javascript will manipulate the dom.
@@ -74,9 +75,25 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 		convertedData := helper.StudentsToViewModel(*data)
 
 		//don't forget to check for duplicates.
-		err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
-		if err != nil {
-			sd.Error = append(sd.Error, "there was an error adding the student to the database") //helper variable for error message
+		duplicate, err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
+		if err != nil || len(duplicate) !=0 {
+			if err != nil {
+				sd.Error = append(sd.Error, "there was an error adding the student to the database")
+			}
+
+			if len(duplicate) != 0 {
+				//should make this a function because getgrades.go uses the same thing. DRY
+				fmt.Println(duplicate)
+				sd.Error = append(sd.Error, regexCheckingMap["duplicate"]["error"])
+				students := duplicate
+				studentsVM := []viewmodels.Student{} //slice
+
+				for _, student := range students {
+					studentsVM = append(studentsVM, helper.StudentsToViewModel(student))
+				}
+				sd.Data = studentsVM
+				fmt.Printf(" type of sd.Data %T \n", sd.Data)
+			}
 		} else {
 			sd.Success = true
 			sd.Data = convertedData

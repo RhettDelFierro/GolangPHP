@@ -10,14 +10,14 @@ import (
 type Student struct {
 	name   string	`bson:"name,omitempty"`
 	course string	`bson:"course,omitempty"`
-	grade  int `bson:"grade,omitempty"`
+	grade  int 	`bson:"grade,omitempty"`
 	id     bson.ObjectId `bson:"_id,omitempty"`
 }
 //type in DB.
 type DBStudent struct {
-	Name   string	`bson:"name,omitempty"`
-	Course string	`bson:"course,omitempty"`
-	Grade  int	`bson:"grade,omitempty"`
+	Name   string	`bson:"name,omitempty" json:"name"`
+	Course string	`bson:"course,omitempty" json:"course"`
+	Grade  int	`bson:"grade,omitempty" json:"grade"`
 	Id     bson.ObjectId `bson:"_id,omitempty" json:"id"`
 }
 
@@ -60,7 +60,7 @@ func GetStudents() ([]Student, error) {
 }
 
 
-func AddStudents(student *Student) error {
+func AddStudents(student *Student) ([]Student, error) {
 
 	//converting the models.Student(fields not exposed) into DBStudent(exposed fields) The DB won't see the Student{} fields.
 	dbStudent := DBStudent{student.Name(), student.Course(), student.Grade(), student.Id(),}
@@ -76,13 +76,21 @@ func AddStudents(student *Student) error {
 
 	c := session.DB("taskdb").C("categories")
 
-	err = c.Insert(&dbStudent)
-	if err != nil {
-		fmt.Println("error in inserting")
-		panic(err)
+	//check for duplicate.
+	duplicates := duplicate(&dbStudent)
+	if len(duplicates) != 0 {
+		fmt.Println("From inside AddStduents, the duplicates):", duplicates)
+		return duplicates, err
+	} else {
+
+		err = c.Insert(&dbStudent)
+		if err != nil {
+			fmt.Println("error in inserting")
+			panic(err)
+		}
 	}
 
-	return err
+	return duplicates, err
 }
 
 func DeleteStudents(id string) bool {
@@ -102,6 +110,39 @@ func DeleteStudents(id string) bool {
 	} else {
 		return true
 	}
+}
+
+func duplicate(student *DBStudent) []Student {
+	session, err := getDBConnection()
+
+	if err != nil {
+		fmt.Println("Error in DB connection")
+		//errors = append(errors, err) //just append the string "Error in DB connection?"
+		panic(err)
+	}
+	defer session.Close()
+
+	c := session.DB("taskdb").C("categories")
+	school := []Student{}
+
+	iter := c.Find(bson.M{"name": student.Name, "course": student.Course, "grade": student.Grade}).Iter()
+		result := DBStudent{}
+			for iter.Next(&result) {
+				var student Student
+				fmt.Printf(result.Name)
+				student.SetName(result.Name)
+				student.SetCourse(result.Course)
+				student.SetGrade(result.Grade)
+				student.SetId(result.Id)
+				school = append(school, student)
+			}
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("from the duplicate function: ", school)
+
+	return school
 }
 
 //I think this is more for a member

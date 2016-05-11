@@ -21,7 +21,7 @@ type addedController struct {
 type JSON struct {
 	Success bool        `json:"success"`
 	Data    interface{} `json:"data"`
-	Error   map[string]map[string]string     `json:"error"`
+	Error   []string     `json:"error"`
 }
 
 
@@ -32,7 +32,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	defer responseWriter.Close()
 
 	//initialize the struct going to json.Marshal()
-	studentData := JSON{Success: false, Error: map[string]map[string]string{}}
+	studentData := JSON{Success: false}
 	sd := &studentData
 
 	//*******************maybe you can start using Go routines for all here.***************
@@ -42,28 +42,33 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 		"course": req.FormValue("course"),
 		"grade": req.FormValue("grade"),
 	}
-	fmt.Println("here's postmap: ", postMap)
-	newStudent := &helper.NewStudent{}
+	//fmt.Println("here's postmap: ", postMap)
+	//newStudent := &helper.NewStudent{}
 	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
-	newStudent.ErrorMaker(postMap)
-	fmt.Println("after ErrorMaker ", newStudent)
+	regexCheckingMap := helper.ErrorMaker(postMap)
+	//fmt.Println("after ErrorMaker ", regexCheckingMap)
 
-	regex_errors := helper.TestValidEntry(*newStudent)
+
+
+	regex_errors := helper.TestValidEntry(regexCheckingMap)
 	fmt.Println("here's regex_errors: ", regex_errors)
 	if regex_errors != nil {
-		sd.Error["regex_errors"] = regex_errors
+
+		for i,_ := range regex_errors {
+			sd.Error = append(sd.Error, regex_errors[i])
+		}
 	}
 
 	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
-	if regex_errors == nil { //include a nested if statement to check for session.
+	if len(regex_errors) == 0 { //include a nested if statement to check for session.
 		//do the code at the bottom:
 		fmt.Println("did we get to here")
 		data := new(models.Student)
 
-		grade, _ := strconv.Atoi(newStudent.Grade["value"])
+		grade, _ := strconv.Atoi(regexCheckingMap["grade"]["value"])
 
-		data.SetName(newStudent.Name["value"])
-		data.SetCourse(newStudent.Course["value"])
+		data.SetName(regexCheckingMap["name"]["value"])
+		data.SetCourse(regexCheckingMap["course"]["value"])
 		data.SetGrade(grade)
 		data.SetId(bson.NewObjectId())
 		convertedData := helper.StudentsToViewModel(*data)
@@ -71,11 +76,7 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 		//don't forget to check for duplicates.
 		err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
 		if err != nil {
-			dbError := map[string]string{
-				"db_error": err.Error(),
-				"plain": "there was a problem inserting record into database",
-			}
-			sd.Error["database_error"] = dbError //helper variable for error message
+			sd.Error = append(sd.Error, "there was an error adding the student to the database") //helper variable for error message
 		} else {
 			sd.Success = true
 			sd.Data = convertedData
@@ -92,6 +93,14 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 		responseWriter.Write(responseData)
 	} else {
 		//match the name of the element of the current array and return it with the "invalid" key/value.
+		responseData, err := json.Marshal(sd)
+
+		if err != nil {
+			responseWriter.WriteHeader(404)
+			responseWriter.Write(responseData)
+		}
+
+		responseWriter.Write(responseData)
 	}
 
 }

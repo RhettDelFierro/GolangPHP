@@ -50,18 +50,18 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 	//fmt.Println("after ErrorMaker ", regexCheckingMap)
 
 
-
 	regex_errors := helper.TestValidEntry(regexCheckingMap)
 	fmt.Println("here's regex_errors: ", regex_errors)
 	if regex_errors != nil {
 
-		for i,_ := range regex_errors {
+		for i, _ := range regex_errors {
 			sd.Error = append(sd.Error, regex_errors[i])
 		}
 	}
 
 	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
-	if len(regex_errors) == 0 { //include a nested if statement to check for session.
+	if len(regex_errors) == 0 {
+		//include a nested if statement to check for session.
 		//do the code at the bottom:
 		fmt.Println("did we get to here")
 		data := new(models.Student)
@@ -76,11 +76,27 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 
 		//don't forget to check for duplicates.
 		duplicate, err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
-		if err != nil || len(duplicate) !=0 {
+		//checking to see for either an error in the DB or duplicate.
+		if err != nil || len(duplicate) != 0 {
+			fmt.Println("here is an error for err: ", err)
+			fmt.Println("here is what duplicate is printing", duplicate)
+			//if error in DB connection
 			if err != nil {
-				sd.Error = append(sd.Error, "there was an error adding the student to the database")
+				fmt.Println("we should be in here now")
+				sd.Error = append(sd.Error, err.Error())
+				responseWriter.Header().Add("Content-Type", "application/json")
+				responseWriter.WriteHeader(500)
+				responseData, err := json.Marshal(sd)
+				if err != nil {
+					fmt.Println("error in json writing")
+					responseWriter.Write(responseData)
+				} else {
+					//sd.Error = append(sd.Error, err.Error())
+					fmt.Println("no error in json writing")
+					responseWriter.Write(responseData)
+				}
 			}
-
+			//if no error in DB connection, but duplicate student:
 			if len(duplicate) != 0 {
 				//should make this a function because getgrades.go uses the same thing. DRY
 				fmt.Println(duplicate)
@@ -94,26 +110,41 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 				sd.Data = studentsVM
 				fmt.Printf(" type of sd.Data %T \n", sd.Data)
 			}
+
+
+
+
+
+
+
+
+		//everything checks out
 		} else {
 			sd.Success = true
 			sd.Data = convertedData
 		}
+		if len(sd.Error) == 0 {
+			responseWriter.Header().Add("Content-Type", "application/json")
+			responseWriter.WriteHeader(200)
+			responseData, err := json.Marshal(sd)
 
-		responseWriter.Header().Add("Content-Type", "application/json")
-		responseData, err := json.Marshal(sd)
+			//error writing the JSON
+			if err != nil {
+				//responseWriter.WriteHeader(500)
+				responseWriter.Write(responseData)
+			}
 
-		if err != nil {
-			responseWriter.WriteHeader(404)
 			responseWriter.Write(responseData)
 		}
-
-		responseWriter.Write(responseData)
+		//regex doesn't pass
 	} else {
+		//I think need to throw in 500 errors for the json marshalling errors
 		//match the name of the element of the current array and return it with the "invalid" key/value.
+		responseWriter.WriteHeader(400)
 		responseData, err := json.Marshal(sd)
 
 		if err != nil {
-			responseWriter.WriteHeader(404)
+			//responseWriter.WriteHeader(500)
 			responseWriter.Write(responseData)
 		}
 

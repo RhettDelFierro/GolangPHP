@@ -19,6 +19,9 @@ var formObject = {
     },
     populate: function () {
         populate();
+    },
+    error: function(errorObject) {
+
     }
 };
 
@@ -142,12 +145,31 @@ function AddStudent() {
                         //self.student_id = result.data.Id;
                         console.log("what is the student at this point:", self);
                         self.arrayFunc("add");
-                    } else {
-                        console.log(result.error);
-                        return false;
+                    } //else {
+                    //    //console.log(result.error);
+                    //    return false;
+                    //}
+                },
+            error: function(error) {
+                //console.log(error);
+                    //console.log("able to get error object", error);
+                    if (error.status === 400) {
+                        console.log(error)
+                        var error = {
+                            type: "regex",
+                            errors: error.responseJSON.error
+                        };
+                        ErrorHandling(error);
+                    }
+                    if (error.status === 500) {
+                        console.log(error);
+                        var error = {
+                            type: "database",
+                            errors: error.responseJSON.error
+                        };
+                        ErrorHandling(error);
                     }
                 }
-
             }
         )
     };
@@ -185,14 +207,18 @@ function AddStudent() {
                 if (result.data) {
                     console.log('everything is fine');
                 } else {
-                    console.log(result.error);
+                    //console.log(result.error.responseJSON);
                 }
 
+            },
+            error: function(error) {
+                console.log(error.responseJSON);
             }
         });
     };
 }
 
+//put this on the form object.
 function populate() {
     $.ajax({
             dataType: 'json',
@@ -215,11 +241,22 @@ function populate() {
                     }
                     student_collection.calculateAverage()
                 } else {
-                    console.log(result.error);
+                    //console.log(result.error.responseJSON);
                 }
+            },
+            error: function(error) {
+                console.log(error.responseJSON);
             }
         }
     )
+}
+
+function ErrorHandling(object) {
+
+    if (object.type == "regex") {
+
+    }
+
 }
 
 function reset() {

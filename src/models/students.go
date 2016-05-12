@@ -5,6 +5,7 @@ import (
 	//"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"fmt"
+	//"errors"
 )
 //students kept private
 type Student struct {
@@ -37,7 +38,7 @@ func GetStudents() ([]Student, error) {
 
 	if err != nil {
 		panic(err)
-		//return Student{}, errors.New("Unable to connect to DB")
+		//return nil, err
 	}
 	defer session.Close()
 
@@ -70,7 +71,8 @@ func AddStudents(student *Student) ([]Student, error) {
 	if err != nil {
 		fmt.Println("Error in DB connection")
 		//errors = append(errors, err) //just append the string "Error in DB connection?"
-		panic(err)
+		//panic(err)
+		return nil, err
 	}
 	defer session.Close()
 
@@ -86,7 +88,8 @@ func AddStudents(student *Student) ([]Student, error) {
 		err = c.Insert(&dbStudent)
 		if err != nil {
 			fmt.Println("error in inserting")
-			panic(err)
+			//panic(err)
+			return nil, err
 		}
 	}
 

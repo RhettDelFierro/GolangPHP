@@ -126,52 +126,49 @@ function AddStudent() {
         return self.student_id;
     };
     self.ajaxAdd = function (name, course, grade) {
-        $.ajax({
-                dataType: 'json',
-                data: {
-                    name: name,
-                    course: course,
-                    grade: grade
-                },
-                method: 'POST',
-                url: '/api/add', //*****************Golang should be index.html or _tablerows.html? NO!
-                success: function (result) {
-                    console.log('success!!', result);
-                    if (result.data) {
-                        self.setName(result.data.name);
-                        self.setCourse(result.data.course);
-                        self.setGrade(result.data.grade);
-                        self.setID(result.data.id);
-                        //self.student_id = result.data.Id;
-                        console.log("what is the student at this point:", self);
-                        self.arrayFunc("add");
-                    } //else {
-                    //    //console.log(result.error);
-                    //    return false;
-                    //}
-                },
-            error: function(error) {
-                //console.log(error);
-                    //console.log("able to get error object", error);
-                    if (error.status === 400) {
-                        console.log(error)
-                        var error = {
-                            type: "regex",
-                            errors: error.responseJSON.error
-                        };
-                        ErrorHandling(error);
-                    }
-                    if (error.status === 500) {
-                        console.log(error);
-                        var error = {
-                            type: "database",
-                            errors: error.responseJSON.error
-                        };
-                        ErrorHandling(error);
-                    }
-                }
+
+        var addStudent = $.ajax({dataType: 'json',
+            data: {
+                name: name,
+                course: course,
+                grade: grade
+            },
+            method: 'POST',
+            url: '/api/add'});
+
+        addStudent.then(function(result){console.log('success!!', result);
+            if (result.data) {
+                self.setName(result.data.name);
+                self.setCourse(result.data.course);
+                self.setGrade(result.data.grade);
+                self.setID(result.data.id);
+                //self.student_id = result.data.Id;
+                console.log("what is the student at this point:", self);
+                self.arrayFunc("add");
             }
-        )
+
+        }, function(error) {
+            //console.log(error);
+            //console.log("able to get error object", error);
+            if (error.status === 400) {
+                console.log(error)
+                var error = {
+                    type: "regex",
+                    errors: error.responseJSON.error
+                };
+                ErrorHandling(error);
+            }
+            if (error.status === 500) {
+                console.log(error);
+                var error = {
+                    type: "database",
+                    errors: error.responseJSON.error
+                };
+                ErrorHandling(error);
+            }
+        })
+
+
     };
     self.arrayFunc = function (doing) {
         switch (doing) {

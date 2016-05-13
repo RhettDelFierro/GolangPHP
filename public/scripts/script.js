@@ -7,7 +7,8 @@ var formObject = {
         this.student_course = $('#course').val();
         this.student_grade = $('#studentGrade').val();
         cancelClicked();
-        this.ajaxAdd()
+        this.ajaxAdd();
+        $("p").addClass("hidden").removeClass("show");
     },
     ajaxAdd: function () {
         var self = this;
@@ -20,8 +21,21 @@ var formObject = {
     populate: function () {
         populate();
     },
-    error: function(errorObject) {
-
+    error: function (errorObject) {
+        console.log(errorObject);
+        for (err in errorObject) {
+            console.log(err);
+            switch (err) {
+                case "name":
+                    $("#regex_name").removeClass("hidden").addClass("show").text(errorObject.name);
+                case "course":
+                    $("#regex_course").removeClass("hidden").addClass("show").text(errorObject.course);
+                case "grade":
+                    $("#regex_grade").removeClass("hidden").addClass("show").text(errorObject.grade);
+                case "duplicate":
+                    $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.duplicate);
+            }
+        }
     }
 };
 
@@ -127,36 +141,46 @@ function AddStudent() {
     };
     self.ajaxAdd = function (name, course, grade) {
 
-        var addStudent = $.ajax({dataType: 'json',
+        var addStudent = $.ajax({
+            dataType: 'json',
             data: {
                 name: name,
                 course: course,
                 grade: grade
             },
             method: 'POST',
-            url: '/api/add'});
+            url: '/api/add'
+        });
 
-        addStudent.then(function(result){console.log('success!!', result);
+        addStudent.then(function (result) {
+            console.log('success!!', result);
             if (result.data) {
                 self.setName(result.data.name);
                 self.setCourse(result.data.course);
                 self.setGrade(result.data.grade);
                 self.setID(result.data.id);
-                //self.student_id = result.data.Id;
-                console.log("what is the student at this point:", self);
                 self.arrayFunc("add");
             }
 
-        }, function(error) {
+        }, function (error) {
             //console.log(error);
             //console.log("able to get error object", error);
             if (error.status === 400) {
-                console.log(error)
-                var error = {
-                    type: "regex",
-                    errors: error.responseJSON.error
-                };
-                ErrorHandling(error);
+                console.log(error);
+                if (error.responseJSON.error[0] === "Records show you've already recorded this entry") {
+                    var error = {
+                        type: "duplicate",
+                        errors: error.responseJSON.error
+                    };
+                    ErrorHandling(error);
+                } else {
+                    var error = {
+                        type: "regex",
+                        errors: error.responseJSON.error
+                    };
+                    console.log("sending to error: ", error.errors);
+                    ErrorHandling(error);
+                }
             }
             if (error.status === 500) {
                 console.log(error);
@@ -208,7 +232,7 @@ function AddStudent() {
                 }
 
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error.responseJSON);
             }
         });
@@ -241,7 +265,7 @@ function populate() {
                     //console.log(result.error.responseJSON);
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(error.responseJSON);
             }
         }
@@ -250,8 +274,36 @@ function populate() {
 
 function ErrorHandling(object) {
 
-    if (object.type == "regex") {
+    console.log(object);
 
+    var errors = {};
+
+    if (object.type == "regex") {
+        for (var i = 0; i < object.errors.length; i++) {
+
+            if (object.errors[i] === "Invalid name, please use only letters and numbers") {
+                errors.name = "Invalid name, please use only letters and numbers"
+                console.log("do we have the regex");
+            }
+
+            if (object.errors[i] === "Invalid course name, please use only letters and numbers") {
+                errors.course = "Invalid course name, please use only letters and numbers"
+            }
+
+            if (object.errors[i] === "Only numbers 0-100") {
+                errors.grade = "Only numbers 0-100"
+            }
+
+        }
+        console.log(errors);
+        formObject.error(errors);
+    }
+
+    if (object.type == "duplicate") {
+        console.log("we go here to duplicate");
+        errors.duplicate = "Records show you've already recorded this entry";
+        console.log(errors);
+        formObject.error(errors);
     }
 
 }

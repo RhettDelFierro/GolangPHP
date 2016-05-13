@@ -109,6 +109,16 @@ func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
 				}
 				sd.Data = studentsVM
 				fmt.Printf(" type of sd.Data %T \n", sd.Data)
+				responseWriter.Header().Add("Content-Type", "application/json")
+				responseWriter.WriteHeader(400)
+				responseData, err := json.Marshal(sd)
+				if err != nil {
+					panic(err)
+				} else {
+					responseWriter.Write(responseData)
+				}
+
+
 			}
 
 

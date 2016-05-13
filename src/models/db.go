@@ -20,7 +20,7 @@ func getDBConnection() (*mgo.Session, error) {
 	if err !=nil{
 		fmt.Println("error in DB connection")
 		//panic(err)
-		return nil, ErrorString{"there was an error in th DB connection"}
+		return nil, ErrorString{"there was an error in the DB connection"}
 		//return nil, errors.New("error in DB connection")
 	}
 	return session, err

@@ -79,6 +79,7 @@ func AddStudents(student *Student) ([]Student, error) {
 	c := session.DB("taskdb").C("categories")
 
 	//check for duplicate.
+	//can use go routine and channels here possibly to send info.
 	duplicates := duplicate(&dbStudent)
 	if len(duplicates) != 0 {
 		fmt.Println("From inside AddStduents, the duplicates):", duplicates)

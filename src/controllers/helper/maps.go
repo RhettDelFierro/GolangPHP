@@ -64,7 +64,7 @@ func ErrorMaker(postData map[string]string) map[string]map[string]string{
 	errorMap["duplicate"] = map[string]string{
 		"value": "",//struct{},
 		"description": "duplicate",
-		"error": "Records show you've alread recorded this entry", //continue to add (if they're the same user that added the name in the first place)?
+		"error": "Records show you've already recorded this entry", //continue to add (if they're the same user that added the name in the first place)?
 	}
 
 	errorMap["auth_token"] = map[string]string{

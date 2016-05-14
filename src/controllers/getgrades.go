@@ -32,15 +32,15 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	//database error:
 	if err != nil {
-		sd.Error = append(sd.Error, "could not get records, error in DB") //helper variable for error message
+		sd.Error = append(sd.Error, err.Error()) //helper variable for error message
 		responseWriter.Header().Add("Content-Type", "application/json")
+		responseWriter.WriteHeader(500)
 		responseData, err := json.Marshal(sd)
 
 		if err != nil {
 			responseWriter.WriteHeader(404)
 		}
 
-		responseWriter.WriteHeader(500)
 		responseWriter.Write(responseData)
 
 		//everything is fine:
@@ -81,16 +81,21 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	if (deleted) {
 		sd.Success = true
 		sd.Data = deleted
+		responseWriter.Header().Add("Content-Type", "application/json")
+		responseData, err := json.Marshal(sd)
+		if err != nil {
+			fmt.Println("404 error", err)
+			responseWriter.WriteHeader(404)
+			responseWriter.Write(responseData)
+		} else {
+			responseWriter.Write(responseData)
+		}
 	} else {
+		responseWriter.Header().Add("Content-Type", "application/json")
+		responseWriter.WriteHeader(500)
+		sd.Data =
 		sd.Error = append(sd.Error, "student not deleted") //helper variable for error message
-	}
-	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(sd)
-	if err != nil {
-		fmt.Println("404 error", err)
-		responseWriter.WriteHeader(404)
-		responseWriter.Write(responseData)
-	} else {
+		responseData,_ := json.Marshal(sd)
 		responseWriter.Write(responseData)
 	}
 

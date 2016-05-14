@@ -1,4 +1,5 @@
 //do not forget you will eventually need authentication rights for all CRUD operations other than GET.
+//should the table object handle the populate() call from formObject?
 
 var formObject = {
     student_name: "",
@@ -8,7 +9,6 @@ var formObject = {
         this.student_name = $('#studentName').val();
         this.student_course = $('#course').val();
         this.student_grade = $('#studentGrade').val();
-        cancelClicked();
         this.ajaxAdd();
         $("p").addClass("hidden").removeClass("show");
     },
@@ -18,7 +18,6 @@ var formObject = {
         var student = new AddStudent();
         student.ajaxAdd(self.student_name, self.student_course, self.student_grade);
         cancelClicked();
-
     },
     populate: function () {
         populate();
@@ -34,7 +33,7 @@ var formObject = {
                     $("#regex_grade").removeClass("hidden").addClass("show").text(errorObject.grade);
                 case "duplicate":
                     $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.duplicate);
-                    //add anyway feature?
+                //add anyway feature?
                 case "database":
                     $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.database);
             }
@@ -161,6 +160,7 @@ function AddStudent() {
                 self.setID(result.data.id);
                 self.arrayFunc("add");
             }
+            cancelClicked();
 
         }, function (error) {
             if (error.status === 400) {
@@ -208,22 +208,31 @@ function AddStudent() {
 
     //going to need a data object for logged in authentication.
     self.ajaxDelete = function () {
-        $.ajax({
+        var deleteStudent = $.ajax({
             dataType: 'json',
             method: 'DELETE',
-            url: "/api/delete/" + self.student_id,
-            success: function (result) {
-                console.log('success', result);
-                if (result.data) {
-                    console.log('everything is fine');
-                } else {
-                    //console.log(result.error.responseJSON);
-                }
-            },
-            error: function (error) {
-                console.log(error.responseJSON);
-            }
+            url: "/api/delete/" + self.student_id
         });
+
+        deleteStudent.then(function (result) {
+            console.log('success', result);
+            if (result.data) {
+                //console.log('everything is fine');
+            } else {
+                //console.log(result.error.responseJSON);
+            }
+        }, function (error) {
+            if (error.status === "500") {
+                console.log(error.responseJSON);
+                var error = {
+                    type: "delete"
+
+                }
+            } else {
+                //remove the alert, and just make append "error in query" into the dom.
+                alert("error in query");
+            }
+        })
     };
 }
 
@@ -264,7 +273,7 @@ function populate() {
 function ErrorHandling(object) {
 
     console.log(object);
-
+    //just use one big switch statement.
     var errors = {};
 
     if (object.type == "regex") {
@@ -294,7 +303,7 @@ function ErrorHandling(object) {
 
     if (object.type == "database") {
         errors.database = object.errors;
-        formObject.error()
+        formObject.error(errors)
     }
 }
 

@@ -37,8 +37,8 @@ func GetStudents() ([]Student, error) {
 	session, err := getDBConnection()
 
 	if err != nil {
-		panic(err)
-		//return nil, err
+		//panic(err)
+		return nil, err
 	}
 	defer session.Close()
 
@@ -101,8 +101,9 @@ func DeleteStudents(id string) bool {
 	session, err := getDBConnection()
 
 	if err != nil {
-		fmt.Println("Error in AddStudents function")
-		panic(err)
+		//fmt.Println("Error in AddStudents function")
+		//panic(err)
+		return nil, err
 	}
 	defer session.Close()
 
@@ -110,7 +111,7 @@ func DeleteStudents(id string) bool {
 
 	if err := c.Remove(bson.M{"_id": bson.ObjectIdHex(id)}); err != nil {
 		fmt.Println(err);
-		return false
+		return ErrorString{"there was an error in the DB connection"}
 	} else {
 		return true
 	}

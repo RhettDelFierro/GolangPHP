@@ -1,6 +1,6 @@
 package controllers
 
-import(
+import (
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"html/template"
@@ -16,7 +16,7 @@ type gradesController struct {
 	template *template.Template
 }
 
-func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request){
+func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
@@ -28,27 +28,41 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 
 	//getting students from database.
 	//slice of Student (not empty)
-
 	students, err := models.GetStudents()
+
+	//database error:
 	if err != nil {
 		sd.Error = append(sd.Error, "could not get records, error in DB") //helper variable for error message
+		responseWriter.Header().Add("Content-Type", "application/json")
+		responseData, err := json.Marshal(sd)
+
+		if err != nil {
+			responseWriter.WriteHeader(404)
+		}
+
+		responseWriter.WriteHeader(500)
+		responseWriter.Write(responseData)
+
+		//everything is fine:
+	} else {
+		studentsVM := []viewmodels.Student{} //slice
+
+		for _, student := range students {
+			studentsVM = append(studentsVM, helper.StudentsToViewModel(student))
+		}
+
+		sd.Success = true
+		sd.Data = studentsVM
+		responseWriter.Header().Add("Content-Type", "application/json")
+		responseData, err := json.Marshal(sd)
+
+		if err != nil {
+			responseWriter.WriteHeader(404)
+		}
+
+		responseWriter.Write(responseData)
+
 	}
-	studentsVM := []viewmodels.Student{} //slice
-
-	for _, student := range students {
-		studentsVM = append(studentsVM, helper.StudentsToViewModel(student))
-	}
-
-	sd.Success = true
-	sd.Data = studentsVM
-	responseWriter.Header().Add("Content-Type", "application/json")
-	responseData, err := json.Marshal(sd)
-
-	if err != nil {
-		responseWriter.WriteHeader(404)
-	}
-
-	responseWriter.Write(responseData)
 }
 
 //just have to look for the id.

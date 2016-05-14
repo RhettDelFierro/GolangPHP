@@ -1,3 +1,5 @@
+//do not forget you will eventually need authentication rights for all CRUD operations other than GET.
+
 var formObject = {
     student_name: "",
     student_course: "",
@@ -16,15 +18,13 @@ var formObject = {
         var student = new AddStudent();
         student.ajaxAdd(self.student_name, self.student_course, self.student_grade);
         cancelClicked();
-        //console.log("may be a problem here:     ", student)
+
     },
     populate: function () {
         populate();
     },
     error: function (errorObject) {
-        console.log(errorObject);
         for (err in errorObject) {
-            console.log(err);
             switch (err) {
                 case "name":
                     $("#regex_name").removeClass("hidden").addClass("show").text(errorObject.name);
@@ -34,6 +34,9 @@ var formObject = {
                     $("#regex_grade").removeClass("hidden").addClass("show").text(errorObject.grade);
                 case "duplicate":
                     $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.duplicate);
+                    //add anyway feature?
+                case "database":
+                    $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.database);
             }
         }
     }
@@ -60,7 +63,6 @@ function Dom(name, course, grade, id) {
 
 var table = {
     makeElement: function (domElement) { //should be for the table.
-        console.log("have the table data");
         $(domElement.trow).append(domElement.name).append(domElement.course).append(domElement.grade).append(domElement.button);
         $('tbody').append(domElement.trow);
         //this.array.push(domElement)
@@ -80,7 +82,6 @@ var student_collection = {
             total_grades += parseInt(this.array[i].student_grade);
             average = Math.round(((total_grades) / (i + 1)));
         }
-        console.log("average = ", average);
         $('.avgGrade').text(average);
     },
     handleArray: function (added) {
@@ -153,7 +154,6 @@ function AddStudent() {
         });
 
         addStudent.then(function (result) {
-            console.log('success!!', result);
             if (result.data) {
                 self.setName(result.data.name);
                 self.setCourse(result.data.course);
@@ -163,14 +163,11 @@ function AddStudent() {
             }
 
         }, function (error) {
-            //console.log(error);
-            //console.log("able to get error object", error);
             if (error.status === 400) {
-                console.log(error);
                 if (error.responseJSON.error[0] === "Records show you've already recorded this entry") {
                     var error = {
                         type: "duplicate",
-                        errors: error.responseJSON.error
+                        errors: error.responseJSON.error[0]
                     };
                     ErrorHandling(error);
                 } else {
@@ -178,12 +175,10 @@ function AddStudent() {
                         type: "regex",
                         errors: error.responseJSON.error
                     };
-                    console.log("sending to error: ", error.errors);
                     ErrorHandling(error);
                 }
             }
             if (error.status === 500) {
-                console.log(error);
                 var error = {
                     type: "database",
                     errors: error.responseJSON.error
@@ -199,10 +194,8 @@ function AddStudent() {
             case "add":
                 student_collection.handleArray(self);
                 self.addToDom();
-                //console.log("student_colleciton:", student_collection.array);
                 break;
             case "delete":
-                console.log("ajaxDelete() checked out, onto student_collection");
                 student_collection.deleteSelf(self.id());
                 break;
         }
@@ -213,14 +206,10 @@ function AddStudent() {
         element.sendToTable();
     };
 
+    //going to need a data object for logged in authentication.
     self.ajaxDelete = function () {
         $.ajax({
             dataType: 'json',
-            data: {
-                //api_key: "midlWD1sMl",
-                //id: self.student_id
-                //maybe take this info throw it into a loop into an array and post that.
-            },
             method: 'DELETE',
             url: "/api/delete/" + self.student_id,
             success: function (result) {
@@ -230,7 +219,6 @@ function AddStudent() {
                 } else {
                     //console.log(result.error.responseJSON);
                 }
-
             },
             error: function (error) {
                 console.log(error.responseJSON);
@@ -241,33 +229,34 @@ function AddStudent() {
 
 //put this on the form object.
 function populate() {
-    $.ajax({
-            dataType: 'json',
-            //data: {
-            //    api_key: "midlWD1sMl"
-            //},
-            method: 'POST',
-            url: '/api/grades',
-            success: function (result) {
-                console.log('success', result);
-                console.log(result);
-                if (result.data) {
-                    for (i = 0; i < result.data.length; i++) {
-                        var student = new AddStudent();
-                        student.setName(result.data[i].name);
-                        student.setCourse(result.data[i].course);
-                        student.setGrade(result.data[i].grade);
-                        student.setID(result.data[i].id);
-                        student.arrayFunc("add");
-                    }
-                    student_collection.calculateAverage()
-                } else {
-                    //console.log(result.error.responseJSON);
+    var populateStudents = $.ajax({
+        dataType: 'json',
+        method: 'GET',
+        url: '/api/grades'
+    });
+
+
+    populateStudents.then(function (result) {
+            console.log('success', result);
+            console.log(result);
+            if (result.data) {
+                for (i = 0; i < result.data.length; i++) {
+                    var student = new AddStudent();
+                    student.setName(result.data[i].name);
+                    student.setCourse(result.data[i].course);
+                    student.setGrade(result.data[i].grade);
+                    student.setID(result.data[i].id);
+                    student.arrayFunc("add");
                 }
-            },
-            error: function (error) {
-                console.log(error.responseJSON);
+                student_collection.calculateAverage()
             }
+        }, function (error) {
+            console.log(error.responseJSON);
+            var error = {
+                type: "database",
+                errors: error.responseJSON.error[0]
+            };
+            ErrorHandling(error)
         }
     )
 }
@@ -282,30 +271,31 @@ function ErrorHandling(object) {
         for (var i = 0; i < object.errors.length; i++) {
 
             if (object.errors[i] === "Invalid name, please use only letters and numbers") {
-                errors.name = "Invalid name, please use only letters and numbers"
+                errors.name = object.errors[i];
                 console.log("do we have the regex");
             }
 
             if (object.errors[i] === "Invalid course name, please use only letters and numbers") {
-                errors.course = "Invalid course name, please use only letters and numbers"
+                errors.course = object.errors[i];
             }
 
             if (object.errors[i] === "Only numbers 0-100") {
-                errors.grade = "Only numbers 0-100"
+                errors.grade = object.errors[i];
             }
 
         }
-        console.log(errors);
         formObject.error(errors);
     }
 
     if (object.type == "duplicate") {
-        console.log("we go here to duplicate");
-        errors.duplicate = "Records show you've already recorded this entry";
-        console.log(errors);
+        errors.duplicate = object.errors;
         formObject.error(errors);
     }
 
+    if (object.type == "database") {
+        errors.database = object.errors;
+        formObject.error()
+    }
 }
 
 function reset() {

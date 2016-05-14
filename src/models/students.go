@@ -23,16 +23,11 @@ type DBStudent struct {
 }
 
 type DeleteError struct {
-	Id string
 	E string
 }
 
 func (this DeleteError) Error() string {
 	return this.E
-}
-
-func (this DeleteError) ErrorID() string {
-	return this.Id
 }
 
 //getter
@@ -112,13 +107,13 @@ func AddStudents(student *Student) ([]Student, error) {
 
 //can throw an error if the id doesn't match anything. They may have possibly deleted it before
 //and it may still be there in the DOM.
-func DeleteStudents(id string) DeleteError {
+func DeleteStudents(id string) error {
 	session, err := getDBConnection()
 
 	if err != nil {
 		//fmt.Println("Error in AddStudents function")
 		//panic(err)
-		return nil, err
+		return err
 	}
 	defer session.Close()
 
@@ -126,7 +121,7 @@ func DeleteStudents(id string) DeleteError {
 
 	if err := c.Remove(bson.M{"_id": bson.ObjectIdHex(id)}); err != nil {
 		//fmt.Println(err);
-		return DeleteError{id, "There was an error deleting the student, please refresh the table."}
+		return DeleteError{"There was an error deleting the student. This student may not exist in the DB. Please refresh the table."}
 	} else {
 		return nil
 	}

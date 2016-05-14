@@ -36,6 +36,8 @@ var formObject = {
                 //add anyway feature?
                 case "database":
                     $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.database);
+                case "delete":
+                    $("#extra_error").removeClass("hidden").addClass("show").text(errorObject.database);
             }
         }
     }
@@ -225,9 +227,11 @@ function AddStudent() {
             if (error.status === "500") {
                 console.log(error.responseJSON);
                 var error = {
-                    type: "delete"
-
-                }
+                    type: "delete",
+                    id: error.responseJSON.error[0],
+                    errors: error.resonseJSON.error[1]
+                };
+                ErrorHandling(error);
             } else {
                 //remove the alert, and just make append "error in query" into the dom.
                 alert("error in query");
@@ -304,6 +308,12 @@ function ErrorHandling(object) {
     if (object.type == "database") {
         errors.database = object.errors;
         formObject.error(errors)
+    }
+
+    if (object.type == "delete") {
+        errors.delete = object.errors;
+        errors.id = object.id;
+        formObject.error(errors);
     }
 }
 

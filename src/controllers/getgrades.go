@@ -80,10 +80,11 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 
 	//either getting back nil or error
 	deleted := models.DeleteStudents(idRaw)
-	if (!deleted) {
+	if deleted == nil {
 		sd.Success = true
 		sd.Data = deleted
 		responseWriter.Header().Add("Content-Type", "application/json")
+		responseWriter.WriteHeader(200)
 		responseData, err := json.Marshal(sd)
 		if err != nil {
 			fmt.Println("404 error", err)
@@ -95,8 +96,8 @@ func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Reque
 	} else { //can throw an error if the id doesn't match anything.
 		responseWriter.Header().Add("Content-Type", "application/json")
 		responseWriter.WriteHeader(500)
-		sd.Data = deleted.ErrorID()
-		sd.Error = append(sd.Error, deleted.Error()) //helper variable for error message
+		//sd.Data = deleted.ErrorID()
+		sd.Error = append(sd.Error, vars["id"], deleted.Error()) //helper variable for error message
 		responseData,_ := json.Marshal(sd)
 		responseWriter.Write(responseData)
 	}

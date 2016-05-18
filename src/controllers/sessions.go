@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"github.com/gorilla/sessions"
-	"fmt"
+	//"fmt"
 )
 
-var store = sessions.NewCookieStore([]byte("flabblegabble"))
+//should come up with a secret key and read from a file.
+var store = sessions.NewCookieStore([]byte(""))
 
 func loginUser(w http.ResponseWriter, req *http.Request){
 	responseWriter := util.GetResponseWriter(w, req)

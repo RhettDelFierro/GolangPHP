@@ -25,9 +25,9 @@ func Inject(tmpl *template.Template) {
 	router.HandleFunc("/index", hc.get)
 
 	//addStudents.
-	ac := new(addedController) //gradesController is package level so you're good.
-	ac.template = tmpl.Lookup("index.html") //index.html here because it is set to include the data injected.
-	router.HandleFunc("/api/add", ac.post) //anything that goes to /grades will be handled by ajaxMethods.
+	//ac := new(addedController) //gradesController is package level so you're good.
+	//ac.template = tmpl.Lookup("index.html") //index.html here because it is set to include the data injected.
+	router.HandleFunc("/api/add", postStudent) //anything that goes to /grades will be handled by ajaxMethods.
 
 
 	gradesController := new(gradesController)
@@ -35,7 +35,8 @@ func Inject(tmpl *template.Template) {
 	router.HandleFunc("/api/delete/{id}", gradesController.deleteGrade)
 
 	//session
-	router.HandleFunc("/session", sessionRoutes);
+	router.HandleFunc("/login", loginUser);
+	router.HandleFunc("/logout", logoutUser)
 
 
 

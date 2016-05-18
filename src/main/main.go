@@ -39,6 +39,8 @@ func init() {
 //the HandlerFunc inject() was defined here.
 
 
+//Inject is pretty much where all the route handling takes place.
+//Don't know if we need the http.ListenAndServe function in main.
 func main() {
 	//http.HandleFunc("/", inject)
 	controllers.Inject(tmpl)

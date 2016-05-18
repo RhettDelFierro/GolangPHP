@@ -28,7 +28,7 @@ type JSON struct {
 
 //Post adds the student.
 //************you still have to serve the template. But I think this is more for Populate than Add. See the getgrades.go controller.
-func (this *addedController) post(w http.ResponseWriter, req *http.Request) {
+func postStudent(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 

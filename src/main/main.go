@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"html/template"
 	"log"
-	//"fmt"
-	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers"
 )
 

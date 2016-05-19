@@ -1,11 +1,8 @@
 package models
 
 import (
-	//"crypto/sha256" //use oauth2
-	//"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"fmt"
-	//"errors"
 )
 //students kept private
 type Student struct {

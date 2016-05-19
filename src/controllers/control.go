@@ -35,8 +35,6 @@ func Inject(tmpl *template.Template) {
 	router.HandleFunc("/api/delete/{id}", gradesController.deleteGrade)
 
 	//session
-	router.HandleFunc("/users/login", loginUser)
-	router.HandleFunc("/users/logout", logoutUser)
 
 	router.HandleFunc("/users/register", registerUser)
 

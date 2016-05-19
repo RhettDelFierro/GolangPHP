@@ -1,35 +1,19 @@
 package models
 
 import (
-
-)
-import (
 	"gopkg.in/mgo.v2/bson"
-	"github.com/RhettDelFierro/GolangPHP/src/controllers"
 	"golang.org/x/crypto/bcrypt"
 	"fmt"
 )
 
 type UserInfo struct{
-	Id	bson.ObjectId	`bson:"_id, omitempty" json:"id"`
+	Id	bson.ObjectId	`bson:"_id,omitempty" json:"id"`
 	UserName string		`json:"username"`
-	Password string		`json:"password, omitempty"`
+	Password string		`json:"password,omitempty"`
 	Email	string		`json:"email"`
-	HashPassword	[]byte	`json:"hashpassword, omitempty"`
+	HashPassword	[]byte	`json:"hashpassword,omitempty"`
 }
 
-func GetUser(user controllers.User) {
-	session, err := getDBConnection()
-
-	if err != nil {
-		//panic(err)
-		return nil, err
-	}
-	defer session.Close()
-
-
-
-}
 //traight up take daata from json.
 //adding a new user document into mongoDB.
 func RegisterUser(user *UserInfo) error{
@@ -50,12 +34,25 @@ func RegisterUser(user *UserInfo) error{
 
 	if err != nil {
 		//panic(err)
-		return nil, err
+		return err
 	}
 	defer session.Close()
 
 	c := session.DB("taskdb").C("users")
-
-	err = c.Insert(&user)
+	fmt.Println(user.UserName)
+	err = c.Insert(user)
 	return err
+}
+
+func GetUser(user *UserInfo) error{
+	session, err := getDBConnection()
+
+	if err != nil {
+		//panic(err)
+		return err
+	}
+	defer session.Close()
+
+	return nil
+
 }

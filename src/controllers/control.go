@@ -36,8 +36,8 @@ func Inject(tmpl *template.Template) {
 
 	//session
 
-	router.HandleFunc("/users/register", registerUser)
-
+	router.HandleFunc("/users/register", RegisterUser)
+	router.HandleFunc("/users/login", LoginUser)
 
 
 

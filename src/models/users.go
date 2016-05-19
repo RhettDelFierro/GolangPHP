@@ -44,15 +44,25 @@ func RegisterUser(user *UserInfo) error{
 	return err
 }
 
-func GetUser(user *UserInfo) error{
+func CheckUser(user *UserInfo)  (u UserInfo, err error){
 	session, err := getDBConnection()
 
 	if err != nil {
 		//panic(err)
-		return err
+		return nil, err
 	}
 	defer session.Close()
+	c := session.DB("taskdb").C("users")
+	err = c.Find(bson.M{"email": user.Email}).One(&u)
+	if err != nil {
+		fmt.Println("no records")
+		return
+	}
+	err = bcrypt.CompareHashAndPassword(u.HashPassword, []byte(user.Password))
+	if err != nil {
+		u = UserInfo{}
+	}
 
-	return nil
+	return
 
 }

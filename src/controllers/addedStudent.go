@@ -43,6 +43,8 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 		"course": req.FormValue("course"),
 		"grade": req.FormValue("grade"),
 	}
+
+	fmt.Println(postMap)
 	//fmt.Println("here's postmap: ", postMap)
 	//newStudent := &helper.NewStudent{}
 	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")

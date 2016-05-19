@@ -6,17 +6,70 @@ import (
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"github.com/gorilla/sessions"
 	//"fmt"
+	"encoding/json"
+	"gopkg.in/mgo.v2/bson"
+	"github.com/RhettDelFierro/GolangPHP/src/models"
+	"fmt"
 )
+
+type User struct {
+	Data	models.UserInfo	`json:"data"`
+}
+
 
 //should come up with a secret key and read from a file.
 var store = sessions.NewCookieStore([]byte(""))
 
+
+//there is no jwt for registerUser required.
+func registerUser(w http.ResponseWriter, req *http.Request) {
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+
+	user := User{}
+
+	if req.Method == "POST" {
+		//after this, you have a User{} that has a field Data
+		//which is a struct of models.UserInfo{}
+		//that UserInfo{} struct's fields get filled here:
+		err := json.NewDecoder(req.Body).Decode(&user)
+		//take care of writing the rest of the error later
+		if err != nil {
+			//422 for json error?
+			fmt.Println("1st error in registerUser: json.Decode")
+			w.WriteHeader(422)
+		}
+		userRegister := &user.Data
+
+		//send to DB:
+		models.RegisterUser(userRegister)
+		//make sure not to send the hashed pw:
+		userRegister.HashPassword = nil
+		if j, err := json.Marshal(User{Data: *userRegister}); err != nil {
+			fmt.Println("2nd error in registerUser. json.Marshal")
+			w.WriteHeader(422)
+			return
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(200)
+			w.Write(j)
+		}
+	}
+}
+
 func loginUser(w http.ResponseWriter, req *http.Request){
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
-	//if they submitted a form
-	//if they don't it'll be a GET request
-	//and the code in the if block won't apply:
+
+	var user User
+	err := json.NewDecoder(req.Body).Decode(&user)
+	if err != nil {
+		//422 for json error?
+		w.WriteHeader(422)
+	}
+
+	//make call to DB to get user info.
+
 	if req.Method == "POST" {
 		//we're getting the session out of the user's cookies (because it's stored there):
 		//we're decrypting the cookie.

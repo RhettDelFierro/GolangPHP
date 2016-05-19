@@ -11,13 +11,13 @@ import (
 
 //this is pretty much where all the route handlers are.
 func Inject(tmpl *template.Template) {
-	router := mux.NewRouter()
 
 	//I think we can kill the templating?
 
 	//the regular home page, should not load data.
 	hc := new(homeController)
 	hc.template = tmpl.Lookup("index.html") //may need to use the full path
+	router := mux.NewRouter()
 	router.HandleFunc("/index", hc.get)
 
 	//public.
@@ -31,11 +31,11 @@ func Inject(tmpl *template.Template) {
 	router.PathPrefix("/api/delete/{id}").Handler(
 		negroni.New(
 			negroni.HandlerFunc(AuthorizeToken),
-			negroni.Wrap(deleteGrade)))
+			negroni.Wrap(http.HandlerFunc(deleteGrade))))
 	router.PathPrefix("/api/add").Handler(
 		negroni.New(
 		negroni.HandlerFunc(AuthorizeToken),
-		negroni.Wrap(postStudent)))
+		negroni.Wrap(http.HandlerFunc(postStudent))))
 
 
 	//necessary stuff. To set up the above.

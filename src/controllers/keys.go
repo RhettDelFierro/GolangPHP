@@ -56,7 +56,7 @@ func GenerateToken(name, role string) (string, error) {
 }
 
 //Validate the tokens on each route that needs them
-func AuthorizeToken(w http.ResponseWriter, req *http.ResponseWriter, next http.HandlerFunc){
+func AuthorizeToken(w http.ResponseWriter, req *http.Request, next http.HandlerFunc){
 	//checking the token from the request.
 	//make sure to put Authorization: Bearer <token info> in header on front end.
 	token, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error){

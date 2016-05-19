@@ -49,7 +49,7 @@ func CheckUser(user *UserInfo)  (u UserInfo, err error){
 
 	if err != nil {
 		//panic(err)
-		return nil, err
+		return u, err
 	}
 	defer session.Close()
 	c := session.DB("taskdb").C("users")

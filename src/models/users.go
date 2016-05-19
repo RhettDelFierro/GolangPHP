@@ -44,7 +44,7 @@ func RegisterUser(user *UserInfo) error{
 	return err
 }
 
-func CheckUser(user *UserInfo)  (u UserInfo, err error){
+func CheckUser(user UserInfo)  (u UserInfo, err error){
 	session, err := getDBConnection()
 
 	if err != nil {
@@ -61,6 +61,7 @@ func CheckUser(user *UserInfo)  (u UserInfo, err error){
 	err = bcrypt.CompareHashAndPassword(u.HashPassword, []byte(user.Password))
 	if err != nil {
 		u = UserInfo{}
+		fmt.Println("Hashpassword error")
 	}
 
 	return

@@ -5,13 +5,12 @@ import(
 	"net/http"
 	"time"
 	"github.com/dgrijalva/jwt-go"
-	"io"
 	"fmt"
 )
 
 const (
-	privKey = "keys/app.rsa"
-	pubKey = "keys/app.rsa.pub"
+	privKey = "src/keys/app.rsa"
+	pubKey = "src/keys/app.rsa.pub"
 )
 
 var (
@@ -36,8 +35,11 @@ func initKeys(){
 
 //generating the token to
 func GenerateToken(name, role string) (string, error) {
-	t := jwt.New(jwt.GetSigningMethod("RSA256"))
+	initKeys()
+	fmt.Println("here's pubkey:", verifyKey)
+	t := jwt.New(jwt.GetSigningMethod("RS256"))
 
+	fmt.Println("here's name", name)
 
 	//Setting the claims. This info will be used through the app.
 	t.Claims["iss"] = "admin"
@@ -47,8 +49,11 @@ func GenerateToken(name, role string) (string, error) {
 	}{name, role}
 
 	t.Claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	fmt.Println(t.Claims)
 	tokenString, err := t.SignedString(signKey)
+	fmt.Println("Here's tokenstring:", tokenString)
 	if err != nil {
+		fmt.Println("the error inside  GenerateToken")
 		return "", err
 	}
 
@@ -72,12 +77,12 @@ func AuthorizeToken(w http.ResponseWriter, req *http.Request, next http.HandlerF
 			switch vErr.Errors {
 			case jwt.ValidationErrorExpired:
 				w.WriteHeader(401)
-				w.Write("jwt has expired")
+				w.Write([]byte("jwt has expired"))
 				return
 
 			default:
 				w.WriteHeader(500)
-				w.Write("error parsing access Token")
+				w.Write([]byte("error parsing access Token"))
 				return
 			}
 
@@ -92,7 +97,7 @@ func AuthorizeToken(w http.ResponseWriter, req *http.Request, next http.HandlerF
 		next(w, req)
 	} else {
 		w.WriteHeader(401)
-		w.Write("Invalid Access Token")
+		w.Write([]byte("Invalid Access Token"))
 	}
 }
 

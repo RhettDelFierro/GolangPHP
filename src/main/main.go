@@ -41,6 +41,7 @@ func init() {
 //Don't know if we need the http.ListenAndServe function in main.
 func main() {
 	//http.HandleFunc("/", inject)
+
 	controllers.Inject(tmpl)
 	http.ListenAndServe(":8080", nil)
 }

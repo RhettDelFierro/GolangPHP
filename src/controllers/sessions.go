@@ -80,11 +80,11 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 	var token string
 
 	if req.Method == "POST" {
-		err := json.Decoder(req.Body).Decode(&login)
+		err := json.NewDecoder(req.Body).Decode(&login)
 		if err != nil {
 			//422 for json error?
 			fmt.Println(err)
-			fmt.Println("1st error in registerUser: json.Decode")
+			fmt.Println("1st error in LoginUser: json.Decode")
 			w.WriteHeader(422)
 			return
 		}
@@ -98,18 +98,22 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 	//database check:
 	if user, err := models.CheckUser(loginUser); err != nil {
 		//unauthorized error message
+		fmt.Println("Error after DB check")
 		w.WriteHeader(401)
 		return
 	} else {
 		//user is verified, generate jwt:
+		fmt.Println("user.Email:", user.Email)
 		token, err = GenerateToken(user.Email, "teacher")
 		if err != nil {
+			fmt.Println("Error generating token")
 			w.WriteHeader(500)
-			w.Write("Could not generate token")
+			w.Write([]byte("Could not generate token"))
 			return
 		}
 
 		//don't send the HashPassword.
+		fmt.Println("heres the token:", token)
 		w.Header().Set("Content-Type", "application/json")
 		user.HashPassword = nil
 		//send this token and code to the front end.
@@ -124,7 +128,7 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 		j, err := json.Marshal(AuthTokenSent{Data: authUser})
 		if err != nil {
 			w.WriteHeader(500)
-			w.Write("An unexpected error has occured. Json not wrote.")
+			w.Write([]byte("An unexpected error has occured. Json not wrote."))
 			return
 		} else {
 			w.WriteHeader(200)

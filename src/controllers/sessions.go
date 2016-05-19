@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 	"fmt"
+	"go/token"
 )
 
 type User struct {
@@ -21,6 +22,15 @@ type LoginResource struct {
 type LoginModel struct {
 	Email		string `json:"email"`
 	Password	string `json:"password"`
+}
+
+type AuthToken struct {
+	User	models.UserInfo `json:"user"`
+	Token	string	    	`json:"token"`
+}
+
+type AuthTokenSent struct {
+	Data AuthToken	`json:"data"`
 }
 
 //there is no jwt for registerUser required.
@@ -93,6 +103,25 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(500)
 			w.Write("Could not generate token")
 			return
+		}
+
+		//don't send the HashPassword.
+		w.Header().Set("Content-Type", "application/json")
+		user.HashPassword = nil
+		//send the token and code to the front end.
+		authUser := AuthToken{
+			User: user,
+			Token: token,
+
+		}
+		j, err := json.Marshal(AuthTokenSent{Data: authUser})
+		if err != nil {
+			w.WriteHeader(500)
+			w.Write("An unexpected error has occured. Json not wrote.")
+			return
+		} else {
+			w.WriteHeader(200)
+			w.Write(j)
 		}
 	}
 }

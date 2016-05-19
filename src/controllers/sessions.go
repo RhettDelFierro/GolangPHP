@@ -8,29 +8,29 @@ import (
 	"encoding/json"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 	"fmt"
-	"go/token"
+	//"go/token"
 )
 
 type User struct {
-	Data	models.UserInfo	`json:"data"`
+	Data models.UserInfo        `json:"data"`
 }
 
 type LoginResource struct {
-	Data	LoginModel	`json:"data"`
+	Data LoginModel        `json:"data"`
 }
 
 type LoginModel struct {
-	Email		string `json:"email"`
-	Password	string `json:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type AuthToken struct {
-	User	models.UserInfo `json:"user"`
-	Token	string	    	`json:"token"`
+	User  models.UserInfo `json:"user"`
+	Token string                `json:"token"`
 }
 
 type AuthTokenSent struct {
-	Data AuthToken	`json:"data"`
+	Data AuthToken        `json:"data"`
 }
 
 //there is no jwt for registerUser required.
@@ -120,6 +120,7 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 		}
 
 		//taken the response on the front end and throw it in the header.
+		//include the header for all Update/Add/Delete CRUD methods.
 		j, err := json.Marshal(AuthTokenSent{Data: authUser})
 		if err != nil {
 			w.WriteHeader(500)

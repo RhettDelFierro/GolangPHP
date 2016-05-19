@@ -95,3 +95,5 @@ func AuthorizeToken(w http.ResponseWriter, req *http.ResponseWriter, next http.H
 		w.Write("Invalid Access Token")
 	}
 }
+
+//wrap AuthorizeToken on every Update/Add/Delete CRUD method.

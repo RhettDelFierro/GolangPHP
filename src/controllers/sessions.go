@@ -73,8 +73,10 @@ func RegisterUser(w http.ResponseWriter, req *http.Request) {
 func LoginUser(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
-
+	//login will be the info taken from login form
 	var login LoginResource
+	//token for the jwt token once authentication from login
+	//is confirmed.
 	var token string
 
 	if req.Method == "POST" {
@@ -87,17 +89,19 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-
+	//authenticate user
 	loginModel := login.Data
 	loginUser := models.UserInfo{
 		Email: loginModel.Email,
 		Password: loginModel.Password,
 	}
+	//database check:
 	if user, err := models.CheckUser(loginUser); err != nil {
 		//unauthorized error message
 		w.WriteHeader(401)
 		return
 	} else {
+		//user is verified, generate jwt:
 		token, err = GenerateToken(user.Email, "teacher")
 		if err != nil {
 			w.WriteHeader(500)
@@ -108,12 +112,14 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 		//don't send the HashPassword.
 		w.Header().Set("Content-Type", "application/json")
 		user.HashPassword = nil
-		//send the token and code to the front end.
+		//send this token and code to the front end.
 		authUser := AuthToken{
 			User: user,
 			Token: token,
 
 		}
+
+		//taken the response on the front end and throw it in the header.
 		j, err := json.Marshal(AuthTokenSent{Data: authUser})
 		if err != nil {
 			w.WriteHeader(500)

@@ -16,7 +16,7 @@ type gradesController struct {
 	template *template.Template
 }
 
-func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request) {
+func getGrades(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
@@ -66,7 +66,7 @@ func (this *gradesController) getGrades(w http.ResponseWriter, req *http.Request
 }
 
 //just have to look for the id.
-func (this *gradesController) deleteGrade(w http.ResponseWriter, req *http.Request) {
+func deleteGrade(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 	fmt.Println("we got to delete")

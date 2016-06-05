@@ -22,17 +22,18 @@ var tmpl *template.Template
 //parse the html template files
 func init() {
 	var err error
-	tmpl, err = template.ParseFiles("templates/index.html")
+	tmpl, err = template.ParseFiles("public/dist/index.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	tmpl, err = tmpl.ParseFiles("templates/_tablerows.html")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	//fmt.Println(*tmpl)
-
 }
+
+//func serveSingle(pattern string, filename string) {
+//	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+//		http.ServeFile(w, r, filename)
+//	})
+//}
+
 
 //the HandlerFunc inject() was defined here.
 
@@ -41,7 +42,7 @@ func init() {
 //Don't know if we need the http.ListenAndServe function in main.
 func main() {
 	//http.HandleFunc("/", inject)
-
 	controllers.Inject(tmpl)
+	//serveSingle("/public/dist/index_bundle.js", "./public/build/index.js")
 	http.ListenAndServe(":8080", nil)
 }

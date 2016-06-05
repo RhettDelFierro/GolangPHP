@@ -28,13 +28,6 @@ func init() {
 	}
 }
 
-//func serveSingle(pattern string, filename string) {
-//	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-//		http.ServeFile(w, r, filename)
-//	})
-//}
-
-
 //the HandlerFunc inject() was defined here.
 
 
@@ -43,6 +36,5 @@ func init() {
 func main() {
 	//http.HandleFunc("/", inject)
 	controllers.Inject(tmpl)
-	//serveSingle("/public/dist/index_bundle.js", "./public/build/index.js")
 	http.ListenAndServe(":8080", nil)
 }

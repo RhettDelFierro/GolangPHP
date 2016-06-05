@@ -5,7 +5,6 @@ import (
 	//"github.com/RhettDelFierro/GolangPHP/src/viewmodels"
 	"html/template"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
-	"fmt"
 )
 
 type homeController struct {
@@ -14,7 +13,6 @@ type homeController struct {
 
 func (this *homeController) get(w http.ResponseWriter, req *http.Request){
 	//vm := viewmodels.GetGrades()
-	fmt.Println("Did we get to the method?")
 	w.Header().Add("Content Type", "text/html")
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()

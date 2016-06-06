@@ -8,6 +8,7 @@ var Button = Bootstrap.Button;
 var NavItem = Bootstrap.NavItem;
 var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
+var RegisterFormContainer = require("../containers/RegisterFormContainer");
 
 var styles ={
     signedIn: {
@@ -36,6 +37,7 @@ function LoggedIn(props) {
 
 function NotLoggedIn(props) {
     //remember, two different FormContainers.
+    //throw in the RegisterFormContainer here?
     return (
         <Navbar.Collapse>
             <Nav>
@@ -48,13 +50,11 @@ function NotLoggedIn(props) {
                 </Navbar.Form>
             </Nav>
             <Nav pullRight>
-                <NavItem eventKey={1} href="#">Link Right</NavItem>
-                <NavItem eventKey={2} href="#">Link Right</NavItem>
+                <RegisterFormContainer />
             </Nav>
         </Navbar.Collapse>
     )
 }
-
 
 function LoginForm(props) {
         return props.isLoggedIn === true

@@ -7,7 +7,6 @@ import (
 	"bufio"
 	"github.com/gorilla/mux"
 	"github.com/codegangsta/negroni"
-	"fmt"
 )
 
 //this is pretty much where all the route handlers are.
@@ -52,7 +51,6 @@ func Inject(tmpl *template.Template) {
 }
 
 func javascript(w http.ResponseWriter, req *http.Request){
-	fmt.Println("we're here")
 	path := "public/dist/" + req.URL.Path
 
 	f, err := os.Open(path)

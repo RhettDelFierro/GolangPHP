@@ -1,5 +1,5 @@
 var React = require("react");
-var Navbar = require("../components/Navbar");
+var NavigationBar = require("../components/NavigationBar");
 var PropTypes = React.PropTypes;
 
 var NavbarContainer = React.createClass({
@@ -9,7 +9,7 @@ var NavbarContainer = React.createClass({
     },
     render: function () {
         return (
-            <Navbar isLoggedIn={this.props.isLoggedIn}/>
+            <NavigationBar isLoggedIn={this.props.isLoggedIn} user={this.props.user}/>
         )
     }
 });

@@ -1,24 +1,32 @@
 var React = require('react');
 var HomeContainer = require("./HomeContainer");
+var NavbarContainer = require("./NavbarContainer");
 
 var MainContainer = React.createClass({
     getInitialState: function () {
         return {
-            isLoggedIn: false
+            isLoggedIn: true,
+            username: "Somebody"
         }
     },
-    handleUpdateLogin: function () {
+    handleUpdateLogin: function (username) {
         this.setState({
-            isLoggedIn: true
+            isLoggedIn: true,
+            username: username
         })
     },
     render: function () {
         //<HomeContainer> is a child.
         return (
             <div className="container-fluid">
-                <NavBarContainer onUpdateLogin={this.handleUpdateLogin} isLoggedIn={this.state.isLoggedIn}/>
+                <NavbarContainer onUpdateLogin={this.handleUpdateLogin}
+                                 isLoggedIn={this.state.isLoggedIn}
+                                 user={this.state.username} />
 
-                {React.cloneElement(this.props.children, {isLoggedIn: this.state.isLoggedIn})}
+                {React.cloneElement(this.props.children, {
+                    isLoggedIn: this.state.isLoggedIn,
+                    user: this.state.username
+                })}
             </div>
         )
     }

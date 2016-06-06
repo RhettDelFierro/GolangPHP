@@ -5,11 +5,14 @@ var PropTypes = React.PropTypes;
 var NavbarContainer = React.createClass({
     propTypes: {
         isLoggedIn: PropTypes.bool.isRequired,
-        onUpdateLogin: PropTypes.func.isRequired
+        onUpdateLogin: PropTypes.func.isRequired,
+        user: PropTypes.string
     },
     render: function () {
         return (
-            <NavigationBar isLoggedIn={this.props.isLoggedIn} user={this.props.user}/>
+            <NavigationBar isLoggedIn={this.props.isLoggedIn}
+                           user={this.props.user}
+                           onUpdateLogin={this.props.onUpdateLogin}/>
         )
     }
 });

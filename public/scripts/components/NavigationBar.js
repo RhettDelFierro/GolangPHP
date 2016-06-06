@@ -1,6 +1,7 @@
 var React = require("react");
 var PropTypes = React.PropTypes;
 var Bootstrap = require("react-bootstrap");
+var LoginFormContainer = require("../containers/LoginFormContainer");
 var Navbar = Bootstrap.Navbar;
 var Nav = Bootstrap.Nav;
 var FormGroup = Bootstrap.FormGroup;
@@ -11,44 +12,9 @@ var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
 
 
-function LoggedIn(props) {
-    //probably just use a dropdown instead of just text.
-    return (
-        <Navbar.Collapse bsStyles="success">
-            <Navbar.Text pullRight>
-                Signed in as:
-            </Navbar.Text>
-
-            <NavDropdown eventKey={3} title={props.user} id="basic-nav-dropdown">
-                <MenuItem divider/>
-                <MenuItem eventKey={3.1}>Logout</MenuItem>
-            </NavDropdown>
-        </Navbar.Collapse>
-    )
-}
-
-function NotLoggedIn(props) {
-    //remember, two different FormContainers.
-    return (
-        <Navbar.Collapse>
-            <Nav>
-                <Navbar.Form pullRight>
-                    <FormGroup>
-                        <FormControl type="text" placeholder="Search"/>
-                    </FormGroup>
-                    {' '}
-                    <Button type="submit">Submit</Button>
-                </Navbar.Form>
-            </Nav>
-            <Nav pullRight>
-                <NavItem eventKey={1} href="#">Link Right</NavItem>
-                <NavItem eventKey={2} href="#">Link Right</NavItem>
-            </Nav>
-        </Navbar.Collapse>
-    )
-}
-
 function NavigationBar(props) {
+    //LoginFormContainer and RegisterFormContainer
+    //<LoggedIn user={props.user} onUpdateLogin={props.onUpdateLogin}/>
     return (
         <Navbar staticTop fluid>
             <Navbar.Header>
@@ -58,10 +24,9 @@ function NavigationBar(props) {
                 <Navbar.Toggle />
             </Navbar.Header>
 
-            {props.isLoggedIn === true
-                ? <LoggedIn user={props.user}/>
-                : <NotLoggedIn />
-            }
+            <LoginFormContainer isLoggedIn={props.isLoggedIn}
+                                user={props.user}
+                                onUpdateLogin={props.onUpdateLogin}/>
 
         </Navbar>
     )
@@ -69,7 +34,8 @@ function NavigationBar(props) {
 
 NavigationBar.propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
-    user: PropTypes.string
+    user: PropTypes.string,
+    onUpdateLogin: PropTypes.func.isRequired
 };
 
 module.exports = NavigationBar;

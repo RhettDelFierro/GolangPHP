@@ -18,17 +18,17 @@ var styles ={
 
 function LoggedIn(props) {
     console.log("error");
+    //add delete to menu item: <MenuItem eventKey={3.2} onClick={props.onUpdateLogin}>Delete Profile</MenuItem>
     //probably just use a dropdown instead of just text.
     return (
-        <Navbar.Collapse bsStyles="success">
+        <Navbar.Collapse bsStyles="btn btn-success">
             <Nav pullRight>
                 <Navbar.Text style={styles.signedIn}>
                     Signed in as:
                 </Navbar.Text>
 
                 <NavDropdown eventKey={3} title={props.user} id="basic-nav-dropdown">
-                    <MenuItem divider/>
-                    <MenuItem onClick={props.onUpdateLogin}>Logout</MenuItem>
+                    <MenuItem evenKey={3.1} onClick={props.onUpdateLogin.bind(null, false, "someuser")}>Logout</MenuItem>
                 </NavDropdown>
             </Nav>
         </Navbar.Collapse>

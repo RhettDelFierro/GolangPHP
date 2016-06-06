@@ -9,6 +9,7 @@ var NavItem = Bootstrap.NavItem;
 var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
 var Form = Bootstrap.Form;
+var Dropdown = Bootstrap.Dropdown;
 
 var styles = {
     menu: {
@@ -26,25 +27,34 @@ var styles = {
     }
 };
 
+function preventDefault(e) {
+    e.preventDefault();
+}
+
 function DropdownForm(props) {
     //do not forget onSumbit for the Form
     return (
-        <MenuItem style={styles.menu} disabled={true}>
-            <FormControl id="inputEmail" placeholder="Email" type="Email" style={styles.input}/>
-            <FormControl id="inputUsername" placeholder="Username" type="text" style={styles.input}/>
-            <FormControl id="inputPassword" placeholder="Password" type="password" style={styles.input}/>
+
+        <Form horizontal>
+            <FormControl id="inputEmail" placeholder="Email" type="email" style={styles.input}/>
+            <FormControl id="inputUsername" placeholder="Username" type="text" style={styles.input}
+                         bsRole="toggle"/>
+            <FormControl id="inputPassword" placeholder="Password" type="password" style={styles.input}
+                         bsRole="toggle"/>
             <Button bsStyle="primary" type="submit" style={styles.btn}>Register</Button>
-        </MenuItem>
+        </Form>
 
     )
 }
 
+
+
 function RegisterForm(props) {
     return (
         <NavDropdown eventKey={3} title="Register" id="basic-nav-dropdown">
-            <Form horizontal>
+            <MenuItem style={styles.menu}>
                 <DropdownForm />
-            </Form>
+            </MenuItem>
         </NavDropdown>
     )
 }

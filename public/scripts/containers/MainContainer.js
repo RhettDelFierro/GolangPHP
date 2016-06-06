@@ -9,10 +9,10 @@ var MainContainer = React.createClass({
             username: "Somebody"
         }
     },
-    handleUpdateLogin: function () {
+    handleUpdateLogin: function (loggedIn, username) {
         this.setState({
-            isLoggedIn: false,
-            username: ""
+            isLoggedIn: loggedIn, //!(this.state.isLoggedIn),
+            username: username
         })
     },
     render: function () {

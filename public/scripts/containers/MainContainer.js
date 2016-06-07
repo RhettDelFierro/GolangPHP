@@ -1,6 +1,7 @@
 var React = require('react');
 var HomeContainer = require("./HomeContainer");
 var NavbarContainer = require("./NavbarContainer");
+var Header = require("../components/Header");
 
 var MainContainer = React.createClass({
     getInitialState: function () {

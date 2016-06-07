@@ -10,7 +10,6 @@ var RegisterModalContainer = React.createClass({
     },
     handleOpen() {
         this.setState({ showModal: true });
-        console.log("has been called.");
     },
     render: function () {
         return (

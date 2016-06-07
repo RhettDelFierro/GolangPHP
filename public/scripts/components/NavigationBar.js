@@ -10,6 +10,22 @@ var Button = Bootstrap.Button;
 var NavItem = Bootstrap.NavItem;
 var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
+var ReactRouter = require("react-router");
+var Link = ReactRouter.Link;
+
+//<Nav pullRight bsStyle="pills" activeKey={1}>
+//    <NavItem eventKey={1} href="/register">Register</NavItem>
+//</Nav>
+
+function RegisterToggle(props) {
+    return (
+        <Nav pullRight>
+            <Link to="/register">
+                <Button bsClass="btn btn-primary navbar-btn">Register</Button>
+            </Link>
+        </Nav>
+    )
+}
 
 
 function NavigationBar(props) {
@@ -23,11 +39,12 @@ function NavigationBar(props) {
                 </Navbar.Brand>
                 <Navbar.Toggle />
             </Navbar.Header>
-
-            <LoginFormContainer isLoggedIn={props.isLoggedIn}
-                                user={props.user}
-                                onUpdateLogin={props.onUpdateLogin}/>
-
+            <Navbar.Collapse>
+                {!props.isLoggedIn && <RegisterToggle />}
+                <LoginFormContainer isLoggedIn={props.isLoggedIn}
+                                    user={props.user}
+                                    onUpdateLogin={props.onUpdateLogin}/>
+            </Navbar.Collapse>
         </Navbar>
     )
 }

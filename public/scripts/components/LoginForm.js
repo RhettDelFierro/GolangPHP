@@ -10,6 +10,8 @@ var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
 var RegisterFormContainer = require("../containers/RegisterFormContainer");
 
+
+
 var styles ={
     signedIn: {
         "marginRight": 0
@@ -21,7 +23,6 @@ function LoggedIn(props) {
     //add delete to menu item: <MenuItem eventKey={3.2} onClick={props.onUpdateLogin}>Delete Profile</MenuItem>
     //probably just use a dropdown instead of just text.
     return (
-        <Navbar.Collapse bsStyles="btn btn-success">
             <Nav pullRight>
                 <Navbar.Text style={styles.signedIn}>
                     Signed in as:
@@ -31,7 +32,6 @@ function LoggedIn(props) {
                     <MenuItem evenKey={3.1} onClick={props.onUpdateLogin.bind(null, false, "someuser")}>Logout</MenuItem>
                 </NavDropdown>
             </Nav>
-        </Navbar.Collapse>
     )
 }
 
@@ -39,20 +39,19 @@ function NotLoggedIn(props) {
     //remember, two different FormContainers.
     //throw in the RegisterFormContainer here?
     return (
-        <Navbar.Collapse>
-            <Nav>
-                <Navbar.Form pullRight>
+            <Nav pullRight>
+                <Navbar.Form>
                     <FormGroup>
-                        <FormControl type="text" placeholder="Search"/>
+                        <FormControl sm={7} type="text" placeholder="Username or Email"/>
                     </FormGroup>
                     {' '}
-                    <Button type="submit">Submit</Button>
+                    <FormGroup>
+                        <FormControl sm={7} type="password" placeholder="Password"/>
+                    </FormGroup>
+                    {' '}
+                    <Button type="submit">Login</Button>
                 </Navbar.Form>
             </Nav>
-            <Nav pullRight>
-                <RegisterFormContainer />
-            </Nav>
-        </Navbar.Collapse>
     )
 }
 

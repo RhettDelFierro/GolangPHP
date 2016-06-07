@@ -1,9 +1,10 @@
 var React = require("react");
+var Header = require("./Header");
 
 var Home = React.createClass({
     render: function () {
         return (
-            <div>Hi World!</div>
+            <Header />
         )
     }
 });

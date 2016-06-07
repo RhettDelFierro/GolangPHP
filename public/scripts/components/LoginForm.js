@@ -10,8 +10,6 @@ var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
 var RegisterFormContainer = require("../containers/RegisterFormContainer");
 
-
-
 var styles ={
     signedIn: {
         "marginRight": 0

@@ -1,46 +1,29 @@
 var React = require("react");
 var Bootstrap = require("react-bootstrap");
-var Navbar = Bootstrap.Navbar;
-var Nav = Bootstrap.Nav;
-var FormGroup = Bootstrap.FormGroup;
-var FormControl = Bootstrap.FormControl;
 var Button = Bootstrap.Button;
-var NavItem = Bootstrap.NavItem;
-var MenuItem = Bootstrap.MenuItem;
-var NavDropdown = Bootstrap.NavDropdown;
-var Form = Bootstrap.Form;
-var Dropdown = Bootstrap.Dropdown;
+var Modal = Bootstrap.Modal;
+var Popover = Bootstrap.Popover;
+var Tooltip = Bootstrap.Tooltip;
+var OverlayTrigger = Bootstrap.OverlayTrigger;
+var PropTypes = React.PropTypes;
 
-
-function RegisterForm(props) {
-    var popover = <Popover title="popover">very popover. such engagement</Popover>;
-    var tooltip = <Tooltip>wow.</Tooltip>;
-
+function RegisterModal(props) {
     return (
         <div>
-            <p>Click to get the full Modal experience!</p>
-
             <Button
-                bsStyle="primary"
-                bsSize="large"
-                onClick={this.open}
+                bsClass="btn btn-primary navbar-btn"
+                onClick={props.onOpen}
             >
-                Launch demo modal
+                Register
             </Button>
 
-            <Modal show={props.showModal} onHide={this.close}>
+            <Modal show={props.modalToggle} onHide={props.onClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Modal heading</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>Text in a modal</h4>
                     <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-
-                    <h4>Popover in a modal</h4>
-                    <p>there is a <OverlayTrigger overlay={popover}><a href="#">popover</a></OverlayTrigger> here</p>
-
-                    <h4>Tooltips in a modal</h4>
-                    <p>there is a <OverlayTrigger overlay={tooltip}><a href="#">tooltip</a></OverlayTrigger> here</p>
 
                     <hr />
 
@@ -53,11 +36,17 @@ function RegisterForm(props) {
                         nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={this.close}>Close</Button>
+                    <Button onClick={props.onClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
         </div>
     )
 }
 
-module.exports = RegisterForm;
+RegisterModal.propTypes = {
+    modalToggle: PropTypes.bool.isRequired,
+    onOpen: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired
+};
+
+module.exports = RegisterModal;

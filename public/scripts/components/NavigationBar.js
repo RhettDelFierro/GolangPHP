@@ -12,17 +12,26 @@ var MenuItem = Bootstrap.MenuItem;
 var NavDropdown = Bootstrap.NavDropdown;
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
+var RegisterModalContainer = require("../containers/RegisterModalContainer");
 
 //<Nav pullRight bsStyle="pills" activeKey={1}>
 //    <NavItem eventKey={1} href="/register">Register</NavItem>
 //</Nav>
 
+function ModalLogic(){
+
+}
+
 function RegisterToggle(props) {
+    //<Nav pullRight>
+    //    <Link to="/register">
+    //        <Button bsClass="btn btn-primary navbar-btn">Register</Button>
+    //    </Link>
+    //</Nav>
+    //render registermodalcontainer > register modal > register form container > register form.
     return (
         <Nav pullRight>
-            <Link to="/register">
-                <Button bsClass="btn btn-primary navbar-btn">Register</Button>
-            </Link>
+            <RegisterModalContainer />
         </Nav>
     )
 }

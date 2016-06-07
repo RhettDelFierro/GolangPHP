@@ -2,6 +2,7 @@ var React = require("react");
 
 function StudentForm(props){
     //remember to add the onClicks.
+    console.log("within student form: ", props.isLoggedIn, props.user);
     return (
         <div className="student-add-form col-xs-12 col-md-push-9 col-md-3">
             <h4>Add Student</h4>
@@ -33,7 +34,9 @@ function StudentForm(props){
 
             <p className="text-danger" id="regex_grade"></p>
 
-            <button type="button" className="btn btn-success form-group">Add</button>
+            <button type="button" className={props.isLoggedIn === true
+            ? "btn btn-success form-group active"
+            : "btn btn-success form-group disabled"} >Add</button>
             {' '}
             <button type="button" className="btn btn-success form-group">Load Grades</button>
             {' '}

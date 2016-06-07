@@ -11,7 +11,7 @@ var HomeContainer = React.createClass({
 
     render: function(){
         return (
-            <Home />
+            <Home isLoggedIn={this.props.isLoggedIn} user={this.props.user}/>
         )
     }
 });

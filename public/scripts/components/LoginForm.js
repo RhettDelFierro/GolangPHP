@@ -27,7 +27,7 @@ function LoggedIn(props) {
                 </Navbar.Text>
 
                 <NavDropdown eventKey={3} title={props.user} id="basic-nav-dropdown">
-                    <MenuItem evenKey={3.1} onClick={props.onUpdateLogin.bind(null, false, "someuser")}>Logout</MenuItem>
+                    <MenuItem evenKey={3.1} onClick={props.onUpdateLogin.bind(null, false, "somebody has logged out")}>Logout</MenuItem>
                 </NavDropdown>
             </Nav>
     )

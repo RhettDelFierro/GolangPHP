@@ -6,11 +6,11 @@ var TableContainer = require("../containers/TableContainer");
 
 
 function Home(props) {
-
+    console.log("Home: ", props);
     return (
         <div>
             <Header />
-            <StudentFormContainer />
+            <StudentFormContainer isLoggedIn={props.isLoggedIn} user={props.user}/>
             <TableContainer />
         </div>
     )

@@ -17,13 +17,13 @@ type DuplicateModel struct {
 }
 
 type Duplicate struct {
-	User  models.UserInfo `json:"user"`
+	User  string `json:"username"`
 	Taken bool                `json:"taken"`
 }
 
-type DuplicateUserInfo struct {
-	Data Duplicate        `json:"data"`
-}
+//type DuplicateUserInfo struct {
+//	Data Duplicate        `json:"data"`
+//}
 
 func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
@@ -33,7 +33,7 @@ func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 
 	if req.Method == "POST" {
 		err := json.NewDecoder(req.Body).Decode(&duplicate)
-
+		fmt.Println("this is duplicate: ", duplicate)
 		if err != nil {
 			//422 for json error?
 			fmt.Println(err)
@@ -45,14 +45,14 @@ func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 		duplicateUser := models.UserInfo{
 			UserName: duplicateCheck.Username,
 		}
-		if userDuplicateTrue, err := models.DuplicateUser(duplicateUser); err != nil {
+		if err := models.DuplicateUser(duplicateUser); err != nil {
 			if (err.Error() == "not found"){
 				dupUser := Duplicate{
-					User: userDuplicateTrue,
-					Taken: true,
+					User: duplicateUser.UserName,
+					Taken: false,
 				}
 
-				j, err := json.Marshal(DuplicateUserInfo{Data: dupUser})
+				j, err := json.Marshal(dupUser)
 				if err != nil {
 					w.WriteHeader(500)
 					w.Write([]byte("An unexpected error has occured. Json not wrote."))
@@ -68,13 +68,12 @@ func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 			}
 		} else {
 			//check if user is a duplicate, generate write to response:
-			fmt.Println("userDuplicateTrue.Username: ", userDuplicateTrue.UserName)
 			dupUser := Duplicate{
-				User: userDuplicateTrue,
-				Taken: false,
+				User: duplicateUser.UserName,
+				Taken: true,
 			}
 
-			j, err := json.Marshal(DuplicateUserInfo{Data: dupUser})
+			j, err := json.Marshal(dupUser)
 			if err != nil {
 				w.WriteHeader(500)
 				w.Write([]byte("An unexpected error has occured. Json not wrote."))

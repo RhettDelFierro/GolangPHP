@@ -7,6 +7,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 var MainContainer = require('../containers/MainContainer');
 var HomeContainer = require('../containers/HomeContainer');
 var RegisterFormContainer = require("../containers/RegisterFormContainer");
+var LoginFormContainer = require("../containers/LoginFormContainer");
 
 var routes = (
     <Router history={hashHistory}>

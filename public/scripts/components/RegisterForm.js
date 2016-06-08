@@ -3,34 +3,35 @@ var Bootstrap = require("react-bootstrap");
 var FormGroup = Bootstrap.FormGroup;
 var FormControl = Bootstrap.FormControl;
 var Button = Bootstrap.Button;
-var Form = Bootstrap.Form;
+var form = Bootstrap.Form;
 var ControlLabel = Bootstrap.ControlLabel;
 var PropTypes = React.PropTypes;
+var HelpBlock = Bootstrap.HelpBlock;
 
 
 function RegisterForm(props) {
-    var helpblock;
+    var helpBlock;
     if (props.duplicate) {
-        helpblock = <HelpBlock bsClass={props.helpBlock}
+        helpBlock = <HelpBlock bsClass={props.helpBlock}
                                style={{color: "red"}}>
-            {props.username} is already taken.
+            {props.user} is already taken.
         </HelpBlock>;
     } else {
-        helpblock = <HelpBlock bsClass={props.helpBlock}
+        helpBlock = <HelpBlock bsClass={props.helpBlock}
                                style={{color: "green"}}>
-            {props.username} is valid.
+            {props.user} is valid.
         </HelpBlock>;
     }
     return (
-        <Form onSubmit={props.onSubmitUser}>
+        <form onSubmit={props.onSubmitUser}>
             <FormGroup controlId="formControlsText">
                 <ControlLabel>Username</ControlLabel>
-                <FormControl type="text" placeholder="Enter username" onChange={props.onUpdateUser}/>
+                <FormControl type="text" placeholder="Enter username" onChange={props.onUpdateUser} value={props.user}/>
                 {helpBlock}
             </FormGroup>
             <FormGroup controlId="formControlsEmail">
                 <ControlLabel>Email</ControlLabel>
-                <FormControl type="email" placeholder="Enter email" onChange={props.onUpdateEmail}/>
+                <FormControl type="email" placeholder="Enter email" onChange={props.onUpdateEmail} value={props.email}/>
             </FormGroup>
             <FormGroup controlId="formControlsPassword">
                 <ControlLabel>Password</ControlLabel>
@@ -39,16 +40,16 @@ function RegisterForm(props) {
             <Button className={props.duplicate === true ? "disabled" : "active"} type="submit">
                 Submit
             </Button>
-        </Form>
+        </form>
     )
 }
 
 RegisterForm.propTypes = {
-    onUpdateUser: PropTypes.func.isRequired,
-    onSubmitUser: PropTypes.func.isRequired,
+    onUpdateUser: PropTypes.func,
+    onSubmitUser: PropTypes.func,
     user: PropTypes.string,
-    onUpdateEmail: PropTypes.func.isRequired,
-    onUpdatePassword: PropTypes.func.isRequired,
+    onUpdateEmail: PropTypes.func,
+    onUpdatePassword: PropTypes.func,
     email: PropTypes.string,
     password: PropTypes.string,
     duplicate: PropTypes.bool.isRequired,

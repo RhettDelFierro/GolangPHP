@@ -22,13 +22,13 @@ func (this RegisterError) Error() string {
 	return this.E
 }
 
-func DuplicateUser(user UserInfo) (u UserInfo, err error) {
+func DuplicateUser(user UserInfo) (err error) {
 	//just should make this whole getDBConnection and error handling block a reusable function.
 	session, err := getDBConnection()
 
 	if err != nil {
 		//panic(err)
-		return u, err
+		return err
 	}
 
 	defer session.Close()
@@ -36,17 +36,17 @@ func DuplicateUser(user UserInfo) (u UserInfo, err error) {
 	c := session.DB("taskdb").C("users")
 
 	//if it finds one, it will write to u.
-	u = UserInfo{}
+	u := UserInfo{}
 	err = c.Find(bson.M{"username": user.UserName}).One(&u)
 	if err != nil {
-		fmt.Println("err in Duplicate: Find")
-		return u, err
-	} else {
-		return u, err
+		fmt.Println("err in Duplicate: Find", err.Error())
+		return err
 	}
+
+	return
 }
 
-//traight up take data from json.
+//straight up take data from json.
 //adding a new user document into mongoDB.
 func RegisterUser(user *UserInfo) error {
 
@@ -73,7 +73,9 @@ func RegisterUser(user *UserInfo) error {
 
 	//check duplicate
 	err = c.Find(bson.M{"email": user.Email}).One(&user)
-	if err && user.Id != nil {
+
+	//if err is of type not found, go on and register the user. But if it isn't then throw in the panic.
+	if err != nil {
 		panic(RegisterError{"Records show there is already a user with this email address. Please use another."})
 	} else {
 		err = c.Insert(user)

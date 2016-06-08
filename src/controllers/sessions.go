@@ -1,6 +1,5 @@
 package controllers
 
-import ()
 import (
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"

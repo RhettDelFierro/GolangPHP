@@ -3,37 +3,35 @@ package controllers
 import (
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
-	//"github.com/gorilla/sessions"
 	"encoding/json"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 	"fmt"
-	//"go/token"
-	"os/user"
 )
-
-type User struct {
-	Data models.UserInfo        `json:"data"`
-}
 
 type DuplicateResource struct {
 	Data DuplicateModel     `json:"data"`
 }
 
 type DuplicateModel struct {
-	Username    string `json:"username"`
+	Username string `json:"username"`
+}
+
+type Duplicate struct {
+	User  models.UserInfo `json:"user"`
+	Taken bool                `json:"taken"`
 }
 
 type DuplicateUserInfo struct {
-	Data	string	`json:"data"`
+	Data Duplicate        `json:"data"`
 }
 
-func DuplicateUserCheck(w http.ResponseWriter, req *http.Request) {
+func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
 	var duplicate DuplicateResource
 
-	if req.Method == "POST"{
+	if req.Method == "POST" {
 		err := json.NewDecoder(req.Body).Decode(&duplicate)
 
 		if err != nil {
@@ -48,16 +46,35 @@ func DuplicateUserCheck(w http.ResponseWriter, req *http.Request) {
 			UserName: duplicateCheck.Username,
 		}
 		if userDuplicateTrue, err := models.DuplicateUser(duplicateUser); err != nil {
-			//unauthorized error message
-			fmt.Println("Error after DB check")
-			w.WriteHeader(401)
-			return
-		} else {
-			//user is a duplicate, generate write to response:
-			fmt.Println("user.Email:", userDuplicateTrue.UserName)
+			if (err.Error() == "not found"){
+				dupUser := Duplicate{
+					User: userDuplicateTrue,
+					Taken: true,
+				}
 
-			//render duplicate message on ReactJS RegisterFormContainer.
-			j, err := json.Marshal(DuplicateUserInfo{Data: userDuplicateTrue.UserName})
+				j, err := json.Marshal(DuplicateUserInfo{Data: dupUser})
+				if err != nil {
+					w.WriteHeader(500)
+					w.Write([]byte("An unexpected error has occured. Json not wrote."))
+					return
+				} else {
+					w.WriteHeader(200)
+					w.Write(j)
+				}
+			} else {
+				fmt.Println("Error after DB check")
+				w.WriteHeader(401)
+				return
+			}
+		} else {
+			//check if user is a duplicate, generate write to response:
+			fmt.Println("userDuplicateTrue.Username: ", userDuplicateTrue.UserName)
+			dupUser := Duplicate{
+				User: userDuplicateTrue,
+				Taken: false,
+			}
+
+			j, err := json.Marshal(DuplicateUserInfo{Data: dupUser})
 			if err != nil {
 				w.WriteHeader(500)
 				w.Write([]byte("An unexpected error has occured. Json not wrote."))

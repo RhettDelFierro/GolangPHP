@@ -14,27 +14,28 @@ type UserInfo struct{
 	HashPassword	[]byte	`json:"hashpassword,omitempty"`
 }
 
-func DuplicateUser(user *UserInfo) (u UserInfo, err error) {
+func DuplicateUser(user UserInfo) (u UserInfo, err error) {
 	//just should make this whole getDBConnection and error handling block a reusable function.
 	session, err := getDBConnection()
 
 	if err != nil {
 		//panic(err)
-		return err
+		return u, err
 	}
 
 	defer session.Close()
 
 	c := session.DB("taskdb").C("users")
 
+	//if it finds one, it will write to u.
+	u = UserInfo{}
 	err = c.Find(bson.M{"username": user.UserName}).One(&u)
 	if err != nil {
-		fmt.Println("no records")
-		return
+		fmt.Println("err in Duplicate: Find")
+		return u, err
 	} else {
-		return u
+		return u, err
 	}
-
 }
 
 //traight up take data from json.

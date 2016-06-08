@@ -14,7 +14,30 @@ type UserInfo struct{
 	HashPassword	[]byte	`json:"hashpassword,omitempty"`
 }
 
-//traight up take daata from json.
+func DuplicateUser(user *UserInfo) (u UserInfo, err error) {
+	//just should make this whole getDBConnection and error handling block a reusable function.
+	session, err := getDBConnection()
+
+	if err != nil {
+		//panic(err)
+		return err
+	}
+
+	defer session.Close()
+
+	c := session.DB("taskdb").C("users")
+
+	err = c.Find(bson.M{"username": user.UserName}).One(&u)
+	if err != nil {
+		fmt.Println("no records")
+		return
+	} else {
+		return u
+	}
+
+}
+
+//traight up take data from json.
 //adding a new user document into mongoDB.
 func RegisterUser(user *UserInfo) error{
 
@@ -44,6 +67,7 @@ func RegisterUser(user *UserInfo) error{
 	return err
 }
 
+//for logging in.
 func CheckUser(user UserInfo)  (u UserInfo, err error){
 	session, err := getDBConnection()
 

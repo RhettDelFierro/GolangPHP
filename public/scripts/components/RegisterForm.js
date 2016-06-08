@@ -5,23 +5,23 @@ var FormControl = Bootstrap.FormControl;
 var Button = Bootstrap.Button;
 var Form = Bootstrap.Form;
 var ControlLabel = Bootstrap.ControlLabel;
+var PropTypes = React.PropTypes;
 
 
 function RegisterForm(props) {
-    //maybe wrap this in a div.
     return (
-        <Form>
+        <Form onSubmit={props.onSubmitUser}>
             <FormGroup controlId="formControlsText">
                 <ControlLabel>Username</ControlLabel>
-                <FormControl type="text" placeholder="Enter username" />
+                <FormControl type="text" placeholder="Enter username" onChange={props.onUpdateUser}/>
             </FormGroup>
             <FormGroup controlId="formControlsEmail">
                 <ControlLabel>Email</ControlLabel>
-                <FormControl type="email" placeholder="Enter email" />
+                <FormControl type="email" placeholder="Enter email" onChange={props.onUpdateEmail}/>
             </FormGroup>
             <FormGroup controlId="formControlsPassword">
                 <ControlLabel>Password</ControlLabel>
-                <FormControl type="password" />
+                <FormControl type="password" onChange={props.onUpdatePassword}/>
             </FormGroup>
             <Button type="submit">
                 Submit
@@ -29,5 +29,15 @@ function RegisterForm(props) {
         </Form>
     )
 }
+
+RegisterForm.propTypes = {
+  onUpdateUser: PropTypes.func.isRequired,
+    onSubmitUser: PropTypes.func.isRequired,
+    user: PropTypes.string,
+    onUpdateEmail: PropTypes.func.isRequired,
+    onUpdatePassword: PropTypes.func.isRequired,
+    email: PropTypes.string,
+    password: PropTypes.string
+};
 
 module.exports = RegisterForm;

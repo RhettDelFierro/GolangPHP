@@ -24,9 +24,13 @@ func Inject(tmpl *template.Template) {
 	//public.
 	router.HandleFunc("/api/grades", getGrades) //going to populate full student list.
 
+	//check for duplicate usernames:
+	router.HandleFunc("/username", DuplicateNewUserCheck)
+
 	//user
 	router.HandleFunc("/users/register", RegisterUser)
 	router.HandleFunc("/users/login", LoginUser)
+
 	//private
 	//wrapping middleware to provide authentication for create and delete operations.
 	router.PathPrefix("/api/delete/{id}").Handler(

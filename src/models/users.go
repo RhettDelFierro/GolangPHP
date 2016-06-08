@@ -6,12 +6,20 @@ import (
 	"fmt"
 )
 
-type UserInfo struct{
-	Id	bson.ObjectId	`bson:"_id,omitempty" json:"id"`
-	UserName string		`json:"username"`
-	Password string		`json:"password,omitempty"`
-	Email	string		`json:"email"`
-	HashPassword	[]byte	`json:"hashpassword,omitempty"`
+type UserInfo struct {
+	Id           bson.ObjectId        `bson:"_id,omitempty" json:"id"`
+	UserName     string                `json:"username"`
+	Password     string                `json:"password,omitempty"`
+	Email        string                `json:"email"`
+	HashPassword []byte        `json:"hashpassword,omitempty"`
+}
+
+type RegisterError struct {
+	E string
+}
+
+func (this RegisterError) Error() string {
+	return this.E
 }
 
 func DuplicateUser(user UserInfo) (u UserInfo, err error) {
@@ -40,7 +48,7 @@ func DuplicateUser(user UserInfo) (u UserInfo, err error) {
 
 //traight up take data from json.
 //adding a new user document into mongoDB.
-func RegisterUser(user *UserInfo) error{
+func RegisterUser(user *UserInfo) error {
 
 	obj_id := bson.NewObjectId()
 	user.Id = obj_id
@@ -61,15 +69,20 @@ func RegisterUser(user *UserInfo) error{
 		return err
 	}
 	defer session.Close()
-
 	c := session.DB("taskdb").C("users")
-	fmt.Println(user.UserName)
-	err = c.Insert(user)
-	return err
+
+	//check duplicate
+	err = c.Find(bson.M{"email": user.Email}).One(&user)
+	if err && user.Id != nil {
+		panic(RegisterError{"Records show there is already a user with this email address. Please use another."})
+	} else {
+		err = c.Insert(user)
+		panic(err)
+	}
 }
 
 //for logging in.
-func CheckUser(user UserInfo)  (u UserInfo, err error){
+func CheckUser(user UserInfo) (u UserInfo, err error) {
 	session, err := getDBConnection()
 
 	if err != nil {

@@ -19,6 +19,7 @@ type LoginResource struct {
 }
 
 type LoginModel struct {
+	User	string	`json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -53,7 +54,7 @@ func RegisterUser(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		userRegister := &user.Data
-		fmt.Println(userRegister)
+
 		//send to DB:
 		models.RegisterUser(userRegister)
 		//make sure not to send the hashed pw:
@@ -63,7 +64,7 @@ func RegisterUser(w http.ResponseWriter, req *http.Request) {
 			return
 		} else {
 			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(200)
+			w.WriteHeader(http.StatusCreated)
 			w.Write(j)
 		}
 	}

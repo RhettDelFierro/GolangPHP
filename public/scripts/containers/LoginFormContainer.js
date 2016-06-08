@@ -3,6 +3,9 @@ var LoginForm = require("../components/LoginForm");
 
 var LoginFormContainer = React.createClass({
     //don't forget to go to the logged in route.
+    contextTypes: {
+      router: React.PropTypes.object.isRequired
+    },
     render: function() {
         return (
             <LoginForm isLoggedIn={this.props.isLoggedIn}
@@ -11,5 +14,7 @@ var LoginFormContainer = React.createClass({
         )
     }
 });
+
+
 
 module.exports = LoginFormContainer;

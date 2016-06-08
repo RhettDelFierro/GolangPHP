@@ -99,7 +99,7 @@ var student_collection = {
 
         }
         this.calculateAverage()
-    },
+    }
 
 };
 

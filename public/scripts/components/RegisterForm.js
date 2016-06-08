@@ -9,11 +9,24 @@ var PropTypes = React.PropTypes;
 
 
 function RegisterForm(props) {
+    var helpblock;
+    if (props.duplicate) {
+        helpblock = <HelpBlock bsClass={props.helpBlock}
+                               style={{color: "red"}}>
+            {props.username} is already taken.
+        </HelpBlock>;
+    } else {
+        helpblock = <HelpBlock bsClass={props.helpBlock}
+                               style={{color: "green"}}>
+            {props.username} is valid.
+        </HelpBlock>;
+    }
     return (
         <Form onSubmit={props.onSubmitUser}>
             <FormGroup controlId="formControlsText">
                 <ControlLabel>Username</ControlLabel>
                 <FormControl type="text" placeholder="Enter username" onChange={props.onUpdateUser}/>
+                {helpBlock}
             </FormGroup>
             <FormGroup controlId="formControlsEmail">
                 <ControlLabel>Email</ControlLabel>
@@ -23,7 +36,7 @@ function RegisterForm(props) {
                 <ControlLabel>Password</ControlLabel>
                 <FormControl type="password" onChange={props.onUpdatePassword}/>
             </FormGroup>
-            <Button type="submit">
+            <Button className={props.duplicate === true ? "disabled" : "active"} type="submit">
                 Submit
             </Button>
         </Form>
@@ -31,13 +44,15 @@ function RegisterForm(props) {
 }
 
 RegisterForm.propTypes = {
-  onUpdateUser: PropTypes.func.isRequired,
+    onUpdateUser: PropTypes.func.isRequired,
     onSubmitUser: PropTypes.func.isRequired,
     user: PropTypes.string,
     onUpdateEmail: PropTypes.func.isRequired,
     onUpdatePassword: PropTypes.func.isRequired,
     email: PropTypes.string,
-    password: PropTypes.string
+    password: PropTypes.string,
+    duplicate: PropTypes.bool.isRequired,
+    helpBlock: PropTypes.string.isRequired
 };
 
 module.exports = RegisterForm;

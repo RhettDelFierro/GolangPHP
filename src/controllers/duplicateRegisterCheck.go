@@ -33,7 +33,6 @@ func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 
 	if req.Method == "POST" {
 		err := json.NewDecoder(req.Body).Decode(&duplicate)
-		fmt.Println("this is duplicate: ", duplicate)
 		if err != nil {
 			//422 for json error?
 			fmt.Println(err)

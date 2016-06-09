@@ -163,7 +163,7 @@ func GetPW(w http.ResponseWriter, req *http.Request){
 	if err != nil {
 		panic(err);
 	}
-
+	fmt.Println(userInfo)
 	if user, err := models.LoginUser(userInfo); err != nil {
 		//unauthorized error message
 		fmt.Println("Error after DB check")

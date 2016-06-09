@@ -88,8 +88,7 @@ func RegisterUser(user *UserInfo) error {
 	return err
 }
 
-//for logging in.
-func CheckUser(user UserInfo) (u UserInfo, err error) {
+func LoginUser(user UserInfo) (u UserInfo, err error) {
 	session, err := getDBConnection()
 
 	if err != nil {
@@ -98,11 +97,23 @@ func CheckUser(user UserInfo) (u UserInfo, err error) {
 	}
 	defer session.Close()
 	c := session.DB("taskdb").C("users")
-	err = c.Find(bson.M{"email": user.Email}).One(&u)
-	if err != nil {
-		fmt.Println("no records")
-		return
+	//want to check both the username and password. If either are successful, proceed with hashpassword process.
+	_, err1 := CheckUser(user)
+	_, err2 := CheckEmail(user)
+
+	switch {
+	case err1 == nil:
+		err = c.Find(bson.M{"username": user.UserName}).One(&u)
+		if err != nil {
+			panic(err);
+		}
+	case err2 == nil:
+		err = c.Find(bson.M{"email": user.Email}).One(&u)
+		if err != nil {
+			panic(err);
+		}
 	}
+
 	err = bcrypt.CompareHashAndPassword(u.HashPassword, []byte(user.Password))
 	if err != nil {
 		u = UserInfo{}
@@ -110,5 +121,54 @@ func CheckUser(user UserInfo) (u UserInfo, err error) {
 	}
 
 	return
+}
+
+//for logging in.
+func CheckEmail(user UserInfo) (u UserInfo, err error) {
+	session, err := getDBConnection()
+
+	if err != nil {
+		//panic(err)
+		return u, err
+	}
+	defer session.Close()
+
+	c := session.DB("taskdb").C("users")
+
+	err = c.Find(bson.M{"email": user.Email}).One(&u)
+	if err != nil {
+		if err.Error() == "not found" {
+			u = UserInfo{}
+			return
+		} else {
+			panic(err);
+		}
+	}
+
+	return
+
+}
+
+func CheckUser(user UserInfo) (u UserInfo, err error) {
+	session, err := getDBConnection()
+
+	if err != nil {
+		//panic(err)
+		return u, err
+	}
+	defer session.Close()
+
+	c := session.DB("taskdb").C("users")
+	err = c.Find(bson.M{"username": user.UserName}).One(&u)
+	if err != nil {
+		if err.Error() == "not found" {
+			u = UserInfo{}
+			return
+		} else {
+			panic(err);
+		}
+	}
+
+	return u, err
 
 }

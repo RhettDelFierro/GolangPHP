@@ -11,13 +11,14 @@ var LoginFormContainer = React.createClass({
       return {
           isLoggedIn: false,
           user: "",
-          password: ""
+          password: "",
+          login: ""
       }
 
     },
     handleUpdateUser: function(e){
         this.setState({
-            user: e.target.value
+            login: e.target.value
         })
     },
     handleUpdatePassword: function(e){

@@ -19,13 +19,12 @@ type LoginResource struct {
 }
 
 type LoginModel struct {
-	User	string	`json:"username"`
-	Email    string `json:"email"`
+	Login	string	`json:"login"`
 	Password string `json:"password"`
 }
 
 type AuthToken struct {
-	User  models.UserInfo `json:"user"`
+	User  models.UserInfo `json:"username"`
 	Token string                `json:"token"`
 }
 
@@ -92,20 +91,20 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 	//authenticate user
 	loginModel := login.Data
 	loginUser := models.UserInfo{
-		Email: loginModel.Email,
-		UserName: loginModel.User,
+		Email: loginModel.Login,
+		UserName: loginModel.Login,
 		Password: loginModel.Password,
 	}
 	//database check:
-	if user, err := models.CheckUser(loginUser); err != nil {
+	if user, err := models.LoginUser(loginUser); err != nil {
 		//unauthorized error message
 		fmt.Println("Error after DB check")
 		w.WriteHeader(401)
 		return
 	} else {
 		//user is verified, generate jwt:
-		fmt.Println("user.Email:", user.Email)
-		token, err = GenerateToken(user.Email, "teacher")
+		fmt.Println("user.UserName:", user.UserName)
+		token, err = GenerateToken(user.UserName, "teacher")
 		if err != nil {
 			fmt.Println("Error generating token")
 			w.WriteHeader(500)
@@ -126,7 +125,7 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 
 		//taken the response on the front end and throw it in the header.
 		//include the header for all Update/Add/Delete CRUD methods.
-		j, err := json.Marshal(AuthTokenSent{Data: authUser})
+		j, err := json.Marshal(authUser)
 		if err != nil {
 			w.WriteHeader(500)
 			w.Write([]byte("An unexpected error has occured. Json not wrote."))

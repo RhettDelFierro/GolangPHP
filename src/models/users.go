@@ -172,3 +172,27 @@ func CheckUser(user UserInfo) (u UserInfo, err error) {
 	return u, err
 
 }
+
+func UserPW(user UserInfo) (u UserInfo, err error) {
+	session, err := getDBConnection()
+
+	if err != nil {
+		//panic(err)
+		return u, err
+	}
+	defer session.Close()
+
+	c := session.DB("taskdb").C("users")
+	err = c.Find(bson.M{"username": user.UserName}).One(&u)
+	if err != nil {
+		if err.Error() == "not found" {
+			u = UserInfo{}
+			return
+		} else {
+			panic(err);
+		}
+	}
+
+	return
+
+}

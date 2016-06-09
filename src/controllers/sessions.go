@@ -19,7 +19,7 @@ type LoginResource struct {
 }
 
 type LoginModel struct {
-	Login	string	`json:"login"`
+	Login    string        `json:"login"`
 	Password string `json:"password"`
 }
 
@@ -121,6 +121,73 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 			User: user,
 			Token: token,
 
+		}
+
+		//taken the response on the front end and throw it in the header.
+		//include the header for all Update/Add/Delete CRUD methods.
+		j, err := json.Marshal(authUser)
+		if err != nil {
+			w.WriteHeader(500)
+			w.Write([]byte("An unexpected error has occured. Json not wrote."))
+			return
+		} else {
+			w.WriteHeader(200)
+			w.Write(j)
+		}
+	}
+}
+
+func GetPW(w http.ResponseWriter, req *http.Request){
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+	var login LoginResource
+	var token string
+
+	if req.Method == "POST" {
+		err := json.NewDecoder(req.Body).Decode(&login)
+		if err != nil {
+			//422 for json error?
+			fmt.Println(err)
+			fmt.Println("1st error in LoginUser: json.Decode")
+			w.WriteHeader(422)
+			return
+		}
+	}
+
+	loginModel := login.Data
+	loginUser := models.UserInfo{
+		UserName: loginModel.Login,
+	}
+
+	userInfo, err := models.UserPW(loginUser)
+	if err != nil {
+		panic(err);
+	}
+
+	if user, err := models.LoginUser(userInfo); err != nil {
+		//unauthorized error message
+		fmt.Println("Error after DB check")
+		w.WriteHeader(401)
+		return
+	} else {
+		//user is verified, generate jwt:
+		fmt.Println("user.UserName:", user.UserName)
+		token, err = GenerateToken(user.UserName, "teacher")
+		if err != nil {
+			fmt.Println("Error generating token")
+			w.WriteHeader(500)
+			w.Write([]byte("Could not generate token"))
+			return
+		}
+
+		//don't send the HashPassword.
+		fmt.Println("heres the token:", token)
+		w.Header().Set("Content-Type", "application/json")
+		user.HashPassword = nil
+		//send this token and code to the front end.
+		authUser := AuthToken{
+			User: user,
+			Token: token,
 		}
 
 		//taken the response on the front end and throw it in the header.

@@ -43,7 +43,7 @@ var RegisterFormContainer = React.createClass({
         }
     },
     ajaxValidUserName: function () {
-        userFunctions.verfifyName(this.state.user)
+        userFunctions.verifyName(this.state.user)
             .then(function (userdata) {
                 console.log("from the container: ", userdata);
                 this.setState({

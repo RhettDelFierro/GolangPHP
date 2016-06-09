@@ -30,6 +30,7 @@ func Inject(tmpl *template.Template) {
 	//user
 	router.HandleFunc("/users/register", RegisterUser)
 	router.HandleFunc("/users/login", LoginUser)
+	router.HandleFunc("/users/pw", GetPW)
 
 	//private
 	//wrapping middleware to provide authentication for create and delete operations.

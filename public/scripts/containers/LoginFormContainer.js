@@ -12,7 +12,8 @@ var LoginFormContainer = React.createClass({
           isLoggedIn: false,
           user: "",
           password: "",
-          login: ""
+          login: "",
+          token: ""
       }
 
     },
@@ -27,6 +28,19 @@ var LoginFormContainer = React.createClass({
         })
     },
     handleSubmitUser: function(){
+        e.preventDefault();
+        userFunctions.loginUser({
+            user: this.state.user,
+            password: this.state.password
+        }).then(function(data){
+            this.setState({
+                isLoggedIn: true,
+                user: data.username,
+                token: data.token
+            })
+        }.bind(this))
+    },
+    componentWillReceiveProps: function(nextProps){
 
     },
     render: function() {

@@ -93,6 +93,7 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 	loginModel := login.Data
 	loginUser := models.UserInfo{
 		Email: loginModel.Email,
+		UserName: loginModel.User,
 		Password: loginModel.Password,
 	}
 	//database check:

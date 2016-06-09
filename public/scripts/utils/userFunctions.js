@@ -18,6 +18,9 @@ var userFunctions = {
             .catch(function (error) {
                 console.log(error)
             })
+    },
+    loginUser: function(user){
+        return axios.post("/users/login", {data: {}})
     }
 };
 

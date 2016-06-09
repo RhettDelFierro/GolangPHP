@@ -38,7 +38,7 @@ function NotLoggedIn(props) {
     //throw in the RegisterFormContainer here?
     return (
             <Nav pullRight>
-                <Navbar.Form>
+                <Navbar.Form onSubmit={}>
                     <FormGroup>
                         <FormControl sm={7} type="text" placeholder="Username or Email"/>
                     </FormGroup>

@@ -59,7 +59,7 @@ func RegisterUser(w http.ResponseWriter, req *http.Request) {
 		models.RegisterUser(userRegister)
 		//make sure not to send the hashed pw:
 		userRegister.HashPassword = nil
-		if j, err := json.Marshal(User{Data: *userRegister}); err != nil {
+		if j, err := json.Marshal(userRegister); err != nil {
 			w.WriteHeader(422)
 			return
 		} else {

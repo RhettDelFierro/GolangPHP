@@ -72,15 +72,20 @@ func RegisterUser(user *UserInfo) error {
 	c := session.DB("taskdb").C("users")
 
 	//check duplicate
-	err = c.Find(bson.M{"email": user.Email}).One(&user)
+	//err = c.Find(bson.M{"email": user.Email}).One(&user)
 
 	//if err is of type not found, go on and register the user. But if it isn't then throw in the panic.
 	if err != nil {
 		panic(RegisterError{"Records show there is already a user with this email address. Please use another."})
 	} else {
 		err = c.Insert(user)
-		panic(err)
+		if err != nil {
+			fmt.Println("error registering: ", err)
+			panic(err)
+		}
 	}
+
+	return err
 }
 
 //for logging in.

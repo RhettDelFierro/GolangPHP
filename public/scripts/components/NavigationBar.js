@@ -31,7 +31,7 @@ function RegisterToggle(props) {
     //render registermodalcontainer > register modal > register form container > register form.
     return (
         <Nav pullRight>
-            <RegisterModalContainer />
+            <RegisterModalContainer onUpdateLogin={props.onUpdateLogin}/>
         </Nav>
     )
 }
@@ -49,7 +49,7 @@ function NavigationBar(props) {
                 <Navbar.Toggle />
             </Navbar.Header>
             <Navbar.Collapse>
-                {!props.isLoggedIn && <RegisterToggle />}
+                {!props.isLoggedIn && <RegisterToggle onUpdateLogin={props.onUpdateLogin}/>}
                 <LoginFormContainer isLoggedIn={props.isLoggedIn}
                                     user={props.user}
                                     onUpdateLogin={props.onUpdateLogin}/>

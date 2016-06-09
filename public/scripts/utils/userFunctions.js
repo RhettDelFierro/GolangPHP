@@ -1,15 +1,5 @@
 var axios = require("axios");
 
-function Register(user) {
-    return axios.post("/users/register", {username: user.user, email: user.email, password: user.password})
-        .then(function (response) {
-            return response.data
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
-}
-
 //axios.defaults.headers.common['Authorization'] = AUTH_TOKEN; for the jwt.
 var userFunctions = {
     verfifyName: function (user) {
@@ -20,7 +10,14 @@ var userFunctions = {
         })
     },
     registerUser: function (user) {
-        return Register(user)
+        return axios.post("/users/register", {data: {username: user.user, email: user.email, password: user.password}})
+            .then(function (response) {
+                console.log(response);
+                return response.data
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     }
 };
 

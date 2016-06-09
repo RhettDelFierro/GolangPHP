@@ -20,6 +20,16 @@ var RegisterFormContainer = React.createClass({
             helpBlock: "hidden"
         })
     },
+    componentWillUnmount: function(){
+        this.setState({
+            user: "",
+            email: "",
+            password:"",
+            userInfo: [],
+            duplicate: true,
+            helpBlock: "hidden"
+        })
+    },
     handleUpdateUser: function (e) {
         this.setState({
             user: e.target.value
@@ -72,19 +82,8 @@ var RegisterFormContainer = React.createClass({
                 password: this.state.password
             })
             .then(function (userdata) {
-                this.setState({
-                    userinfo: {
-                        user: userdata.username,
-                        password: userdate.password,
-                        email: userdata.email
-                    }
-                });
-                this.context.router.push({
-                    pathname: "/teachers/" + userdata.username,
-                    state: {
-                        userinfo: this.state.userinfo
-                    }
-                })
+                console.log(userdata);
+                this.props.onUpdateLogin(true, userdata.username)
             }.bind(this));
     },
     render: function () {

@@ -6,8 +6,8 @@ var Header = require("../components/Header");
 var MainContainer = React.createClass({
     getInitialState: function () {
         return {
-            isLoggedIn: true,
-            username: "Somebody"
+            isLoggedIn: false,
+            username: ""
         }
     },
     handleUpdateLogin: function (loggedIn, username) {

@@ -13,7 +13,10 @@ var RegisterModalContainer = React.createClass({
     },
     render: function () {
         return (
-            <RegisterModal onOpen={this.handleOpen} onClose={this.handleClose} modalToggle={this.state.showModal}/>
+            <RegisterModal onOpen={this.handleOpen}
+                           onClose={this.handleClose}
+                           modalToggle={this.state.showModal}
+                           onUpdateLogin={this.props.onUpdateLogin}/>
         )
     }
 });

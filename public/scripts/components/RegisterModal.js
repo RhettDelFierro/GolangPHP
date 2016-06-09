@@ -23,7 +23,7 @@ function RegisterModal(props) {
                     <Modal.Title>Register</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <RegisterFormContainer />
+                    <RegisterFormContainer onUpdateLogin={props.onUpdateLogin}/>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={props.onClose}>Close</Button>

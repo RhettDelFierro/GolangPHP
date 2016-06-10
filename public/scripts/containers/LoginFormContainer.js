@@ -12,14 +12,13 @@ var LoginFormContainer = React.createClass({
             isLoggedIn: false,
             user: "",
             password: "",
-            login: "",
             token: ""
         }
 
     },
     handleUpdateUser: function (e) {
         this.setState({
-            login: e.target.value
+            user: e.target.value
         })
     },
     handleUpdatePassword: function (e) {
@@ -27,28 +26,49 @@ var LoginFormContainer = React.createClass({
             password: e.target.value
         })
     },
-    handleSubmitUser: function () {
+    handleSubmitUser: function (e) {
         e.preventDefault();
+        console.log("called?", this.state.user);
         userFunctions.loginUser({
             user: this.state.user,
             password: this.state.password
         }).then(function (data) {
             this.setState({
                 isLoggedIn: true,
-                user: data.username,
+                user: data.user.username,
                 token: data.token
             })
         }.bind(this))
     },
+    //this will run also on logout. Must fix. This happens because of the re-render and the Main container will send in a new state as props.
+    componentDidMount: function () {
+        this.getUser(this.props.user)
+    },
     componentWillReceiveProps: function (nextProps) {
-        userFunctions.loginPassword(nextProps.user)
-            .then(function (data) {
-                this.setState({
-                    isLoggedIn: true,
-                    user: data.username,
-                    token: data.token
-                })
-            }.bind(this))
+        this.getUser(nextProps.user)
+    },
+    getUser: function (user) {
+        if (user.length >= 5) {
+            userFunctions.loginPassword(user)
+                .then(function (data) {
+                    console.log("setting state in LoginForm after axios: ", data);
+                    this.setState({
+                        isLoggedIn: true,
+                        user: data.user.username,
+                        token: data.token
+                    })
+                }.bind(this))
+        }
+    },
+    handleLogout: function () {
+        this.setState({
+            isLoggedIn: false,
+            user: "",
+            password: "",
+            login: "",
+            token: ""
+        });
+        this.props.onUpdateLogin(false, "");
     },
     render: function () {
         return (
@@ -58,7 +78,8 @@ var LoginFormContainer = React.createClass({
                        onSubmitUser={this.handleSubmitUser}
                        onUpdateUser={this.handleUpdateUser}
                        onUpdatePassword={this.handleUpdatePassword}
-                       password={this.state.password}/>
+                       password={this.state.password}
+                       onLogout={this.handleLogout}/>
         )
     }
 });

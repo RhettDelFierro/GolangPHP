@@ -47,7 +47,7 @@ var RegisterFormContainer = React.createClass({
             .then(function (userdata) {
                 console.log("from the container: ", userdata);
                 this.setState({
-                    duplicate: userdata.taken,
+                    duplicate: userdata.taken
                 })
             }.bind(this));
     },

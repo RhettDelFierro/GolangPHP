@@ -17,7 +17,6 @@ var styles = {
 };
 
 function LoggedIn(props) {
-    console.log("error");
     //add delete to menu item: <MenuItem eventKey={3.2} onClick={props.onUpdateLogin}>Delete Profile</MenuItem>
     //probably just use a dropdown instead of just text.
     return (
@@ -27,7 +26,7 @@ function LoggedIn(props) {
             </Navbar.Text>
 
             <NavDropdown eventKey={3} title={props.user} id="basic-nav-dropdown">
-                <MenuItem evenKey={3.1} onClick={props.onUpdateLogin.bind(null, false, "somebody has logged out")}>Logout</MenuItem>
+                <MenuItem evenKey={3.1} onClick={props.onLogout}>Logout</MenuItem>
             </NavDropdown>
         </Nav>
     )
@@ -38,7 +37,7 @@ function NotLoggedIn(props) {
     //throw in the RegisterFormContainer here?
     return (
         <Nav pullRight>
-            <Navbar.Form onSubmit={props.onSubmitUser}>
+            <Navbar.Form>
                 <FormGroup>
                     <FormControl sm={7} type="text" placeholder="Username or Email" value={props.user}
                                  onChange={props.onUpdateUser}/>
@@ -49,7 +48,7 @@ function NotLoggedIn(props) {
                                  onChange={props.onUpdatePassword}/>
                 </FormGroup>
                 {' '}
-                <Button type="submit">Login</Button>
+                <Button type="submit" onClick={props.onSubmitUser}>Login</Button>
             </Navbar.Form>
         </Nav>
     )
@@ -57,8 +56,8 @@ function NotLoggedIn(props) {
 
 function LoginForm(props) {
     return props.isLoggedIn === true
-        ? <LoggedIn user={props.user} onUpdateLogin={props.onUpdateLogin}/>
-        : <NotLoggedIn />
+        ? <LoggedIn user={props.user} onLogout={props.onLogout}/>
+        : <NotLoggedIn user={props.user} password={props.password} onUpdateUser={props.onUpdateUser} onUpdatePassword={props.onUpdatePassword} onSubmitUser={props.onSubmitUser}/>
 }
 
 module.exports = LoginForm;

@@ -20,6 +20,7 @@ var userFunctions = {
             })
     },
     loginUser: function(user){
+        console.log(user);
         return axios.post("/users/login", {data: {login: user.user, password: user.password}})
             .then(function (response){
                 console.log(response);
@@ -30,6 +31,7 @@ var userFunctions = {
             })
     },
     loginPassword: function(user){
+        console.log("loginPassword: ", user);
         return axios.post("/users/pw", {data: {login: user}})
             .then(function (response){
                 console.log(response);

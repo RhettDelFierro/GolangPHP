@@ -3,11 +3,9 @@ package controllers
 import (
 	"net/http"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
-	//"github.com/gorilla/sessions"
 	"encoding/json"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 	"fmt"
-	//"go/token"
 )
 
 type User struct {
@@ -24,7 +22,7 @@ type LoginModel struct {
 }
 
 type AuthToken struct {
-	User  models.UserInfo `json:"username"`
+	User  models.UserInfo `json:"user"`
 	Token string                `json:"token"`
 }
 
@@ -137,7 +135,7 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func GetPW(w http.ResponseWriter, req *http.Request){
+func GetPW(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 	var login LoginResource
@@ -158,48 +156,42 @@ func GetPW(w http.ResponseWriter, req *http.Request){
 	loginUser := models.UserInfo{
 		UserName: loginModel.Login,
 	}
-
+	fmt.Println("loginUser: ", loginUser)
 	userInfo, err := models.UserPW(loginUser)
 	if err != nil {
 		panic(err);
 	}
 	fmt.Println(userInfo)
-	if user, err := models.LoginUser(userInfo); err != nil {
-		//unauthorized error message
-		fmt.Println("Error after DB check")
-		w.WriteHeader(401)
+	fmt.Println("user.UserName:", userInfo.UserName)
+	token, err = GenerateToken(userInfo.UserName, "teacher")
+	if err != nil {
+		fmt.Println("Error generating token")
+		w.WriteHeader(500)
+		w.Write([]byte("Could not generate token"))
+		return
+	}
+
+	//don't send the HashPassword.
+	fmt.Println("heres the token:", token)
+	w.Header().Set("Content-Type", "application/json")
+	userInfo.HashPassword = nil
+	//send this token and code to the front end.
+	authUser := AuthToken{
+		User: userInfo,
+		Token: token,
+	}
+
+	//taken the response on the front end and throw it in the header.
+	//include the header for all Update/Add/Delete CRUD methods.
+	fmt.Println("Here's authUser: ", authUser.User.UserName)
+	j, err := json.Marshal(authUser)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("An unexpected error has occured. Json not wrote."))
 		return
 	} else {
-		//user is verified, generate jwt:
-		fmt.Println("user.UserName:", user.UserName)
-		token, err = GenerateToken(user.UserName, "teacher")
-		if err != nil {
-			fmt.Println("Error generating token")
-			w.WriteHeader(500)
-			w.Write([]byte("Could not generate token"))
-			return
-		}
-
-		//don't send the HashPassword.
-		fmt.Println("heres the token:", token)
-		w.Header().Set("Content-Type", "application/json")
-		user.HashPassword = nil
-		//send this token and code to the front end.
-		authUser := AuthToken{
-			User: user,
-			Token: token,
-		}
-
-		//taken the response on the front end and throw it in the header.
-		//include the header for all Update/Add/Delete CRUD methods.
-		j, err := json.Marshal(authUser)
-		if err != nil {
-			w.WriteHeader(500)
-			w.Write([]byte("An unexpected error has occured. Json not wrote."))
-			return
-		} else {
-			w.WriteHeader(200)
-			w.Write(j)
-		}
+		w.WriteHeader(200)
+		w.Write(j)
 	}
+
 }

@@ -39,7 +39,7 @@ func DuplicateUser(user UserInfo) (err error) {
 	u := UserInfo{}
 	err = c.Find(bson.M{"username": user.UserName}).One(&u)
 	if err != nil {
-		fmt.Println("err in Duplicate: Find", err.Error())
+		//fmt.Println("err in Duplicate: Find", err.Error())
 		return err
 	}
 
@@ -121,7 +121,6 @@ func LoginUser(user UserInfo) (u UserInfo, err error) {
 		fmt.Println("Hashpassword error")
 		fmt.Println(err)
 	}
-
 	return
 }
 
@@ -186,6 +185,7 @@ func UserPW(user UserInfo) (u UserInfo, err error) {
 
 	c := session.DB("taskdb").C("users")
 	err = c.Find(bson.M{"username": user.UserName}).One(&u)
+	fmt.Println("here's u: ", u.UserName)
 	if err != nil {
 		if err.Error() == "not found" {
 			u = UserInfo{}
@@ -194,7 +194,5 @@ func UserPW(user UserInfo) (u UserInfo, err error) {
 			panic(err);
 		}
 	}
-
 	return
-
 }

@@ -71,7 +71,6 @@ func DuplicateNewUserCheck(w http.ResponseWriter, req *http.Request) {
 				User: duplicateUser.UserName,
 				Taken: true,
 			}
-
 			j, err := json.Marshal(dupUser)
 			if err != nil {
 				w.WriteHeader(500)

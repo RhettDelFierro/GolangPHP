@@ -34,7 +34,6 @@ var RegisterFormContainer = React.createClass({
         this.setState({
             user: e.target.value
         });
-        console.log(this.state.user);
         if (this.state.user.length >= 8) {
             this.ajaxValidUserName();
             this.setState({helpBlock: "show"})
@@ -45,7 +44,6 @@ var RegisterFormContainer = React.createClass({
     ajaxValidUserName: function () {
         userFunctions.verifyName(this.state.user)
             .then(function (userdata) {
-                console.log("from the container: ", userdata);
                 this.setState({
                     duplicate: userdata.taken
                 })
@@ -55,7 +53,6 @@ var RegisterFormContainer = React.createClass({
         this.setState({
             email: e.target.value
         });
-        console.log(this.state.email)
     },
     handleUpdatePassword: function (e) {
         this.setState({

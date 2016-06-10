@@ -1,22 +1,17 @@
 var React = require("react");
+var Table = require("..components/Table");
+
+//methods to add:
+//check if the user is the one who made the entry, authenticate if they can edit/delete it.
+//populate
+//add
+//delete?
 
 var TableContainer = React.createClass({
+
     render: function () {
         return (
-            <div className="student-list-container col-xs-12 col-md-9 col-md-pull-3">
-                <table className="student-list table">
-                    <thead>
-                    <tr>
-                        <th>Student Name</th>
-                        <th>Student Course</th>
-                        <th>Student Grade</th>
-                        <th>Operations</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+            <Table />
         )
     }
 });

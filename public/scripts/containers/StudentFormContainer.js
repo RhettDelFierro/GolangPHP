@@ -5,11 +5,11 @@ var userFunctions = require("../utils/userFunctions");
 var StudentFormContainer = React.createClass({
     //right now we're hardcoded with a login, but normally our state wouldn't be on first visit.
     getInitialState: function () {
-        this.setState({
+        return {
             student: "",
             course: "",
             grade: ""
-        })
+        }
     },
     handleUpdate: function(){
         this.props.onUpdateStudent(this.refs.student.value, this.refs.course.value, this.refs.grade.value)
@@ -22,7 +22,7 @@ var StudentFormContainer = React.createClass({
             course: "",
             grade: ""
         });
-        this.props.onStudentSubmit(this.refs.studentForm.refs.student.value, this.refs.course.value, this.refs.grade.value)
+        this.props.onStudentSubmit(this.refs.studentForm.refs.student.value, this.refs.course.value, this.refs.grade.value);
 
         //calling userFunctions should be in  the RowContainer, not here.
     },

@@ -27,4 +27,4 @@ function Row(props) {
     )
 }
 
-module.exports = Table;
+module.exports = Row;

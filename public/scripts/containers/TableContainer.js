@@ -1,5 +1,5 @@
 var React = require("react");
-var Table = require("..components/Table");
+var Table = require("../components/Table");
 
 //methods to add:
 //check if the user is the one who made the entry, authenticate if they can edit/delete it.

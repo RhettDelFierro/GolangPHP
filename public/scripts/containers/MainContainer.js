@@ -14,11 +14,10 @@ var MainContainer = React.createClass({
         this.setState({
             isLoggedIn: loggedIn, //!(this.state.isLoggedIn),
             username: username
-        })
+        });
     },
     render: function () {
         //<HomeContainer> is a child.
-        console.log("username: ", this.state.username);
         return (
             <div className="container-fluid">
                 <NavbarContainer onUpdateLogin={this.handleUpdateLogin}

@@ -9,7 +9,7 @@ var StudentFormContainer = React.createClass({
             student: "",
             course: "",
             grade: ""
-        }
+        };
     },
     handleUpdate: function(){
         this.props.onUpdateStudent(this.refs.student.value, this.refs.course.value, this.refs.grade.value)
@@ -22,7 +22,7 @@ var StudentFormContainer = React.createClass({
             course: "",
             grade: ""
         });
-        this.props.onStudentSubmit(this.refs.studentForm.refs.student.value, this.refs.course.value, this.refs.grade.value);
+        this.props.onStudentSumbit(this.refs.studentForm.refs.student.value, this.refs.studentForm.refs.course.value, this.refs.studentForm.refs.grade.value);
 
         //calling userFunctions should be in  the RowContainer, not here.
     },

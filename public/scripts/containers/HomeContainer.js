@@ -17,14 +17,13 @@ var HomeContainer = React.createClass({
     },
     handleStudentSubmit: function(student, course, grade){
         this.setState({
-            filterText: student,
+            student: student,
             course: course,
             grade: grade
         });
         //state will be updated and children will be re-rendered.
         //The table needs to get this re-rendering info. Then make an ajax call from it's componentDidMount.
         //then you're done.
-        console.log(this.state);
     },
     render: function(){
         return (

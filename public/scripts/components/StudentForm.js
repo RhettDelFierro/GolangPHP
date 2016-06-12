@@ -3,9 +3,8 @@ var React = require("react");
 var StudentForm = React.createClass({
     //remember to add the onClicks.
     render: function () {
-        console.log("within student form: ", this.props.isLoggedIn, this.props.user);
         return (
-            <div className="student-add-form col-xs-12 col-md-push-9 col-md-3">
+            <form className="student-add-form col-xs-12 col-md-push-9 col-md-3" onSubmit={this.props.onSubmitStudent}>
                 <h4>Add Student</h4>
 
                 <div className="input-group form-group">
@@ -38,7 +37,7 @@ var StudentForm = React.createClass({
 
                 <p className="text-danger" id="regex_grade"></p>
 
-                <button type="button" className={this.props.isLoggedIn === true
+                <button type="submit" className={this.props.isLoggedIn === true
             ? "btn btn-success form-group active"
             : "btn btn-success form-group disabled"}>Add
                 </button>
@@ -48,7 +47,7 @@ var StudentForm = React.createClass({
                 <button type="button" className="btn btn-default form-group">Cancel</button>
 
                 <p className="text-danger" id="extra_error"></p>
-            </div>
+            </form>
         )
     }
 });

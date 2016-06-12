@@ -13,9 +13,12 @@ var LoginFormContainer = React.createClass({
             user: "",
             password: "",
             token: ""
-        }
+        };
 
     },
+
+
+    //tie state to inputs.
     handleUpdateUser: function (e) {
         this.setState({
             user: e.target.value
@@ -26,9 +29,13 @@ var LoginFormContainer = React.createClass({
             password: e.target.value
         })
     },
+
+    //navbar form.
+    //onSubmit: handling AJAX here. Probably not the best?
+    //do a this.props.updateLogin. This will update the state of Main and re-render this.
+    //no Ajax here. Handle that in componenntDidMount since it will re-render from Main.
     handleSubmitUser: function (e) {
         e.preventDefault();
-        console.log("called?", this.state.user);
         userFunctions.loginUser({
             user: this.state.user,
             password: this.state.password
@@ -37,9 +44,11 @@ var LoginFormContainer = React.createClass({
                 isLoggedIn: true,
                 user: data.user.username,
                 token: data.token
-            })
+            });
+            this.props.onUpdateLogin(true, this.state.user);
         }.bind(this))
     },
+
     //this will run also on logout. Must fix. This happens because of the re-render and the Main container will send in a new state as props.
     componentDidMount: function () {
         this.getUser(this.props.user)
@@ -51,13 +60,13 @@ var LoginFormContainer = React.createClass({
         if (user.length >= 5) {
             userFunctions.loginPassword(user)
                 .then(function (data) {
-                    console.log("setting state in LoginForm after axios: ", data);
                     this.setState({
                         isLoggedIn: true,
                         user: data.user.username,
                         token: data.token
-                    })
-                }.bind(this))
+                    });
+                }.bind(this));
+            //must re-render the Home container to re-render the rest of the page.
         }
     },
     handleLogout: function () {

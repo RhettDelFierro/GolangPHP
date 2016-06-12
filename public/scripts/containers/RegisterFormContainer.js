@@ -61,7 +61,6 @@ var RegisterFormContainer = React.createClass({
     },
     handleSubmitUser: function (e) {
         e.preventDefault();
-        console.log(this.state);
         //in case for a backspace, but this should be done after the push to a new route:
         this.setState({
             user: "",
@@ -79,7 +78,6 @@ var RegisterFormContainer = React.createClass({
                 password: this.state.password
             })
             .then(function (userdata) {
-                console.log(userdata);
                 this.props.onUpdateLogin(true, userdata.username)
             }.bind(this));
     },

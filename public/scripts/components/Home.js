@@ -10,7 +10,7 @@ function Home(props) {
     return (
         <div>
             <Header />
-            <StudentFormContainer isLoggedIn={props.isLoggedIn} user={props.user}/>
+            <StudentFormContainer isLoggedIn={props.isLoggedIn} user={props.user} onHandleUpdateStudent={props.onUpdateStudent} onStudentSumbit={props.onStudentSubmit}/>
             <TableContainer />
         </div>
     )
@@ -19,6 +19,8 @@ function Home(props) {
 
 Home.propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
-    user: PropTypes.string
+    user: PropTypes.string,
+    onUpdateStudent: PropTypes.func.isRequired,
+    onStudentSubmit: PropTypes.func.isRequired
 };
 module.exports = Home;

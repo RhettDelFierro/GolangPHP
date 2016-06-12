@@ -11,7 +11,7 @@ function StudentForm(props){
             <span className="input-group-addon">
                 <span className="glyphicon glyphicon-user"></span>
             </span>
-                <input type="text" className="form-control" name="studentName" id="studentName" placeholder="Student Name"/>
+                <input ref="student" type="text" className="form-control" name="studentName" id="studentName" placeholder="Student Name"/>
             </div>
 
             <p className="text-danger" id="regex_name"></p>
@@ -20,7 +20,7 @@ function StudentForm(props){
             <span className="input-group-addon">
                 <span className="glyphicon glyphicon-list-alt"></span>
             </span>
-                <input type="text" className="form-control" name="course" id="course" placeholder="Student Course"/>
+                <input ref="course" type="text" className="form-control" name="course" id="course" placeholder="Student Course"/>
             </div>
 
             <p className="text-danger" id="regex_course"></p>
@@ -29,7 +29,7 @@ function StudentForm(props){
             <span className="input-group-addon">
                 <span className="glyphicon glyphicon-education"></span>
             </span>
-                <input type="text" className="form-control" name="studentGrade" id="studentGrade" placeholder="Student Grade"/>
+                <input ref="grade" type="text" className="form-control" name="studentGrade" id="studentGrade" placeholder="Student Grade"/>
             </div>
 
             <p className="text-danger" id="regex_grade"></p>

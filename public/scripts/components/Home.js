@@ -10,7 +10,7 @@ function Home(props) {
         <div>
             <Header />
             <StudentFormContainer isLoggedIn={props.isLoggedIn} user={props.user} onHandleUpdateStudent={props.onUpdateStudent} onStudentSumbit={props.onStudentSubmit}/>
-            <TableContainer />
+            <TableContainer user={props.user} isLoggedIn={props.isLoggedIn} student={props.student} course={props.course} grade={props.grade}/>
         </div>
     )
 

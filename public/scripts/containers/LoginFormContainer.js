@@ -41,7 +41,7 @@ var LoginFormContainer = React.createClass({
 
     //this will run also on logout. Must fix. This happens because of the re-render and the Main container will send in a new state as props.
     //componentDidMount: function () {
-    //    this.getUser(this.props.user)
+    //    this.getToken(this.props.user)
     //},
     //componentWillReceiveProps: function (nextProps) {
     //    this.getUser(nextProps.user)
@@ -53,9 +53,8 @@ var LoginFormContainer = React.createClass({
             user: this.state.user,
             password: this.state.password
         }).then(function (data) {
-            document.cookie = "Authorization=" + "Bearer " + data.token;
+            document.cookie = "Authorization=" + data.token;
             this.props.onUpdateLogin(true, data.user.username);
-            console.log(document);
         }.bind(this));
     },
 
@@ -64,13 +63,14 @@ var LoginFormContainer = React.createClass({
         if (user.length >= 5) {
             userFunctions.loginPassword(user)
                 .then(function (data) {
+                    var date = new Date();
+                    date.setMinutes(15);
+                    document.cookie = "Authorization=" + data.token + ";expires=" + date;
                     this.props.onUpdateLogin(true, data.user.username);
-                    //handle the cookie here.
                 }.bind(this));
         }
     },
     handleLogout: function () {
-        console.log(document.cookie);
         this.setState({
             isLoggedIn: false,
             user: "",

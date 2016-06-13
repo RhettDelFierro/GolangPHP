@@ -11,8 +11,20 @@ var StudentFormContainer = React.createClass({
             grade: ""
         };
     },
-    handleUpdate: function(){
-        this.props.onUpdateStudent(this.refs.student.value, this.refs.course.value, this.refs.grade.value)
+    handleUpdateStudent: function(e){
+        this.setState({
+            student: e.target.value
+        })
+    },
+    handleUpdateCourse: function(e){
+        this.setState({
+            course: e.target.value
+        })
+    },
+    handleUpdateGrade: function(e){
+        this.setState({
+            grade: e.target.value
+        })
     },
     handleSubmitStudent: function (e) {
         e.preventDefault();
@@ -22,7 +34,7 @@ var StudentFormContainer = React.createClass({
             course: "",
             grade: ""
         });
-        this.props.onStudentSumbit(this.refs.studentForm.refs.student.value, this.refs.studentForm.refs.course.value, this.refs.studentForm.refs.grade.value);
+        this.props.onStudentSumbit(this.state.student, this.state.course, this.state.grade);
 
         //calling userFunctions should be in  the RowContainer, not here.
     },
@@ -36,9 +48,13 @@ var StudentFormContainer = React.createClass({
         return (
             <StudentForm isLoggedIn={this.props.isLoggedIn}
                          user={this.props.user}
-                         onUpdate={this.handleUpdate}
-                         onSubmitStudent={this.handleSubmitStudent}
-            ref="studentForm"/>
+                         student={this.state.student}
+                         course={this.state.course}
+                         grade={this.state.grade}
+                         onUpdateStudent={this.handleUpdateStudent}
+                         onUpdateCourse={this.handleUpdateCourse}
+                         onUpdateGrade={this.handleUpdateGrade}
+                         onSubmitStudent={this.handleSubmitStudent}/>
         )
     }
 });

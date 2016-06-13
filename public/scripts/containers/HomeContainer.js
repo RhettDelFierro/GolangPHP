@@ -27,7 +27,7 @@ var HomeContainer = React.createClass({
     },
     render: function(){
         return (
-            <Home isLoggedIn={this.props.isLoggedIn} user={this.props.user} onUpdateStudent={this.handleUpdateStudent} onStudentSubmit={this.handleStudentSubmit}/>
+            <Home isLoggedIn={this.props.isLoggedIn} user={this.props.user} onUpdateStudent={this.handleUpdateStudent} onStudentSubmit={this.handleStudentSubmit} student={this.state.student} course={this.state.course} grade={this.state.grade}/>
         )
     }
 });

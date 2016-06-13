@@ -11,8 +11,8 @@ var StudentForm = React.createClass({
             <span className="input-group-addon">
                 <span className="glyphicon glyphicon-user"></span>
             </span>
-                    <input ref="student" type="text" className="form-control" name="studentName" id="studentName"
-                           placeholder="Student Name"/>
+                    <input onChange={props.onUpdateStudent} type="text" className="form-control" name="studentName" id="studentName"
+                           placeholder="Student Name" value={props.student}/>
                 </div>
 
                 <p className="text-danger" id="regex_name"></p>
@@ -21,8 +21,8 @@ var StudentForm = React.createClass({
             <span className="input-group-addon">
                 <span className="glyphicon glyphicon-list-alt"></span>
             </span>
-                    <input ref="course" type="text" className="form-control" name="course" id="course"
-                           placeholder="Student Course"/>
+                    <input onChange={props.onUpdateCourse} type="text" className="form-control" name="course" id="course"
+                           placeholder="Student Course" value={props.course}/>
                 </div>
 
                 <p className="text-danger" id="regex_course"></p>
@@ -31,8 +31,8 @@ var StudentForm = React.createClass({
             <span className="input-group-addon">
                 <span className="glyphicon glyphicon-education"></span>
             </span>
-                    <input ref="grade" type="text" className="form-control" name="studentGrade" id="studentGrade"
-                           placeholder="Student Grade"/>
+                    <input onChange={props.onUpdateGrade} type="text" className="form-control" name="studentGrade" id="studentGrade"
+                           placeholder="Student Grade" value={props.grade}/>
                 </div>
 
                 <p className="text-danger" id="regex_grade"></p>

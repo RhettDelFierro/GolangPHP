@@ -26,7 +26,7 @@ function Table(props) {
                     <th>Student Grade</th>
                     <th>Operations</th>
                 </tr>
-                <RowContainer />
+                <RowContainer user={props.user} student={props.student} course={props.course} grade={props.grade}/>
                 </thead>
                 <tbody>
                 </tbody>

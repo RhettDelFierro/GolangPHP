@@ -51,12 +51,11 @@ var userFunctions = {
     //        })
     //}
     addStudent: function (student, token) {
-        console.log("adding student", student);
         axios.defaults.headers.common['Authorization'] = "Bearer " + token;
         //note the difference between this and user. The users have Data Mapping (and expects "data" field)
         return axios.post("/api/add",{name: student.student, course: student.course, grade: student.grade})
             .then(function (response) {
-                console.log(response);
+                console.log("addStudent: ", response);
                 return response.data
             })
             .catch(function (error) {

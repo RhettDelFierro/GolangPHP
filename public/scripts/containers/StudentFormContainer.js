@@ -39,6 +39,9 @@ var StudentFormContainer = React.createClass({
         e.preventDefault();
         this.axiosAddStudent();
     },
+    updateHomeContainer: function(object, studentsLoaded){
+      this.props.onStudentSubmit(object, studentsLoaded);
+    },
     axiosAddStudent: function(){
         var data = {
             student: this.state.student,
@@ -47,8 +50,7 @@ var StudentFormContainer = React.createClass({
         };
         userFunctions.addStudent(data, this.cookieFinder("token"))
             .then(function(data){
-                console.log("StudentFormContainer set the line below it: ", data);
-                this.props.onStudentSumbit(this.state.student, this.state.course, this.state.grade, true);
+                this.updateHomeContainer(data.student,true);
                 this.setState({
                     student: "",
                     course: "",

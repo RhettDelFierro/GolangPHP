@@ -8,27 +8,27 @@ var Table = require("../components/Table");
 //delete?
 
 var TableContainer = React.createClass({
-    getInitialState: function(){
+    getInitialState: function () {
         return {
             user: "",
             isLoggedIn: false,
-            student: "",
-            course: "",
-            grade: ""
+            studentInfo: []
         }
     },
-    componentWillReceiveProps: function(nextProps){
+    componentWillReceiveProps: function (nextProps) {
         this.setState({
             user: nextProps.user,
             isLoggedIn: nextProps.isLoggedIn,
-            student: nextProps.student,
-            course: nextProps.course,
-            grade: nextProps.grade
+            studentInfo: nextProps.studentInfo,
+            studentsLoaded: nextProps.studentsLoaded
         })
     },
     render: function () {
         return (
-            <Table user={this.state.user} student={this.state.student} course={this.state.course} grade={this.state.grade}/>
+            <Table user={this.state.user}
+                   isLoggedIn={this.state.isLoggedIn}
+                   studentInfo={this.state.studentInfo}
+                   studentsLoaded={this.state.studentsLoaded}/>
         )
     }
 });

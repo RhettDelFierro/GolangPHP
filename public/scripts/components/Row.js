@@ -30,17 +30,17 @@ var Button = React.createClass({
 
 function Record(props) {
     return (
-        <td>
+        <tr>
             <Student student={props.student}/>
             <Course course={props.course}/>
             <Grade grade={props.grade}/>
             <Button student={props.student}/>
-        </td>
+        </tr>
     )
 }
 
 function Row(props) {
-    return props.studentLoaded === true ?
+    return props.studentsLoaded === true ?
         <Record student={props.student}
                 course={props.course}
                 grade={props.grade}/>

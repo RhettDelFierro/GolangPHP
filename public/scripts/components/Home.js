@@ -9,8 +9,13 @@ function Home(props) {
     return (
         <div>
             <Header />
-            <StudentFormContainer isLoggedIn={props.isLoggedIn} user={props.user} onHandleUpdateStudent={props.onUpdateStudent} onStudentSumbit={props.onStudentSubmit}/>
-            <TableContainer user={props.user} isLoggedIn={props.isLoggedIn} student={props.student} course={props.course} grade={props.grade}/>
+            <StudentFormContainer isLoggedIn={props.isLoggedIn} user={props.user}
+                                  onHandleUpdateStudent={props.onUpdateStudent}
+                                  onStudentSubmit={props.onStudentSubmit}/>
+            <TableContainer user={props.user}
+                            isLoggedIn={props.isLoggedIn}
+                            studentInfo={props.studentInfo}
+                            studentsLoaded={props.studentsLoaded}/>
         </div>
     )
 

@@ -27,7 +27,7 @@ type StudentJSON struct {
 //errors should be custom notes from helper.
 type JSON struct {
 	Success bool        `json:"success"`
-	Data    interface{} `json:"data"`
+	Data    interface{} `json:"student"`
 	Error   []string     `json:"error"`
 }
 
@@ -67,10 +67,10 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 	if len(regex_errors) == 0 {
 		data := new(models.Student)
 
-		grade, _ := strconv.Atoi(regexCheckingMap["grade"]["value"])
+		grade, _ := strconv.Atoi(student.Grade)
 
-		data.SetName(regexCheckingMap["name"]["value"])
-		data.SetCourse(regexCheckingMap["course"]["value"])
+		data.SetName(student.Name)
+		data.SetCourse(student.Course)
 		data.SetGrade(grade)
 		data.SetId(bson.NewObjectId())
 		convertedData := helper.StudentsToViewModel(*data)

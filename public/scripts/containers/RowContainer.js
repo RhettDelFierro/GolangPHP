@@ -15,26 +15,24 @@ var RowContainer = React.createClass({
         }
     },
     componentWillReceiveProps: function (nextProps) {
-        console.log("componentWillreceiveProps");
         //maybe need an if statement if none of the fields are empty.
         this.setState({
-            student: nextProps.student,
-            course: nextProps.course,
-            grade: nextProps.grade
+            user: nextProps.user,
+            student: nextProps.studentInfo.name,
+            course: nextProps.studentInfo.course,
+            grade: nextProps.studentInfo.grade,
+            id: nextProps.studentInfo.id,
+            studentsLoaded: nextProps.studentsLoaded
         });
-    },
-
-    componentWillUnmount: function () {
-        //when delete is fired.
-
     },
     render: function () {
         return (
-            <Row student={this.state.grade}
+            <Row user={this.state.user}
+                student={this.state.grade}
                  course={this.state.course}
                  grade={this.state.grade}
                  key={this.state.id}
-                 loaded={this.state.studentsLoaded}/>
+                 studentsLoaded={this.state.studentsLoaded}/>
         )
 
     }

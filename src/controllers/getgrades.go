@@ -8,7 +8,6 @@ import (
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/util"
 	"github.com/RhettDelFierro/GolangPHP/src/models"
 	"encoding/json"
-	"fmt"
 	"github.com/RhettDelFierro/GolangPHP/src/controllers/helper"
 )
 
@@ -19,6 +18,7 @@ type gradesController struct {
 func getGrades(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
+
 
 	studentData := JSON{
 		Success: false,
@@ -86,7 +86,6 @@ func deleteGrade(w http.ResponseWriter, req *http.Request) {
 		responseWriter.WriteHeader(200)
 		responseData, err := json.Marshal(sd)
 		if err != nil {
-			fmt.Println("404 error", err)
 			responseWriter.WriteHeader(404)
 			responseWriter.Write(responseData)
 		} else {

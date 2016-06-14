@@ -53,7 +53,6 @@ func GetStudents() ([]Student, error) {
 		result := DBStudent{}
 			for iter.Next(&result) {
 				var student Student
-				fmt.Printf(result.Name)
 				student.SetName(result.Name)
 				student.SetCourse(result.Course)
 				student.SetGrade(result.Grade)
@@ -61,6 +60,7 @@ func GetStudents() ([]Student, error) {
 				school = append(school, student)
 			}
 	if err = iter.Close(); err != nil { panic(err) }
+
 
 	return school, err
 }
@@ -141,7 +141,6 @@ func duplicate(student *DBStudent) []Student {
 		result := DBStudent{}
 			for iter.Next(&result) {
 				var student Student
-				fmt.Printf(result.Name)
 				student.SetName(result.Name)
 				student.SetCourse(result.Course)
 				student.SetGrade(result.Grade)

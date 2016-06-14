@@ -43,7 +43,7 @@ function StudentForm(props) {
             : "btn btn-success form-group disabled"}>Add
             </button>
             {' '}
-            <button type="button" className="btn btn-success form-group">Load Grades</button>
+            <button type="button" className="btn btn-success form-group" onClick={props.onPopulate}>Load Grades</button>
             {' '}
             <button type="button" className="btn btn-default form-group">Cancel</button>
 

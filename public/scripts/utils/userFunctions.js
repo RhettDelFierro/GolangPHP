@@ -75,8 +75,18 @@ var userFunctions = {
     },
     deleteStudent: function (id) {
         axios.defaults.headers.common['Authorization'] = "Bearer " + cookieFinder("token");
-        return axios.get("/api/delete/" + id)
+        return axios.delete("/api/delete/" + id)
             .then(function (response) {
+                return response.data
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    },
+    populateTable: function(){
+        return axios.get("/api/grades")
+            .then(function (response) {
+                console.log(response);
                 return response.data
             })
             .catch(function (error) {

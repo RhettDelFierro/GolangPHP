@@ -12,17 +12,17 @@ var StudentFormContainer = React.createClass({
             user: ""
         };
     },
-    handleUpdateStudent: function(e){
+    handleUpdateStudent: function (e) {
         this.setState({
             student: e.target.value
         })
     },
-    handleUpdateCourse: function(e){
+    handleUpdateCourse: function (e) {
         this.setState({
             course: e.target.value
         })
     },
-    handleUpdateGrade: function(e){
+    handleUpdateGrade: function (e) {
         this.setState({
             grade: e.target.value
         })
@@ -31,24 +31,32 @@ var StudentFormContainer = React.createClass({
         e.preventDefault();
         this.axiosAddStudent();
     },
-    updateHomeContainer: function(object, studentsLoaded){
-      this.props.onStudentSubmit(object, studentsLoaded);
+    updateHomeContainer: function (object, studentsLoaded) {
+        this.props.onStudentSubmit(object, studentsLoaded);
     },
-    axiosAddStudent: function(){
+    axiosAddStudent: function () {
         var data = {
             student: this.state.student,
             course: this.state.course,
             grade: this.state.grade
         };
         userFunctions.addStudent(data, this.state.user)
-            .then(function(data){
-                this.updateHomeContainer(data.student,true);
+            .then(function (data) {
+                this.updateHomeContainer(data.student, true);
                 this.setState({
                     student: "",
                     course: "",
                     grade: ""
                 })
             }.bind(this));
+    },
+    handlePopulate: function () {
+        userFunctions.populateTable()
+            .then(function (data) {
+                data.student.map(function(student,index){
+                    this.updateHomeContainer(student,true)
+                }.bind(this))
+            }.bind(this))
     },
     componentWillReceiveProps: function (nextProps) {
         this.setState({
@@ -66,7 +74,8 @@ var StudentFormContainer = React.createClass({
                          onUpdateStudent={this.handleUpdateStudent}
                          onUpdateCourse={this.handleUpdateCourse}
                          onUpdateGrade={this.handleUpdateGrade}
-                         onSubmitStudent={this.handleSubmitStudent}/>
+                         onSubmitStudent={this.handleSubmitStudent}
+                         onPopulate={this.handlePopulate}/>
         )
     }
 });

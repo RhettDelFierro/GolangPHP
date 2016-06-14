@@ -19,6 +19,8 @@ function Student(props) {
 var Button = React.createClass({
     deleteRecord: function () {
         console.log("delete started");
+        //delete this.props.key
+
     },
     render: function () {
         return ( <td>
@@ -34,7 +36,7 @@ function Record(props) {
             <Student student={props.student}/>
             <Course course={props.course}/>
             <Grade grade={props.grade}/>
-            <Button student={props.student}/>
+            <Button key={props.key}/>
         </tr>
     )
 }
@@ -43,7 +45,8 @@ function Row(props) {
     return props.studentsLoaded === true ?
         <Record student={props.student}
                 course={props.course}
-                grade={props.grade}/>
+                grade={props.grade}
+                key={props.key}/>
         : <tr></tr>
 }
 

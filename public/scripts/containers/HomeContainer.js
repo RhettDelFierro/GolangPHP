@@ -2,6 +2,7 @@
 var React = require("react");
 var Home = require("../components/Home");
 var PropTypes = React.PropTypes;
+var update = require("react-addons-update");
 
 var HomeContainer = React.createClass({
     propTypes: {
@@ -14,7 +15,7 @@ var HomeContainer = React.createClass({
             grade: "",
             course: "",
             id: "",
-            studentInfo: {},
+            studentInfo: [],
             studentsLoaded: false
         };
     },
@@ -24,13 +25,23 @@ var HomeContainer = React.createClass({
             course: studentObject.course,
             grade: studentObject.grade,
             id: studentObject.id,
-            studentInfo: studentObject,
+            studentInfo: update(this.state.studentInfo, {$push: [studentObject]}),
             studentsLoaded: loaded
         });
         //state will be updated and children will be re-rendered.
         //The table needs to get this re-rendering info. Then make an ajax call from it's componentDidMount.
         //then you're done.
         console.log("in Home container: ", this.state);
+    },
+    handleStudentDelete: function (id) {
+        var index = this.state.studentInfo.map(function (student, index) {
+            if (student.id === id) {
+                return index
+            }
+        });
+        this.setState({
+            studentInfo: update(this.state.studentInfo, {$splice: [[index,1]]})
+        })
     },
     render: function () {
         return (
@@ -40,7 +51,8 @@ var HomeContainer = React.createClass({
                   course={this.state.course}
                   grade={this.state.grade}
                   studentInfo={this.state.studentInfo}
-                  studentsLoaded={this.state.studentsLoaded}/>
+                  studentsLoaded={this.state.studentsLoaded}
+                  onStudentDelete={this.handleStudentDelete}/>
         )
     }
 });

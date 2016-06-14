@@ -15,7 +15,8 @@ function Home(props) {
             <TableContainer user={props.user}
                             isLoggedIn={props.isLoggedIn}
                             studentInfo={props.studentInfo}
-                            studentsLoaded={props.studentsLoaded}/>
+                            studentsLoaded={props.studentsLoaded}
+                            onStudentDelete={props.onStudentDelete}/>
         </div>
     )
 

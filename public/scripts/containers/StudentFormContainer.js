@@ -8,17 +8,9 @@ var StudentFormContainer = React.createClass({
         return {
             student: "",
             course: "",
-            grade: ""
+            grade: "",
+            user: ""
         };
-    },
-    cookieFinder: function (name) {
-        var cookie = document.cookie;
-        var initialValue = {};
-
-        return cookie.split(';').reduce(function (prev, c) {
-            var arr = c.split('=');
-            return (arr[0].trim() == name ? arr[1] : prev);
-        }, initialValue);
     },
     handleUpdateStudent: function(e){
         this.setState({
@@ -48,7 +40,7 @@ var StudentFormContainer = React.createClass({
             course: this.state.course,
             grade: this.state.grade
         };
-        userFunctions.addStudent(data, this.cookieFinder("token"))
+        userFunctions.addStudent(data, this.state.user)
             .then(function(data){
                 this.updateHomeContainer(data.student,true);
                 this.setState({
@@ -58,10 +50,10 @@ var StudentFormContainer = React.createClass({
                 })
             }.bind(this));
     },
-    componentWillReceiveProps: function () {
+    componentWillReceiveProps: function (nextProps) {
         this.setState({
-            isLoggedIn: this.props.isLoggedIn,
-            username: this.props.user
+            isLoggedIn: nextProps.isLoggedIn,
+            user: nextProps.user
         })
     },
     render: function () {

@@ -14,6 +14,7 @@
 
 var React = require("react");
 var RowContainer = require("../containers/RowContainer");
+var userFunctions = require("../utils/userFunctions");
 
 function Course(props) {
     return <td>{props.course}</td>
@@ -30,7 +31,10 @@ function Student(props) {
 var Button = React.createClass({
     deleteRecord: function () {
         console.log("delete started");
-        this.props.onStudentDelete(this.props.id)
+        userFunctions.deleteStudent(this.props.id)
+            .then(function(data){
+                this.props.onStudentDelete(data.student.ID)
+            }.bind(this))
     },
     render: function () {
         return (

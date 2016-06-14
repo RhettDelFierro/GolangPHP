@@ -6,6 +6,8 @@ import(
 	"time"
 	"github.com/dgrijalva/jwt-go"
 	"fmt"
+	//"encoding/json"
+	//"encoding/json"
 )
 
 const (
@@ -16,6 +18,10 @@ const (
 var (
 	verifyKey, signKey []byte
 )
+
+type Record struct {
+	User string	`json:"user"`
+}
 
 func initKeys(){
 	var err error
@@ -58,6 +64,16 @@ func GenerateToken(name, role string) (string, error) {
 
 //Validate the tokens on each route that needs them
 func AuthorizeToken(w http.ResponseWriter, req *http.Request, next http.HandlerFunc){
+
+	//this is thoriwng a 400 error and fields are getting to api/add empty.
+	//check := req.Body
+	//
+	//record := Record{}
+	//errorDecode := json.NewDecoder(check).Decode(&record)
+	//if errorDecode != nil {
+	//	fmt.Println(errorDecode)
+	//}
+
 	//checking the token from the request.
 	//make sure to put Authorization: Bearer <token info> in header on front end.
 	token, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error){
@@ -88,6 +104,14 @@ func AuthorizeToken(w http.ResponseWriter, req *http.Request, next http.HandlerF
 		}
 	}
 	if token.Valid {
+		//check := token.Claims["UserInfo"].(map[string]interface{})["Name"]
+		//if check == record.User {
+		//	next(w, req)
+		//} else {
+		//	w.WriteHeader(401)
+		//	w.Write([]byte("You're not the same logged in user"))
+		//}
+
 		//call back on the HandlerFunc because this is a wrapping function on middleware.
 		//will use with negroni:
 		next(w, req)

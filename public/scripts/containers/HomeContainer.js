@@ -31,7 +31,6 @@ var HomeContainer = React.createClass({
         //state will be updated and children will be re-rendered.
         //The table needs to get this re-rendering info. Then make an ajax call from it's componentDidMount.
         //then you're done.
-        console.log("in Home container: ", this.state);
     },
     handleStudentDelete: function (id) {
         var index = this.state.studentInfo.map(function (student, index) {

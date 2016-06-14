@@ -69,7 +69,6 @@ func getGrades(w http.ResponseWriter, req *http.Request) {
 func deleteGrade(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
-	fmt.Println("we got to delete")
 
 	studentData := JSON{Success: false}
 	sd := &studentData
@@ -82,7 +81,7 @@ func deleteGrade(w http.ResponseWriter, req *http.Request) {
 	deleted := models.DeleteStudents(idRaw)
 	if deleted == nil {
 		sd.Success = true
-		sd.Data = deleted
+		sd.Data = struct{ID string}{idRaw}
 		responseWriter.Header().Add("Content-Type", "application/json")
 		responseWriter.WriteHeader(200)
 		responseData, err := json.Marshal(sd)

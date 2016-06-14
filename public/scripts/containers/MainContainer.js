@@ -15,6 +15,7 @@ var MainContainer = React.createClass({
             isLoggedIn: loggedIn, //!(this.state.isLoggedIn),
             username: username
         });
+        console.log("are we getting these?", loggedIn,username)
     },
     render: function () {
         //<HomeContainer> is a child.

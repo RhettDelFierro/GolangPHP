@@ -41,40 +41,34 @@ var LoginFormContainer = React.createClass({
 
     //this will run also on logout. Must fix. This happens because of the re-render and the Main container will send in a new state as props.
     //componentDidMount: function () {
-    //    this.getToken(this.props.user)
+    //    this.getToken()
     //},
-    //componentWillReceiveProps: function (nextProps) {
-    //    this.getUser(nextProps.user)
-    //},
+    componentWillReceiveProps: function (nextProps) {
+        this.setState({
+            isLoggedIn: nextProps.isLoggedIn,
+            user: nextProps.user
+        })
+    },
+    handleRegisterLogin: function (user, password) {
+        this.setState({
+            user: user,
+            password: password
+        });
+        this.getToken()
+    },
 
     //called on navbar login.
-    getToken: function(){
+    getToken: function () {
         userFunctions.loginUser({
             user: this.state.user,
             password: this.state.password
         }).then(function (data) {
             var date = new Date();
             date.setMinutes(15);
-            //var expires = "expires=" + date;
-            //var authorization = "Authorization=" + data.token;
-            //document.cookie = authorization + ";" + expires;
             document.cookie = "expires=" + date;
             document.cookie = "token=" + data.token;
             this.props.onUpdateLogin(true, data.user.username);
         }.bind(this));
-    },
-
-    //this is called after a user registers:
-    getUser: function (user) {
-        if (user.length >= 5) {
-            userFunctions.loginPassword(user)
-                .then(function (data) {
-                    var date = new Date();
-                    date.setMinutes(15);
-                    document.cookie = "Authorization=Bearer " + data.token + ";expires=" + date;
-                    this.props.onUpdateLogin(true, data.user.username);
-                }.bind(this));
-        }
     },
     handleLogout: function () {
         this.setState({
@@ -84,7 +78,7 @@ var LoginFormContainer = React.createClass({
             login: "",
             token: ""
         });
-        document.cookie = "Authorization=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
         document.cookie = "expires=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
         this.props.onUpdateLogin(false, "");
     },

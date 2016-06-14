@@ -25,9 +25,6 @@ var RowContainer = React.createClass({
             studentsLoaded: nextProps.studentsLoaded
         });
     },
-    removeRow: function(id){
-
-    },
     render: function () {
         return (
             <Row user={this.state.user}

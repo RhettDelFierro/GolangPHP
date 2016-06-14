@@ -68,9 +68,6 @@ var RegisterFormContainer = React.createClass({
             password: "",
             userInfo: {}
         });
-
-        //make the ajax call.
-        //on success push to /teachers/users.
         //on fail stay on page and display error messages. Also re-set the state to have the info.
         userFunctions.registerUser({
                 user: this.state.user,
@@ -78,7 +75,18 @@ var RegisterFormContainer = React.createClass({
                 password: this.state.password
             })
             .then(function (userdata) {
-                this.props.onUpdateLogin(true, userdata.username)
+                this.getUser(userdata.username);
+            }.bind(this));
+    },
+    getUser: function (user) {
+        userFunctions.loginPassword(user)
+            .then(function (data) {
+                console.log("2nd data: ", data);
+                var date = new Date();
+                date.setMinutes(15);
+                document.cookie = "expires=" + date;
+                document.cookie = "token=" + data.token;
+                this.props.onUpdateLogin(true, data.user.username);
             }.bind(this));
     },
     render: function () {

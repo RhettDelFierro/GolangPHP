@@ -23,12 +23,6 @@ function ModalLogic(){
 }
 
 function RegisterToggle(props) {
-    //<Nav pullRight>
-    //    <Link to="/register">
-    //        <Button bsClass="btn btn-primary navbar-btn">Register</Button>
-    //    </Link>
-    //</Nav>
-    //render registermodalcontainer > register modal > register form container > register form.
     return (
         <Nav pullRight>
             <RegisterModalContainer onUpdateLogin={props.onUpdateLogin}/>
@@ -38,8 +32,6 @@ function RegisterToggle(props) {
 
 
 function NavigationBar(props) {
-    //LoginFormContainer and RegisterFormContainer
-    //<LoggedIn user={props.user} onUpdateLogin={props.onUpdateLogin}/>
     return (
         <Navbar staticTop fluid>
             <Navbar.Header>

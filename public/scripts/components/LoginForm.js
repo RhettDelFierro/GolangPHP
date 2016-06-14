@@ -57,7 +57,7 @@ function NotLoggedIn(props) {
 function LoginForm(props) {
     return props.isLoggedIn === true
         ? <LoggedIn user={props.user} onLogout={props.onLogout}/>
-        : <NotLoggedIn user={props.user} password={props.password} onUpdateUser={props.onUpdateUser} onUpdatePassword={props.onUpdatePassword} onSubmitUser={props.onSubmitUser}/>
+        : <NotLoggedIn user={props.user} password={props.password} onUpdateUser={props.onUpdateUser} onUpdatePassword={props.onUpdatePassword} onSubmitUser={props.onSubmitUser} onRegisterLogin={props.onRegisterLogin}/>
 }
 
 module.exports = LoginForm;

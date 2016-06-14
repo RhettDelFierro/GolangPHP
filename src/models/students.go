@@ -4,14 +4,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"fmt"
 )
-//students kept private
+//students kept private. Only mean for DB functionality.
 type Student struct {
 	name   string	`bson:"name,omitempty"`
 	course string	`bson:"course,omitempty"`
 	grade  int 	`bson:"grade,omitempty"`
 	id     bson.ObjectId `bson:"_id,omitempty"`
 }
-//type in DB.
+//type stored in DB.
 type DBStudent struct {
 	Name   string	`bson:"name,omitempty" json:"name"`
 	Course string	`bson:"course,omitempty" json:"course"`
@@ -155,9 +155,3 @@ func duplicate(student *DBStudent) []Student {
 
 	return school
 }
-
-//I think this is more for a member
-//func CreateSession(student Student) (Session, error) {
-//	result := Session{}
-//	result.Id = student.Id
-//}

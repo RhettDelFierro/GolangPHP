@@ -18,6 +18,12 @@ type addedController struct {
 	template *template.Template
 }
 
+type StudentJSON struct {
+	Name string `json:"name"`
+	Course string `json:"course"`
+	Grade string `json:"grade"`
+}
+
 //errors should be custom notes from helper.
 type JSON struct {
 	Success bool        `json:"success"`
@@ -36,21 +42,21 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 	studentData := JSON{Success: false}
 	sd := &studentData
 
+	student := StudentJSON{}
+	err := json.NewDecoder(req.Body).Decode(&student)
+	fmt.Println(student, err)
+
 	//*******************maybe you can start using Go routines for all here.***************
 
 	postMap := map[string]string{
-		"name": req.FormValue("name"),
-		"course": req.FormValue("course"),
-		"grade": req.FormValue("grade"),
+		"name": student.Name,
+		"course": student.Course,
+		"grade": student.Grade,
 	}
 
-	fmt.Println("values: ", req.FormValue("name"), req.FormValue("course"),req.FormValue("grade"), )
-
 	regexCheckingMap := helper.ErrorMaker(postMap)
-
-
 	regex_errors := helper.TestValidEntry(regexCheckingMap)
-	fmt.Println("here's regex_errors: ", regex_errors)
+
 	if regex_errors != nil {
 		for i, _ := range regex_errors {
 			sd.Error = append(sd.Error, regex_errors[i])

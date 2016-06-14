@@ -44,18 +44,14 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 		"grade": req.FormValue("grade"),
 	}
 
-	fmt.Println(postMap)
-	//fmt.Println("here's postmap: ", postMap)
-	//newStudent := &helper.NewStudent{}
-	//newStudent.ErrorMaker(req.FormValue("name"), req.FormValue("course"), req.FormValue("grade"), "auth_token")
+	fmt.Println("values: ", req.FormValue("name"), req.FormValue("course"),req.FormValue("grade"), )
+
 	regexCheckingMap := helper.ErrorMaker(postMap)
-	//fmt.Println("after ErrorMaker ", regexCheckingMap)
 
 
 	regex_errors := helper.TestValidEntry(regexCheckingMap)
 	fmt.Println("here's regex_errors: ", regex_errors)
 	if regex_errors != nil {
-
 		for i, _ := range regex_errors {
 			sd.Error = append(sd.Error, regex_errors[i])
 		}
@@ -63,9 +59,6 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 
 	//the regex tests will determine whether the addedstudent's info is an acceptable pattern.
 	if len(regex_errors) == 0 {
-		//include a nested if statement to check for session.
-		//do the code at the bottom:
-		fmt.Println("did we get to here")
 		data := new(models.Student)
 
 		grade, _ := strconv.Atoi(regexCheckingMap["grade"]["value"])
@@ -76,32 +69,25 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 		data.SetId(bson.NewObjectId())
 		convertedData := helper.StudentsToViewModel(*data)
 
-		//don't forget to check for duplicates.
-		duplicate, err := models.AddStudents(data) //we don't have to convert anything, just have to store it. Future videos.
+		duplicate, err := models.AddStudents(data)
 		//checking to see for either an error in the DB or duplicate.
 		if err != nil || len(duplicate) != 0 {
-			fmt.Println("here is an error for err: ", err)
-			fmt.Println("here is what duplicate is printing", duplicate)
 			//if error in DB connection
 			if err != nil {
-				fmt.Println("we should be in here now")
 				sd.Error = append(sd.Error, err.Error())
 				responseWriter.Header().Add("Content-Type", "application/json")
 				responseWriter.WriteHeader(500)
 				responseData, err := json.Marshal(sd)
 				if err != nil {
-					fmt.Println("error in json writing")
 					responseWriter.Write(responseData)
 				} else {
 					//sd.Error = append(sd.Error, err.Error())
-					fmt.Println("no error in json writing")
 					responseWriter.Write(responseData)
 				}
 			}
 			//if no error in DB connection, but duplicate student:
 			if len(duplicate) != 0 {
 				//should make this a function because getgrades.go uses the same thing. DRY
-				fmt.Println(duplicate)
 				sd.Error = append(sd.Error, regexCheckingMap["duplicate"]["error"])
 				students := duplicate
 				studentsVM := []viewmodels.Student{} //slice
@@ -110,7 +96,6 @@ func postStudent(w http.ResponseWriter, req *http.Request) {
 					studentsVM = append(studentsVM, helper.StudentsToViewModel(student))
 				}
 				sd.Data = studentsVM
-				fmt.Printf(" type of sd.Data %T \n", sd.Data)
 				responseWriter.Header().Add("Content-Type", "application/json")
 				responseWriter.WriteHeader(400)
 				responseData, err := json.Marshal(sd)

@@ -101,7 +101,6 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 		return
 	} else {
 		//user is verified, generate jwt:
-		fmt.Println("user.UserName:", user.UserName)
 		token, err = GenerateToken(user.UserName, "teacher")
 		if err != nil {
 			fmt.Println("Error generating token")
@@ -111,7 +110,6 @@ func LoginUser(w http.ResponseWriter, req *http.Request) {
 		}
 
 		//don't send the HashPassword.
-		fmt.Println("heres the token:", token)
 		w.Header().Set("Content-Type", "application/json")
 		user.HashPassword = nil
 		//send this token and code to the front end.
@@ -162,7 +160,6 @@ func GetPW(w http.ResponseWriter, req *http.Request) {
 		panic(err);
 	}
 	fmt.Println(userInfo)
-	fmt.Println("user.UserName:", userInfo.UserName)
 	token, err = GenerateToken(userInfo.UserName, "teacher")
 	if err != nil {
 		fmt.Println("Error generating token")

@@ -53,7 +53,13 @@ var LoginFormContainer = React.createClass({
             user: this.state.user,
             password: this.state.password
         }).then(function (data) {
-            document.cookie = "Authorization=" + data.token;
+            var date = new Date();
+            date.setMinutes(15);
+            //var expires = "expires=" + date;
+            //var authorization = "Authorization=" + data.token;
+            //document.cookie = authorization + ";" + expires;
+            document.cookie = "expires=" + date;
+            document.cookie = "token=" + data.token;
             this.props.onUpdateLogin(true, data.user.username);
         }.bind(this));
     },
@@ -65,7 +71,7 @@ var LoginFormContainer = React.createClass({
                 .then(function (data) {
                     var date = new Date();
                     date.setMinutes(15);
-                    document.cookie = "Authorization=" + data.token + ";expires=" + date;
+                    document.cookie = "Authorization=Bearer " + data.token + ";expires=" + date;
                     this.props.onUpdateLogin(true, data.user.username);
                 }.bind(this));
         }
@@ -78,6 +84,8 @@ var LoginFormContainer = React.createClass({
             login: "",
             token: ""
         });
+        document.cookie = "Authorization=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        document.cookie = "expires=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
         this.props.onUpdateLogin(false, "");
     },
     render: function () {

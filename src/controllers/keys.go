@@ -36,10 +36,8 @@ func initKeys(){
 //generating the token to
 func GenerateToken(name, role string) (string, error) {
 	initKeys()
-	fmt.Println("here's pubkey:", verifyKey)
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 
-	fmt.Println("here's name", name)
 
 	//Setting the claims. This info will be used through the app.
 	t.Claims["iss"] = "admin"
@@ -49,9 +47,7 @@ func GenerateToken(name, role string) (string, error) {
 	}{name, role}
 
 	t.Claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
-	fmt.Println(t.Claims)
 	tokenString, err := t.SignedString(signKey)
-	fmt.Println("Here's tokenstring:", tokenString)
 	if err != nil {
 		fmt.Println("the error inside  GenerateToken")
 		return "", err

@@ -36,12 +36,26 @@ var userFunctions = {
                 console.log(error);
             })
     },
+    //addStudent: function (student, token) {
+    //    //note the difference between this and user. The users have Data Mapping (and expects "data" field)
+    //    return axios.post("/api/add", {
+    //            data: {student: student.student, course: student.course, grade: student.grade},
+    //            headers: {"AUTHORIZATION": "Bearer " + token}
+    //        })
+    //        .then(function (response) {
+    //            console.log(response);
+    //            return response.data
+    //        })
+    //        .catch(function (error) {
+    //            console.log(error);
+    //        })
+    //}
     addStudent: function (student, token) {
+        console.log("adding student");
+        console.log("here's the token: ", token);
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
         //note the difference between this and user. The users have Data Mapping (and expects "data" field)
-        return axios.post("/api/add", {
-                data: {student: student.student, course: student.course, grade: student.grade},
-                headers: {"AUTHORIZATION": "Bearer " + token}
-            })
+        return axios.post("/api/add",{data: {student: student.student, course: student.course, grade: student.grade}})
             .then(function (response) {
                 console.log(response);
                 return response.data

@@ -11,6 +11,15 @@ var StudentFormContainer = React.createClass({
             grade: ""
         };
     },
+    cookieFinder: function (name) {
+        var cookie = document.cookie;
+        var initialValue = {};
+
+        return cookie.split(';').reduce(function (prev, c) {
+            var arr = c.split('=');
+            return (arr[0].trim() == name ? arr[1] : prev);
+        }, initialValue);
+    },
     handleUpdateStudent: function(e){
         this.setState({
             student: e.target.value
@@ -28,15 +37,24 @@ var StudentFormContainer = React.createClass({
     },
     handleSubmitStudent: function (e) {
         e.preventDefault();
-        //set to blank after submit.
-        this.setState({
-            student: "",
-            course: "",
-            grade: ""
-        });
-        this.props.onStudentSumbit(this.state.student, this.state.course, this.state.grade);
-
-        //calling userFunctions should be in  the RowContainer, not here.
+        this.axiosAddStudent();
+    },
+    axiosAddStudent: function(){
+        var data = {
+            student: this.state.student,
+            course: this.state.course,
+            grade: this.state.grade
+        };
+        userFunctions.addStudent(data, this.cookieFinder("token"))
+            .then(function(data){
+                console.log("StudentFormContainer set the line below it: ", data);
+                this.props.onStudentSumbit(this.state.student, this.state.course, this.state.grade, true);
+                this.setState({
+                    student: "",
+                    course: "",
+                    grade: ""
+                })
+            }.bind(this));
     },
     componentWillReceiveProps: function () {
         this.setState({

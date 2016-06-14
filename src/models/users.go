@@ -113,7 +113,6 @@ func LoginUser(user UserInfo) (u UserInfo, err error) {
 			panic(err);
 		}
 	}
-	fmt.Println("before user goes into CompareHashAndPassword", u, "\n and also user: ", user)
 	//right now user has the hash password because of UserPW. You need to check the user pw before it goes into bcrypt on UserPW.
 	err = bcrypt.CompareHashAndPassword(u.HashPassword, []byte(user.Password))
 	if err != nil {
